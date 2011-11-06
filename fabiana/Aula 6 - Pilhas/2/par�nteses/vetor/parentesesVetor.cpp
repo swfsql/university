@@ -4,6 +4,25 @@
 #include<cstdio>
 using namespace std;
 
+/* clipboard para teste
+1 4
+a
+7
+4
+(
+7
+4
+)
+7
+4
++ 3 - (([1+1]) [(0-0)]) {(())}
+7
+5
+7
+5 5 5 5 5 7
+
+*/
+
 const unsigned int TAM = 40;
 
 struct No
@@ -44,42 +63,6 @@ struct Pilha
         return true;
     }
 
-    bool empilhaValido(char str[40])
-    {
-        if(cheia())
-            return false;
-        int i = -1;
-        char c; // cada char do vetor
-        char cTopoNo; // para verificar o topoNó
-
-        while(c = str[++i])
-        {
-            // se for adicionar elemento que 'abre', adiciona normalmente
-            if(c == '(' || c == '[' || c == '{')
-            {
-                nos[++topo].info = c;
-                continue;
-            }
-
-            // se for adicionar elemento que 'fecha'
-            if(c == ')' || c == ']' || c == '}')
-            {
-                if (!topoNo(cTopoNo))
-                    return false; // erro: fechou demais. exemplo: '())'
-
-                if(cTopoNo == c)
-                {
-                    // adiciona normalmente
-                    nos[++topo].info = c;
-                    continue;
-                }
-                return false; // erro: fechou com character inválido. exemplo: '[)'
-            }
-            continue; // desconsidera characters que não são ([{}])
-        }
-        return true;
-    }
-
     bool desempilha(char str[40])
     {
         if(vazia())
@@ -102,88 +85,59 @@ struct Pilha
         if(vazia())
             return false;
 
-        Pilha* operadores = new Pilha; // na verdade não é operadores, mas só ()[]{}
-         operadores->init();
-        bool ret = true; // retorno de true
-        int l,
-            i = -1,
-            topo2;
-        char str[40], c;
-        str[1] = '\0';
+        Pilha *operadores = new Pilha; // seriam os parênteses
+        operadores->init();
+        bool ret = true; // retorno
+        char c; // temp
+        char str[40] = " ";
 
-        // copia só os simbolos da pilha original
-        i = topo+1; // tamanho
-        topo2 = -1;
+        // percorrer a pilha, pegando os parênteses
+        int i = topo+1;
         while(i--)
         {
             c = nos[i].info;
-            if(c == '(' || c == '[' || c == '{' || c == ')' || c == ']' || c == '}')
-           {
+            if(c == ')' || c == ']' || c == '}')
+            {
                str[0] = c;
-               pilha2->empilha(str);// guarda em ordem invertida em relação à uma pilha
-               ++topo2;
-               cout << ".";
-           }
-        }
-        // TODO: descobrir se é +- 1
-        l = (topo2)>>1; // equivale a quebrar o valor em dois com ceil(), sendo ele inteiro positivo.
-
-        // debug
-        {
-            i = topo2+1;
-            i = l+1;
-            cout << "\ndebug 1:\n\n";
-            cout << "topo = " << i-1 << "\n";
-            while(i--)
-                cout << pilha2->nos[i].info;
-            cout << "\n\n";
-        }
-
-        // tira metade da pilha, e empilha isso em outra pilha
-        i = -1;
-        while(++i < l+1)
-        {
-            pilha2->desempilha(str);
-
-            // gambiarra
+               operadores->empilha(str);
+            } else switch (c)
             {
-                c = str[0];
-                c = (
-                     c == '(' ? ')' : c == ')' ? '(' :
-                     c == '[' ? ']' : c == ']' ? '[' :
-                     c == '{' ? '}' : c == '}' ? '{' : c
-                    );
-                str[0] = c;
-            }
-
-            pilha->empilha(str);
-            cout << ",";
-        }
-
-        // compara as duas metades
-        i = l+1;
-        while(i--)
-        {
-
-            // debug
-            {
-                cout << "\ncomprar: " << pilha->nos[i].info << " e " << pilha2->nos[i].info << "\n";
-            }
-
-            if(pilha->nos[i].info != pilha2->nos[i].info)
-            {
-                ret = false;
-                i = -1;
-                break;
+                case '(':
+                    operadores->topoNo(c);
+                    if(')' == c)
+                        operadores->desempilha(str);
+                    else
+                    {
+                        ret = false;
+                        i = 0;
+                    }
+                    break;
+                case '[':
+                    operadores->topoNo(c);
+                    if(']' == c)
+                        operadores->desempilha(str);
+                    else
+                    {
+                        ret = false;
+                        i = 0;
+                    }
+                    break;
+                case '{':
+                    operadores->topoNo(c);
+                    if('}' == c)
+                        operadores->desempilha(str);
+                    else
+                    {
+                        ret = false;
+                        i = 0;
+                    }
+                    break;
             }
 
         }
 
-        // junta de volta as duas metades
-        // não precisa mais, pois não mudei a pilha original
-        delete pilha;
-        delete pilha2;
-
+        ret = ret && operadores->topo == -1;
+        delete operadores;
         return ret;
     }
 
@@ -191,9 +145,9 @@ struct Pilha
     {
         if(vazia())
             return;
-        int i = topo+1;
-        cout << "\nimpressao como pilha:\n";
-        while(i--)
+        int i = -1;
+        cout << "\nimpressao como expressao:\n";
+        while(++i < topo+1)
             cout << nos[i].info;
         cout << "\n";
     }
@@ -201,8 +155,8 @@ struct Pilha
 
 int menu ()
 {
-    const int tam = 9;
-    char ops[tam][40] = {"encerrar", "iniciar pilha", "pilha vazia", "pilha cheia", "empilha", "desempilha", "topo pilha", "verificar expressao", "inserir com validade"};
+    const int tam = 8;
+    char ops[tam][40] = {"encerrar", "iniciar pilha", "pilha vazia", "pilha cheia", "empilha", "desempilha", "topo pilha", "verificar expressao"};
 
     int op = -1;
     cout << "\n";
@@ -261,7 +215,7 @@ int main ()
                 cout << "pilha vazia.";
                 break;
             }
-            cout << "str desempilhado: " << str;
+            cout << "char desempilhado: " << str[0];
             break;
 
         case 6:
@@ -270,26 +224,17 @@ int main ()
                 cout << "pilha vazia.";
                 break;
             }
-            cout << "str no topo: " << str;
+            cout << "char no topo: " << str[0];
             break;
 
         case 7:
-            pilha.mostrar(); // mostra ida, então a volta
+            pilha.mostrar();
             if(!pilha.validar())
             {
                 cout << "expressao invalida, ou a lista esta vazia.\n";
                 break;
             }
             cout << "expressao valida.";
-            break;
-
-            case 8:
-            // parte ruim: se estiver cheia, é inútil dar input no 'str'
-            cout << "string a inserir: ";
-            fflush(stdin);
-            gets(str);
-            if(!pilha.empilhaValido(str))
-                cout << "insercao invalida, ou pilha cheia.";
             break;
         }
         op = menu();

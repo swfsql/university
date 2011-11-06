@@ -4,6 +4,15 @@
 #include<cstdio>
 using namespace std;
 
+/* clipboard para teste
+1 4
+aba
+7
+5
+7
+
+*/
+
 const unsigned int TAM = 40;
 
 struct No

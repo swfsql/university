@@ -1,0 +1,53 @@
+/*
+a) Criação de um dicionário vazio;
+b) Inserção de uma nova entrada;
+c) Remoção de uma entrada no dicionário;
+d) Pesquisa de traduções de palavras em inglês;
+e) Alteração de uma entrada;
+f) Testes de dicionário_cheio? dicionário_vazio? (funções auxiliares)
+*/
+
+const int MAX_ENT=100;
+
+struct Entrada
+{
+   char pal_ing[15];
+   char pal_port[15];
+};
+
+struct Dicionario
+{
+   Entrada dic[MAX_ENT];
+   int tam;
+};
+
+
+
+int main()
+{
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

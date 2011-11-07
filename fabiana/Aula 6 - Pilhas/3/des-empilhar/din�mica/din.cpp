@@ -14,8 +14,6 @@ c
 
 */
 
-const unsigned int TAM = 40;
-
 struct No
 {
     char info;

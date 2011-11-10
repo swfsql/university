@@ -22,15 +22,17 @@ package
 		
 		public function Bubble() 
 		{
-			var glow:GlowFilter = new GlowFilter(0x707090, 1, 6, 6, 5, 3, false, false);
+			//var glow:GlowFilter = new GlowFilter(0x707090, 1, 6, 6, 5, 3, false, false);
 			//this.filters = [glow];
 			//this.blendMode = BlendMode.HARDLIGHT;
 			
 		}
 		
-		public function draw():void
+		// preferi fazer vetorial mesmo, sem cpyPixel pra um bmData dpois.
+		public function draw(info:Number, rm:Number, ro:Number):Bubble
 		{
-			// preferi fazer vetorial mesmo, sem cpyPixel pra um bmData dpois.
+			this.info = info;
+			radius = rm * info + ro;
 			
 			var g:Graphics = this.graphics;
 			g.clear();
@@ -39,12 +41,14 @@ package
 			g.drawCircle(0, 0, radius);
 			g.endFill();
 			g = null;
+			
+			return this;
 		}
 		
-		public function resize(W:Number, H:Number):void
+		public function clear():Bubble
 		{
-			
-			
+			this.graphics.clear();
+			return this;
 		}
 		
 	}

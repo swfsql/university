@@ -11,117 +11,68 @@ package
 	 */
 	public class Main extends Sprite 
 	{
-		private var gr:Ground; // desenho em volta
-		private var bubbles:Bubble; // head
-		
-		
-		private var text:Field; // campo de texto
-		private var text2:Field;
-		private var s:String;
-		
-		private var W:Number, H:Number;
-		
-		private const raio:Number = Math.PI * 3 / 4;
-		
-		
-		
 		public function Main():void 
 		{
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			stage.addEventListener(Event.RESIZE, resize);
+			// setup
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.align = StageAlign.TOP_LEFT;
+				stage.frameRate = 40;
 			
-			// init
-				bubbles = new Bubble();
-				text = new Field();
-				text2 = new Field();
-				gr = new Ground();
-				this.addChild(gr.back);
-				this.addChild(bubbles);
-				this.addChild(gr.front);
-				this.addChild(text);
-				this.addChild(text2);
-			
+			// children
+				this.addChild(gr.back); // background
+				this.addChild(bubbles.bubbles); // bubbles
+				this.addChild(text); // input
+				this.addChild(text2); // result
+				this.addChild(gr.front); // foreground
 			
 			// event
 				this.addEventListener(Event.ENTER_FRAME, ef);
+				stage.addEventListener(Event.RESIZE, resize);
 			
-			s = text.tf.text;
-			resize();
-			bubblesInit();
+			// var
+				s = text.tf.text;
+			
+			// init
+				resize();
+				bubbles.init(s, radius);
+				text.x = text.y = text2.x = 0; // text
+				bubbles.bubbles.y = 20; // user's bubbles
 		}
 		
-		private function bubblesInit():void
-		{
-			var i:int = -1;
-			var l:int = s.length;
-			var b:Bubble = bubbles;
-			var b2:Bubble = bubbles;
-			
-			while ((b = b.next) && ++i < l)
-			{
-				trace("i: ", i);
-				b.info = Number (s.charAt(i));
-				b.radius = raio * b.info;
-				b.draw();
-				b2 = b;
-			}
-			
-			if (i == l)
-			{
-				trace("entrou aeee");
-				b = b2;
-				while (b2 = b2.next)
-				{
-					b2.graphics.clear();
-					bubbles.removeChild(b2);
-				}
-				b.next = null;
-				
-			} else
-			{
-				while (++i < l)
-				{
-					b2.next = new Bubble();
-					b2.next.prev = b2;
-					b2 = b2.next;
-					bubbles.addChild(b2);
-					b2.info = Number (s.charAt(i));
-					b2.radius = raio * b2.info;
-					b2.draw();
-					
-				}
-				
-			}
-			
-			trace(bubbles, bubbles.next)
-			
-		}
+		// 
+		private var ground:Ground = new Ground(), // background, foreground
+					//
+					bubbles:Bubbles = new Bubbles(), // head, user's bubbles
+					//
+					s:String = "",
+					s2:String = "",
+					text:Field = new Field(), // input text
+					text2:Field = new Field(), // sorted text
+					//
+					W:Number = 0, 
+					H:Number = 0,
+					radius:Number = Math.PI * .75; // radius from an sphere's volume input
 		
 		private function resize(e:Event = null):void 
 		{
 			
-			// ajusta o tamanho da janela
+			// app dimension
 				W = stage.stageWidth;
 				H = stage.stageHeight;
 			
-			// ajusta o campo de texto
+			// texts
 				text.resize(W, H);
-				text.x = text.y = 0
 				text2.resize(W, H);
-				text2.x = 0;
 				text2.y = H - 20;
 			
-			// ajusta o chão
+			// ground
 				gr.resize();
 			
-			// ajusta todas as bolhas
-				var b:Bubble = bubbles;
-				while (b = b.next) 
-					b.resize(W, H);
-			
-			bubbles.x = W / 2;
-			bubbles.y = 60;
+			// bubbles
+				var b:Bubbles = bubbles;
+				b.bubbles.x = W / 2;
+				while (b = b.next)
+					b.bubbles.x = W / 2;
 		}
 		
 		private function ef(e:Event):void 

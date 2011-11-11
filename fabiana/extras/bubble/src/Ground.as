@@ -38,7 +38,7 @@ package
 			g.endFill();
 			
 			var glow:GlowFilter = new GlowFilter(0, .3, 256, 296, 1, 2, true);
-			back.filters = [glow];
+			//back.filters = [glow];
 			
 			
 		}

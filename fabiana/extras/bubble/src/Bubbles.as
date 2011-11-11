@@ -1,5 +1,6 @@
 package  
 {
+	import flash.filters.BlurFilter;
 	/**
 	 * bubble list
 	 * @author thi
@@ -181,13 +182,39 @@ package
 		
 		// adjust the bubbles zoom
 		private var _upper:Bubble;
-		public function zoom(W:Number, H:Number):void
+		public function zoom(W:Number, H:Number):Number
 		{
 			// TODO? fix the width.. bug dont looks bad.
 			var _y:Number = _upper.height + 5;
 			var _h:Number = (bubbles.height + _y) / bubbles.scaleY;
 			var min:Number = Math.min(W / bubbles.width, (H - _y) / _h);
 			bubbles.scaleX = bubbles.scaleY += (min - bubbles.scaleY) * .2;
+			return bubbles.scaleY;
+		}
+		
+		public function apllyZoom(zoom:Number):void
+		{
+			bubbles.scaleX = bubbles.scaleY = zoom;
+		}
+		
+		private var blur:BlurFilter = new BlurFilter(4, 4, 1);
+		public function move(W:Number, H:Number, dx:Number, dy:Number):Boolean
+		{
+			bubbles.x += dx;
+			bubbles.y += dy;
+			
+			if (bubbles.x > W + 20 || bubbles.x < -20 || bubbles.y < -bubbles.height - 20)
+			{
+				return false;
+			}
+			return true;
+		}
+		
+		public function replace(W:Number, H:Number, s:String, rm:Number = 1, ro:Number = 0):void
+		{
+			init(s, rm, ro);
+			bubbles.x = Math.random() * W;
+			bubbles.y = H + bubbles.height + 20;
 		}
 		
 	}

@@ -22,10 +22,12 @@ package
 			
 			// children
 				this.addChild(ground.back); // background
+				ground.back.addChild(backBubbles.bubbles);
 				this.addChild(bubbles.bubbles); // bubbles
 				this.addChild(text); // input
 				this.addChild(text2); // result
 				this.addChild(ground.front); // foreground
+				ground.front.addChild(frontBubbles.bubbles);
 			
 			// event
 				this.addEventListener(Event.ENTER_FRAME, ef);
@@ -36,17 +38,23 @@ package
 			
 			// init
 				resize();
-				bubbles.init(s,- radius);
-				text.x = text.y = text2.x = 0; // text
+				// bubbles
+				bubbles.init(s, - radius);
 				bubbles.bubbles.y = 20; // user's bubbles
+				backBubbles.init("123123", radius);
+				backBubbles.bubbles.y = 20;
+				// text
 				stage.focus = text.tf;
 				text.tf.setSelection(0, text.tf.text.length);
+				text.x = text.y = text2.x = 0; // text
 		}
 		
 		// 
 		private var ground:Ground = new Ground(), // background, foreground
 					//
 					bubbles:Bubbles = new Bubbles(), // bubble's list's list
+					backBubbles:Bubbles = new Bubbles(),
+					frontBubbles:Bubbles = new Bubbles(),
 					//
 					s:String = "",
 					text:Field = new Field(), // input text
@@ -74,6 +82,10 @@ package
 			// bubbles
 				var b:Bubbles = bubbles;
 				b.bubbles.x = W / 2;
+				b = backBubbles;
+				while (b = b.next)
+					b.bubbles.x = W / 2;
+				b = frontBubbles;
 				while (b = b.next)
 					b.bubbles.x = W / 2;
 		}
@@ -90,9 +102,22 @@ package
 			}
 			
 			var b:Bubbles = bubbles;
-			// move & sort bubbles
+			// move & sort user's bubbles
 			text2.tf.text = b.sort(); // user's
-			b.zoom(W, H); // adjust the bubbles zooming
+			var zoom:Number = b.zoom(W, H); // adjust the bubbles zooming
+			
+			// move & sort background bubbles
+			var dx:Number = Math.random() - .5, dy:Number = -10;
+			var s2:String;
+			b = backBubbles;
+			b.sort();
+			b.apllyZoom(zoom);
+			if (!b.move(W, H, dx, dy))
+			{
+				s2 = "123123";
+				b.replace(W, H, s2);
+				trace("vorts");
+			}
 		}
 		
 	}

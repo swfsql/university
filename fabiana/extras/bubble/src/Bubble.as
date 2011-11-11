@@ -37,7 +37,7 @@ package
 			var g:Graphics = this.graphics;
 			g.clear();
 			//g.lineStyle(.5 , 0xFFFFFF, .1);
-			g.beginFill(0xD0E0F0, .3);
+			g.beginFill(0xD0E0F0, .4);
 			g.drawCircle(0, 0, radius);
 			g.endFill();
 			g = null;

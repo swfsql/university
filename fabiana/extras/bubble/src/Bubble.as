@@ -5,19 +5,19 @@ package
 	import flash.display.Sprite;
 	import flash.filters.GlowFilter;
 	/**
-	 * é uma bolha.
+	 * blub.
+	 * TODO: make it pretty.
 	 * @author thi
 	 */
 	public class Bubble extends Sprite
 	{
-		public var next:Bubble;
-		public var prev:Bubble;
-		public var info:Number;
-		
-		public var radius:Number;
-		public var teta:Number = 0;
-		
-		public var passing:Boolean;
+		public var next:Bubble,
+				   prev:Bubble,
+				   //
+				   info:Number, // the sphere's volume
+				   radius:Number,
+				   teta:Number = 0, // the movement
+				   passing:Boolean; // if going up
 		
 		public function Bubble() 
 		{
@@ -26,12 +26,14 @@ package
 			//this.blendMode = BlendMode.HARDLIGHT;
 		}
 		
-		// preferi fazer vetorial mesmo, sem cpyPixel pra um bmData dpois.
+		// vector without bmData's cpyPixel
 		public function draw(info:Number, rm:Number, ro:Number):Bubble
 		{
+			// information
 			this.info = info;
 			radius = rm * info + ro;
 			
+			// draw it
 			var g:Graphics = this.graphics;
 			g.clear();
 			//g.lineStyle(.5 , 0x101020, .1);
@@ -50,5 +52,4 @@ package
 		}
 		
 	}
-
 }

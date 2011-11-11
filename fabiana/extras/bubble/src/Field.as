@@ -10,11 +10,9 @@ package
 	 */
 	public class Field extends Sprite
 	{
-		public var flag:Boolean;
-		public var time:int = 0;
-		public var timeOut:int = 30;
-		
-		public var tf:TextField;
+		public var time:int = 0,
+				   timeOut:int = 30,
+				   tf:TextField;
 		private var g:Graphics;
 		
 		public function Field() 
@@ -23,8 +21,9 @@ package
 			tf = new TextField();
 			tf.defaultTextFormat = f;
 			tf.type = "input";
-			//tf.text = "9991232387418521";
-			tf.text = "12";
+			tf.text = "9991232387418521";
+			//tf.text = "231232938741895211111111111111111111111111111111111111111111111";
+			//tf.text = "11111111111111119999999999999999911111111111111111111199999999999991111111111111111999999999999911111111111119999999999999111111111999999999991111111111111";
 			tf.textColor = 0xFFFFFF;
 			tf.height = 20;
 			tf.multiline = false;

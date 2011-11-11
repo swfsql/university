@@ -3,12 +3,13 @@ package
 	import flash.display.Sprite;
 	/**
 	 * back/fore ground.
+	 * TODO: everything
 	 * @author thi
 	 */
 	public class Ground 
 	{
-		public var back:Sprite;
-		public var front:Sprite;
+		public var back:Sprite,
+				   front:Sprite;
 		
 		public function Ground() 
 		{

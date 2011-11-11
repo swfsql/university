@@ -7,6 +7,8 @@ package
 	import flash.events.Event;
 	
 	/**
+	 * bubble sorting visualization
+	 * TODO: environment blubbles
 	 * @author thi
 	 */
 	public class Main extends Sprite 
@@ -37,12 +39,14 @@ package
 				bubbles.init(s,- radius);
 				text.x = text.y = text2.x = 0; // text
 				bubbles.bubbles.y = 20; // user's bubbles
+				stage.focus = text.tf;
+				text.tf.setSelection(0, text.tf.text.length);
 		}
 		
 		// 
 		private var ground:Ground = new Ground(), // background, foreground
 					//
-					bubbles:Bubbles = new Bubbles(), // head, user's bubbles
+					bubbles:Bubbles = new Bubbles(), // bubble's list's list
 					//
 					s:String = "",
 					text:Field = new Field(), // input text
@@ -81,6 +85,7 @@ package
 			{
 				text.time = 0;
 				s = text.tf.text;
+				if (s == "") s = "1";
 				bubbles.init(s, radius);
 			}
 			

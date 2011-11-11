@@ -1,7 +1,7 @@
 package  
 {
 	/**
-	 * ...
+	 * bubble list
 	 * @author thi
 	 */
 	public class Bubbles 
@@ -29,32 +29,26 @@ package
 				
 			// modify bubbles
 			while ((b = b.next) !== null && ++i < l)
-			{
-				trace("modify");
 				b2 = b.draw(Number(s.charAt(i)), rMultiplier, rOffset);
-			}
-			if (b !== null)
-				b.prev = null;
 			b = b2; // b is the last modified bubble
 			
 			// recycle bubbles
 			b2 = garbage;
 			while (++i < l && (b2 = b2.next) !== null)
 			{
-				trace("recycle");
+				garbage.next = b2.next;
+				b2.next = null;
 				b2.prev = b;
-				b.next = b2.draw(Number(s.charAt(i)), rMultiplier, rOffset);
+				bubbles.addChild(b2.draw(Number(s.charAt(i)), rMultiplier, rOffset));
+				b.next = b2;
 				b = b.next;
 			}
 			--i;
-			if (b2 !== null)
-				b2.prev = null;
 			// b is the last modified bubble
 			
 			// create bubbles
 			while (++i < l)
 			{
-				trace("create");
 				b.next = new Bubble();
 				b.next.prev = b;
 				b = b.next.draw(Number(s.charAt(i)), rMultiplier, rOffset);
@@ -65,8 +59,7 @@ package
 			
 			// add bubbles to garbage, prev pointer ignored
 			if (i == l)
-			{	
-				trace("garbage");
+			{
 				var b3:Bubble = b2 = b;
 				while ((b2 = b2.next) !== null)
 				{
@@ -78,7 +71,6 @@ package
 				b.next = null;
 			}
 			
-			trace("____");
 			bubbles.next.prev = null; // dont need to go back to head, when backwards
 		} // init
 		
@@ -111,13 +103,16 @@ package
 					b.passing = true;
 					
 					// now the angle
-					b.teta += next.radius / b.radius * .4 + b.teta * .2;
+					b.teta += next.radius / b.radius * .04 + b.teta * .2;
+					//b.teta += .1;
 					if (next.passing && next.next)
 						b.teta *= 0.8;
 					
 					// already passed
 					if (b.teta > Math.PI)
 					{
+						//b.teta *= 0.1;
+						//b.teta = 0;
 						// pointer mess
 						next.prev = b.prev;
 						b.prev = next;

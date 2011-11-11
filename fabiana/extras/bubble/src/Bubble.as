@@ -14,7 +14,6 @@ package
 		public var prev:Bubble;
 		public var info:Number;
 		
-		public var vel:Number;
 		public var radius:Number;
 		public var teta:Number = 0;
 		
@@ -25,7 +24,6 @@ package
 			//var glow:GlowFilter = new GlowFilter(0x707090, 1, 6, 6, 5, 3, false, false);
 			//this.filters = [glow];
 			//this.blendMode = BlendMode.HARDLIGHT;
-			
 		}
 		
 		// preferi fazer vetorial mesmo, sem cpyPixel pra um bmData dpois.

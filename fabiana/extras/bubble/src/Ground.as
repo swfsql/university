@@ -2,7 +2,7 @@ package
 {
 	import flash.display.Sprite;
 	/**
-	 * é o background, e também o foreground.
+	 * back/fore ground.
 	 * @author thi
 	 */
 	public class Ground 

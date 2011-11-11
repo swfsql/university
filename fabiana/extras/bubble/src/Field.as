@@ -5,7 +5,7 @@ package
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	/**
-	 * será o campo de texto, pra escolher as bolhas que terão
+	 * input/output textfield
 	 * @author thi
 	 */
 	public class Field extends Sprite
@@ -23,7 +23,8 @@ package
 			tf = new TextField();
 			tf.defaultTextFormat = f;
 			tf.type = "input";
-			tf.text = "9991232387418521";
+			//tf.text = "9991232387418521";
+			tf.text = "12";
 			tf.textColor = 0xFFFFFF;
 			tf.height = 20;
 			tf.multiline = false;
@@ -35,11 +36,10 @@ package
 		
 		public function resize(W:Number, H:Number):void
 		{
-			trace("foi");
-			// texto
+			// text
 			tf.width = W;
 			
-			// back
+			// background
 			g = this.graphics;
 			g.beginFill(0, .8);
 			g.drawRect(0, 0, W, 20);

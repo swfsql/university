@@ -7,7 +7,7 @@ package
 	import flash.events.Event;
 	
 	/**
-	 * bubble sorting visualization
+	 * bubble sorting visualization.
 	 * TODO: environment blubbles
 	 * @author thi
 	 */

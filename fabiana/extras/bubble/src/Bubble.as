@@ -36,8 +36,8 @@ package
 			// draw it
 			var g:Graphics = this.graphics;
 			g.clear();
-			//g.lineStyle(.5 , 0x101020, .1);
-			g.beginFill(0x707090, .5);
+			//g.lineStyle(.5 , 0xFFFFFF, .1);
+			g.beginFill(0xD0E0F0, .3);
 			g.drawCircle(0, 0, radius);
 			g.endFill();
 			g = null;

@@ -69,7 +69,7 @@ package
 				text2.y = H - 20;
 			
 			// ground
-				ground.resize();
+				ground.resize(W,H);
 			
 			// bubbles
 				var b:Bubbles = bubbles;

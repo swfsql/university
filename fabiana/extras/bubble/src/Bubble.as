@@ -31,7 +31,7 @@ package
 		{
 			// information
 			this.info = info;
-			radius = rm * info + ro;
+			radius = rm * info * ro;
 			
 			// draw it
 			var g:Graphics = this.graphics;

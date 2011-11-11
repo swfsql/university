@@ -14,15 +14,18 @@ package
 				   rMultiplier:Number, 
 				   rOffset:Number;
 		
-		public function Bubbles(rm:Number = 1, ro:Number = 0) 
+		public function Bubbles(rm:Number = 1, ro:Number = 1) 
 		{
 			rMultiplier = rm;
 			rOffset = ro;
 		}
 		
 		//									 radius multiplier, radius offset
-		public function init(s:String = "1", rm:Number = 1, ro:Number = 0):void
+		public function init(s:String = "1", rm:Number = 1, ro:Number = 1):void
 		{
+			rMultiplier = rm;
+			rOffset = ro;
+			
 			var b:Bubble = bubbles,
 				b2:Bubble = bubbles,
 				i:int = -1,
@@ -192,25 +195,35 @@ package
 			return bubbles.scaleY;
 		}
 		
+		// now functions for automatic bubbles -----------------------------------------------
+		
 		public function apllyZoom(zoom:Number):void
 		{
 			bubbles.scaleX = bubbles.scaleY = zoom;
 		}
 		
-		private var blur:BlurFilter = new BlurFilter(4, 4, 1);
+		private var blur:BlurFilter = new BlurFilter(0, 0, 1);
+		public var upSpeed:Number; // TODO: maybe use that instead the forceMap
 		public function move(W:Number, H:Number, dx:Number, dy:Number):Boolean
 		{
-			bubbles.x += dx;
-			bubbles.y += dy;
+			// move the bubble
+			bubbles.x += dx * rOffset;
+			bubbles.y += dy * rOffset;
+			dx = bubbles.x - W/2;
+			dy = bubbles.y - H / 2;
+			dy *= .75;
+			dx *= 1;
+			
+			// apply blur
+			blur.blurX = blur.blurY = Math.sqrt(dx * dx + dy*dy) * .05 + rOffset*2;
+			bubbles.filters = [blur];
 			
 			if (bubbles.x > W + 20 || bubbles.x < -20 || bubbles.y < -bubbles.height - 20)
-			{
 				return false;
-			}
 			return true;
 		}
 		
-		public function replace(W:Number, H:Number, s:String, rm:Number = 1, ro:Number = 0):void
+		public function replace(W:Number, H:Number, s:String, rm:Number = 1, ro:Number = 1):void
 		{
 			init(s, rm, ro);
 			bubbles.x = Math.random() * W;

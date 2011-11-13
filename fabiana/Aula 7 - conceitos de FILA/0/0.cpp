@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 
-const unsigned int TAM = 40;
+const unsigned int TAM = 3;
 
 struct No
 {
@@ -10,60 +10,67 @@ struct No
 
 struct Fila
 {
+    int _inicio,
+        _fim,
+        _tamanho,
+        _nos[TAM];
 
-};
-
-struct Fila
-{
-    int inicio,
-        fim,
-        tamanho;
-
-    bool enfileira(char str[40])
+    bool enfileira(int i)
     {
         if(cheia())
             return false;
 
-        // TODO
-
+        _nos[++_fim % TAM] = i;
+        ++_tamanho;
+        if(_inicio == -1)
+            _inicio = _fim;
         return true;
     }
 
-    bool desenfileira(char str[40])
+    bool desenfileira(int& i)
     {
         if(vazia())
             return false;
-
-        // TODO
-
+        i = _nos[_inicio];
+        --_tamanho;
+        _inicio = _tamanho ?
+            (_inicio+1) % TAM :
+            (_fim = -1);
         return true;
     }
 
     bool vazia()
     {
-        return inicio == -1;
+        return _fim == -1;
     }
 
     bool cheia()
     {
-        return (topo+1)%tamanho == inicio;
+        return (_fim + 1) % TAM == _inicio;
     }
 
-    bool primeiro(char& c)
+    bool primeiro(int& i)
     {
         if(vazia())
             return false;
-
-        // TODO
-
+        i = _nos[_inicio];
         return true;
     }
 
-    int contador()
+    int tamanho()
     {
-        // TODO
+        return _tamanho;
+    }
 
-        return 0;
+    void mostrar()
+    {
+        int i = -1, l = _tamanho;
+        cout << "fila: ";
+        while(++i < l)
+        {
+            cout << _nos[(i+_inicio)%TAM] << " ";
+        }
+        cout << "\n";
     }
 };
 
@@ -84,7 +91,9 @@ int menu ()
 int main ()
 {
     Fila fila;
-    fila.inicio = -1;
+    fila._inicio = -1;
+    fila._fim = -1;
+    fila._tamanho = 0;
 
     int op = menu(),
         i; // temp
@@ -95,65 +104,43 @@ int main ()
         case 1:
             cout << "int a inserir: ";
             cin >> i;
-            if(!pilha.empilhaValido(str))
-                cout << "insercao invalida, ou pilha cheia.";
+            if(!fila.enfileira(i))
+                cout << "fila cheia.";
             break;
 
         case 2:
-            cout << "pilha "
-                 << (pilha.vazia() ?
+            if(fila.desenfileira(i))
+                cout << "int desenfileirado: " << i;
+            else
+                cout << "fila vazia.";
+            break;
+
+        case 3:
+            cout << "fila "
+                 << (fila.vazia() ?
                         "" :
                         "nao ")
                  << "esta fazia.";
             break;
 
-        case 3:
-            cout << "pilha "
-                 << (pilha.cheia() ?
+        case 4:
+            cout << "fila "
+                 << (fila.cheia() ?
                         "" :
                         "nao ")
                  << "esta cheia.";
             break;
 
-        case 4:
-            // parte ruim: se estiver cheia, é inútil dar input no 'str'
-            cout << "string a inserir: ";
-            fflush(stdin);
-            gets(str);
-            if(!pilha.empilha(str))
-                cout << "pilha cheia.";
-            break;
-
         case 5:
-            if(!pilha.desempilha(str))
-            {
-                cout << "pilha vazia.";
-                break;
-            }
-            cout << "str desempilhado: " << str;
+            if(fila.primeiro(i))
+                cout << "primeiro int: " << i;
+            else
+                cout << "fila vazia.";
             break;
 
         case 6:
-            if(!pilha.topoNo(str[0]))
-            {
-                cout << "pilha vazia.";
-                break;
-            }
-            cout << "str no topo: " << str;
-            break;
-
-        case 7:
-            pilha.mostrar(); // mostra ida, então a volta
-            if(!pilha.validar())
-            {
-                cout << "expressao invalida, ou a lista esta vazia.\n";
-                break;
-            }
-            cout << "expressao valida.";
-            break;
-
-            case 8:
-
+            fila.mostrar();
+            cout << "fila tem " << fila.tamanho() << " elementos";
             break;
         }
         op = menu();

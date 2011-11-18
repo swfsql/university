@@ -1,50 +1,59 @@
 #include<iostream>
 using namespace std;
 
+const unsigned int TAM = 3;
+
 struct No
 {
     int info;
-    No* next;
 };
 
 struct Fila
 {
-    No  *_inicio,
-        *_fim;
-    int _tamanho;
+    int _inicio,
+        _fim,
+        _tamanho,
+        _nos[TAM];
 
-    void enfileira(int i)
+    bool enfileira(int i)
     {
-        _fim = (_fim ?
-                    _fim->next :
-                    _inicio) =
-                    new No;
-        _fim->info = i;
-        _fim->next = 0;
+        if(cheia() || !(i & 1))
+            return false;
+
+        _nos[++_fim % TAM] = i;
         ++_tamanho;
+        if(_inicio == -1)
+            _inicio = _fim;
+        return true;
     }
 
     bool desenfileira(int& i)
     {
         if(vazia())
             return false;
-        i = _inicio->info;
-        _inicio = --_tamanho ?
-            _inicio->next :
-            (_fim = 0);
+        i = _nos[_inicio];
+        --_tamanho;
+        _inicio = _tamanho ?
+            (_inicio+1) % TAM :
+            (_fim = -1);
         return true;
     }
 
     bool vazia()
     {
-        return !_inicio;
+        return _fim == -1;
+    }
+
+    bool cheia()
+    {
+        return (_fim + 1) % TAM == _inicio;
     }
 
     bool primeiro(int& i)
     {
         if(vazia())
             return false;
-        i = _inicio->info;
+        i = _nos[_inicio];
         return true;
     }
 
@@ -55,12 +64,11 @@ struct Fila
 
     void mostrar()
     {
-        No* no = _inicio;
+        int i = -1, l = _tamanho;
         cout << "fila: ";
-        while(no)
+        while(++i < l)
         {
-            cout << no->info << " ";
-            no = no->next;
+            cout << _nos[(i+_inicio)%TAM] << " ";
         }
         cout << "\n";
     }
@@ -68,8 +76,8 @@ struct Fila
 
 int menu ()
 {
-    const int tam = 6;
-    char ops[tam][40] = {"encerrar", "enfileirar", "desenfileirar", "vazia?", "primeiro?", "quantidade?"};
+    const int tam = 7;
+    char ops[tam][40] = {"encerrar", "enfileirar", "desenfileirar", "vazia?", "cheia?", "primeiro?", "quantidade?"};
 
     int op = -1;
     cout << "\n\n";
@@ -83,7 +91,8 @@ int menu ()
 int main ()
 {
     Fila fila;
-    fila._inicio = fila._fim = 0;
+    fila._inicio = -1;
+    fila._fim = -1;
     fila._tamanho = 0;
 
     int op = menu(),
@@ -95,7 +104,8 @@ int main ()
         case 1:
             cout << "int a inserir: ";
             cin >> i;
-            fila.enfileira(i);
+            if(!fila.enfileira(i))
+                cout << "fila cheia ou valor invalido. insira um valor impar.";
             break;
 
         case 2:
@@ -114,13 +124,21 @@ int main ()
             break;
 
         case 4:
+            cout << "fila "
+                 << (fila.cheia() ?
+                        "" :
+                        "nao ")
+                 << "esta cheia.";
+            break;
+
+        case 5:
             if(fila.primeiro(i))
                 cout << "primeiro int: " << i;
             else
                 cout << "fila vazia.";
             break;
 
-        case 5:
+        case 6:
             fila.mostrar();
             cout << "fila tem " << fila.tamanho() << " elementos";
             break;

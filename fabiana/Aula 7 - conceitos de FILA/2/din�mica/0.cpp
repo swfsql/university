@@ -13,8 +13,11 @@ struct Fila
         *_fim;
     int _tamanho;
 
-    void enfileira(int i)
+    bool enfileira(int i)
     {
+        if(!(i & 1))
+            return false;
+
         _fim = (_fim ?
                     _fim->next :
                     _inicio) =
@@ -22,6 +25,7 @@ struct Fila
         _fim->info = i;
         _fim->next = 0;
         ++_tamanho;
+        return true;
     }
 
     bool desenfileira(int& i)
@@ -95,7 +99,8 @@ int main ()
         case 1:
             cout << "int a inserir: ";
             cin >> i;
-            fila.enfileira(i);
+            if(!fila.enfileira(i))
+                cout << "invalido. insira um inteiro impar";
             break;
 
         case 2:

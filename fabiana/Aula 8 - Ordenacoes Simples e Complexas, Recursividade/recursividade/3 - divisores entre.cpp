@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+// créditos ao Rafael por descobrir que os múltiplos do MDC entre dois números é os DC entre os mesmos números.
+
 int dc (int n1 = 0, int n2 = 0, int aux = 0)
 {
     if (n1 == n2 || aux)

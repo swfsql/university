@@ -177,8 +177,11 @@ package
 				}
 			} // 1 bubble
 			else
+			// bubble stops
 			{
+				last = b;
 				b.stop();
+				b.passing = false;
 			}
 			
 			b = _upper;

@@ -76,8 +76,11 @@ package
 			}
 			
 			bubbles.next.prev = null; // dont need to go back to head, when backwards
+			
+			actual = last = null;
 		} // init
 		
+		private var actual:Bubble, last:Bubble;
 		public function sort():String
 		{
 			var b:Bubble = bubbles,
@@ -85,22 +88,52 @@ package
 				next:Bubble,
 				s:String = "";
 			
-			// get the angle for the movement right
+			//
+			if (actual === null || actual === last )
+				actual = bubbles.next;
+			
+			b = bubbles;
 			while ((b = b.next) !== null)
 			{
 				// finish when we got to the last bubble
 				if ((next = b.next) === null)
+				{
+					_upper = b; // b is the last/up bubble; _upper is used on zooming
 					break;
+				}
 				
 				s += String(b.info); // sorted string
+			}
+			
+			b = actual;
+			// bubble that will pass
+			if((next = b.next) !== null && bubbles.next !== last)
+			{
+				// comparing color
+				
+				if (next.next !== last)
+				{
+					b.comparing();
+					next.comparing();
+				}
+				if (b.prev)
+					b.prev.normal();
 				
 				// you shall not pass
 				if (next.info >= b.info)
 				{
 					b.passing = false;
 					b.teta *= .2;
-					continue;
-				}
+					
+					// bubble stops
+					if (next === last)
+					{
+						last = b;
+						next.stop();
+						b.stop();
+					} else
+						actual = actual.next;
+				} else
 				
 				// shall pass
 				{
@@ -115,6 +148,14 @@ package
 					// already passed
 					if (b.teta > Math.PI)
 					{
+						// bubble stops
+						if (next.next === last)
+						{
+							last = b;
+							b.stop();
+							b.passing = false;
+						}
+						
 						//b.teta *= 0.1;
 						//b.teta = 0;
 						// pointer mess
@@ -131,12 +172,16 @@ package
 							b.next.prev = b;
 						else
 							b = next;
+						
 					}
 				}
-			} // while's angle stuff
-			s += String(b.info); // last char
-			_upper = b; // b is the last/up bubble; _upper is used on zooming
+			} // 1 bubble
+			else
+			{
+				b.stop();
+			}
 			
+			b = _upper;
 			// adjust the upper bubble position
 			b.x = 0;
 			b.y = b.radius;
@@ -189,45 +234,10 @@ package
 		{
 			// TODO? fix the width.. bug dont looks bad.
 			var _y:Number = _upper.height + 5;
-			var _h:Number = (bubbles.height + _y) / bubbles.scaleY;
+			var _h:Number = bubbles.height / bubbles.scaleY;
 			var min:Number = Math.min(W / bubbles.width, (H - _y) / _h);
 			bubbles.scaleX = bubbles.scaleY += (min - bubbles.scaleY) * .2;
 			return bubbles.scaleY;
-		}
-		
-		// now functions for automatic bubbles -----------------------------------------------
-		
-		public function apllyZoom(zoom:Number):void
-		{
-			bubbles.scaleX = bubbles.scaleY = zoom;
-		}
-		
-		private var blur:BlurFilter = new BlurFilter(0, 0, 1);
-		public var upSpeed:Number; // TODO: maybe use that instead the forceMap
-		public function move(W:Number, H:Number, dx:Number, dy:Number):Boolean
-		{
-			// move the bubble
-			bubbles.x += dx * rOffset;
-			bubbles.y += dy * rOffset;
-			dx = bubbles.x - W/2;
-			dy = bubbles.y - H / 2;
-			dy *= .75;
-			dx *= 1;
-			
-			// apply blur
-			blur.blurX = blur.blurY = Math.sqrt(dx * dx + dy*dy) * .05 + rOffset*2;
-			bubbles.filters = [blur];
-			
-			if (bubbles.x > W + 20 || bubbles.x < -20 || bubbles.y < -bubbles.height - 20)
-				return false;
-			return true;
-		}
-		
-		public function replace(W:Number, H:Number, s:String, rm:Number = 1, ro:Number = 1):void
-		{
-			init(s, rm, ro);
-			bubbles.x = Math.random() * W;
-			bubbles.y = H + bubbles.height + 20;
 		}
 		
 	}

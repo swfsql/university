@@ -3,10 +3,11 @@ using namespace std;
 
 int potencia(int base = 0, int pow = 0)
 {
-    return
-        pow < 1 ?
-        1 :
-        base * potencia(base, pow-1);
+    if (pow==0)
+    return 1;
+    else if(pow>0)
+    return base*(potencia(base,pow-1));
+
 }
 
 int menu ()

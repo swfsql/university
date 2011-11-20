@@ -1,34 +1,31 @@
 #include <iostream>
 using namespace std;
 
-int mdc (int n1 = 0, int n2 = 0, int n3 = 0, int qtd = 0)
+int dc (int n1, int n2, int aux, int qtd = 0)
 {
-    int i = n1;
-    if (i < 2)
+    if (n1 == n2 || aux)
     {
+        if(!aux)
+            aux = n1;
         ++qtd;
-        cout << "1\n";
-        return qtd;
+        if (n2 < 2)
+        {
+            cout << qtd;
+            return 1;
+        }
+        while(aux%--n2);
+        return dc (n1, n2, aux, qtd);
     }
-    if (i == n2)
-    {
-        ++qtd;
-        cout << n1 << " ";
-        n1 += n3;
-        while(n1 % --i > 0);
-        return mdc (n1, i, n3, qtd);
-    }
-
     return
         n1 < n2 ?
-        mdc (n2, n1, n3, qtd) :
-        mdc (n3=(n1-n2), n2, n3, qtd);
+        dc (n2, n1, aux, qtd) :
+        dc (n1-n2, n2, aux, qtd);
 }
 
 int menu ()
 {
     const int tam = 2;
-    char ops[tam][40] = {"encerrar", "divisores comuns de um numero"};
+    char ops[tam][40] = {"encerrar", "divisores comuns"};
 
     int op = -1;
     cout << "\n\n";
@@ -48,9 +45,11 @@ int main()
         switch (op)
         {
         case 1:
-            cout << "insira um inteiro positivo que deseja saber a quantidade de Divisores Comuns: ";
-            cin >> n1;
-            cout << mdc (n1, n1) << " Divisores Comuns";
+            cout << "insira dois inteiros positivos que deseja saber os Divisores Comuns: ";
+            cin >> n1 >> n2;
+            cout << "quantidade de Divisores Comuns: ";
+            dc (n1, n2, 0);
+
             break;
         }
         op = menu();

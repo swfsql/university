@@ -12,7 +12,7 @@ struct lista
 {
     bloco* topo;
 
-    void empilha(char n[40], int i = 0)
+    void empilha(char n[50], int i = 0)
     {
         bloco* no = new bloco;
         strcpy(no->nome, n); no->idade = i;

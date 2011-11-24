@@ -4,19 +4,19 @@
 #include<cstdio>
 using namespace std;
 
+// draft
+
 /* clipboard para teste
-1 3
-aba
-6
-4
-6
+1 1 1 2 2 + 1 4 2 - 1 4 1 5 2 * 2 / 3 5
 
 */
 
 
 struct No
 {
-    char info;
+    float num;
+    char op;
+    int tipo; // 0 = num, 1 = operador;
     No* next;
 };
 
@@ -24,13 +24,11 @@ struct Pilha
 {
     // variáveis
     No* topo;
-    int tam;
 
     // funções
     void init()
     {
         topo = 0;
-        tam = 0;
     }
 
     void esvaziar()
@@ -47,98 +45,172 @@ struct Pilha
     bool vazia()
     {
         return topo == 0;
-        tam = 0;
     }
 
-    void empilha(char str[40])
+    void empilha_num(float num = 0)
     {
         No* no;
-        int i = -1;
-        while(str[++i])
-            if(str[i] != ' ') // desconsidera os espaços
-            {
-                no = new No;
-                no->info = str[i];
-                no->next = topo;
-                topo = no;
-                ++tam;
-            }
+        no = new No;
+        no->tipo = 0;
+        no->num = num;
+        no->next = topo;
+        topo = no;
     }
 
-    bool desempilha(char str[40])
+    void empilha_op(char po = '+')
+    {
+        No* no;
+        no = new No;
+        no->tipo = 1;
+        no->op = po;
+        no->next = topo;
+        topo = no;
+    }
+
+
+    bool desempilha(char& c, float& num)
     {
         if(vazia())
             return false;
-
-        str[0] = topo->info;
-        str[1] = '\0';
+        int tipo = topo->tipo;
+        if(tipo == 0) c = NULL;
+        else c = topo->op;
+        num = topo->num;
         No* del = topo;
         topo = topo->next;
         delete del;
-        --tam;
         return true;
     }
 
-    bool topoNo(char& c)
+    bool topoNo(char& c, float& num, int j = 0)
     {
         if(vazia())
             return false;
-
-        c = topo->info;
-        return true;
-    }
-
-    bool validar()
-    {
-        if(vazia())
-            return false;
-
-        Pilha* metade = new Pilha; // seriam metade da lista
-        metade->init();
-        int l = (tam >> 1) + 1;
-        bool ret = true; // retorno
-        char c; // temp
-        char str[40] = " ";
-
-        // percorrer a pilha, empilhando na metade
+        int i = -1;
         No* no = topo;
-        while(--l)
-        {
-            str[0] = no->info;
-            metade->empilha(str);
-            no = no->next;
-        }
-        if(tam & 1)
-            no = no->next;
-
-        // compara a pilha, do centro pras pontas
+        int tipo = 0;
         while(no)
         {
-            if(no->info != metade->topo->info)
-            {
-                ret = false;
-                no = 0;
-                continue;
-            }
+            tipo = no->tipo;
+            if(tipo == 0)
+                num = no->num;
+            else if (tipo == 1)
+                c = no->op;
+            if (++i == j)
+                break;
+            if (!no->next)
+                return false;
             no = no->next;
-            metade->desempilha(str);
         }
 
-        ret = ret && metade->topo == 0;
-        metade->esvaziar();
-        delete metade;
-        return ret;
+        if(tipo == 0)
+            c = NULL;
+        return true;
+    }
+
+    bool rpn(float& resultado)
+    {
+        if(vazia())
+            return false;
+
+        int i = 0, tipo;
+        No* no = topo;
+        char c, c2;
+        float num, a, b, r;
+        bool flag = true, existe, flag2 = true;;
+
+        Pilha* temp = new Pilha;
+        temp->init();
+
+        while(no && flag)
+        {
+            if(flag2)
+            {
+                tipo = no->tipo;
+                if(tipo == 0) c = NULL;
+                else c = no->op;
+                num = no->num;
+            } else
+            {
+                tipo = 0;
+                c = NULL;
+                num = r;
+            }
+
+            if(tipo == 0)
+            {
+                // irá empilhar um número. se o próximo for um num: e próximo for um operador, fazer a conta., senão, expressão inválida.
+                if (flag2) temp->empilha_num(num);
+                flag2 = true;
+                existe = temp->topoNo(c, num, 1);
+                if(!c && existe)
+                {
+                    existe = temp->topoNo(c, num, 2);
+                    if(c && existe)
+                    {
+                        a, b, r;
+                        c2;
+                        temp->desempilha(c2, a);
+                        temp->desempilha(c2, b);
+                        temp->desempilha(c, r);
+                        switch(c)
+                        {
+                            case '+':
+                                r = a + b;
+                                break;
+                            case '-':
+                                r = a - b;
+                                break;
+                            case '*':
+                                r = a * b;
+                                break;
+                            case '/':
+                                r = a / b;
+                                break;
+                        }
+                        temp->empilha_num(r);
+                        flag2 = false;
+                        continue;
+                    } else
+                    {
+                        flag = false;
+                    }
+                }
+
+            } else if (tipo == 1)
+            {
+                temp->empilha_op(c);
+            }
+            no = no->next;
+        }
+
+        temp->topoNo(c, resultado);
+        temp->esvaziar();
+        if(flag)
+        {
+            if(c) return false;
+            return resultado;
+        }
+        return false;
     }
 
     void mostrar()
     {
         if(vazia())
             return;
+        int tipo;
+        char c;
+        float num;
         No* no = topo;
-        cout << "\nimpressao como pilha:\n";
+        cout << "\n";
         while(no)
         {
-            cout << no->info;;
+            tipo = no->tipo;
+            if(tipo == 0) c = NULL;
+            else c = no->op;
+            num = no->num;
+            if(c) cout << c;
+            else cout << num;
             no = no->next;
         }
         cout << "\n";
@@ -147,12 +219,11 @@ struct Pilha
 
 int menu ()
 {
-    const int tam = 7;
-    char ops[tam][40] = {"encerrar", "iniciar pilha", "pilha vazia", "empilha", "desempilha", "topo pilha", "verificar expressao"};
+    const int tam = 6;
+    char ops[tam][40] = {"encerrar", "inserir numero", "inserir operador", "mostrar", "remover ultimo", "calcular por rpn"};
 
     int op = -1;
-    cout << "\n";
-    cout << "\n";
+    cout << "\n\n";
     while(++op < tam)
         cout << "\t" << op << ". " << ops[op] << "\n";
     cin >> op;
@@ -164,60 +235,54 @@ int main ()
 {
     Pilha pilha;
     pilha.init();
-    int op = menu(),
-        i;
+    int op = menu();
+    float num;
     char str[40];
+    char c;
     while(op)
     {
         switch (op)
         {
         case 1:
-            pilha.init();
-            cout << "pilha iniciada.";
+            cout << "numero a inserir: ";
+            cin >> num;
+            pilha.empilha_num(num);
             break;
 
         case 2:
-            cout << "pilha "
-                 << (pilha.vazia() ?
-                        "" :
-                        "nao ")
-                 << "esta fazia.";
+            cout << "operador a inserir: ";
+            cin >> c;
+            pilha.empilha_op(c);
             break;
 
         case 3:
             // parte ruim: se estiver cheia, é inútil dar input no 'str'
-            cout << "string a inserir: ";
-            fflush(stdin);
-            gets(str);
-            pilha.empilha(str);
+            cout << "visualizacao como pilha: ";
+            pilha.mostrar();
             break;
 
         case 4:
-            if(!pilha.desempilha(str))
+            if(!pilha.topoNo(c, num))
             {
                 cout << "pilha vazia.";
                 break;
             }
-            cout << "char desempilhado: " << str[0];
+            cout << "remover ";
+            if(c) cout << "o operador " << c;
+            else cout << "o numero " << num;
+            cout << "? (s/n): ";
+            cin >> c;
+            if(c == 's' || c == 'S')
+                pilha.desempilha(c, num);
             break;
 
         case 5:
-            if(!pilha.topoNo(str[0]))
+            if(!pilha.rpn(num))
             {
-                cout << "pilha vazia.";
+                cout << "expressao invalida.";
                 break;
             }
-            cout << "char no topo: " << str[0];
-            break;
-
-        case 6:
-            pilha.mostrar();
-            if(!pilha.validar())
-            {
-                cout << "expressao invalida, ou a lista esta vazia.\n";
-                break;
-            }
-            cout << "expressao valida.";
+            cout << "= " << num;
             break;
         }
         op = menu();

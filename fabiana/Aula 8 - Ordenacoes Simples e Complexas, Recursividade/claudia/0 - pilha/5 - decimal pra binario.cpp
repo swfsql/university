@@ -96,7 +96,7 @@ void b10_b2 (int input)
 
     while (input)
     {
-        pilha.empilha(input % 2 ? 1 : 0 );
+        pilha.empilha(input & 1 ? 1 : 0 );
         input >>= 1;
     }
 

@@ -148,8 +148,6 @@ struct Pilha
                     existe = temp->topoNo(c, num, 2);
                     if(c && existe)
                     {
-                        a, b, r;
-                        c2;
                         temp->desempilha(c2, a);
                         temp->desempilha(c2, b);
                         temp->desempilha(c, r);

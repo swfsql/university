@@ -115,9 +115,8 @@ void menu (No **inicio,int &tamanho)
 }
 
 
-void inserir(int valor, No **inicio)
+void inserir(int valor, No **next)
 {
-    No **next = inicio;
     while(*next && (*next)->chave < valor)
         next = &(*next)->next;
     No *no = new No;
@@ -126,9 +125,8 @@ void inserir(int valor, No **inicio)
     *next = no;
 }
 
-bool remover(No **inicio, int valor)
+bool remover(No **next, int valor)
 {
-    No **next = inicio;
     while(*next && (*next)->chave != valor)
         next = &(*next)->next;
     if (*next)
@@ -204,7 +202,7 @@ bool inserir2(int valor, No **inicio)
     return true;
 }
 
-// vou removendo 1 por 1 mesmo.. remover vários de uma vez seria melhor.
+// vou removendo 1 por 1 mesmo.. remover vï¿½rios de uma vez seria melhor.
 void remover2(No **inicio, int &tamanho)
 {
     No **next = inicio;
@@ -225,7 +223,7 @@ void remover2(No **inicio, int &tamanho)
 
         del = *next;
         *next = (*next)->next; // removendo um por um, tenho de acertar esse ponteiro um por um.
-        --tamanho; // aqui também, tenho de diminuir um por um.
+        --tamanho; // aqui tambï¿½m, tenho de diminuir um por um.
         delete del;
     }
 }

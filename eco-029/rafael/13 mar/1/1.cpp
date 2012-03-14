@@ -13,52 +13,20 @@ struct No {
 };
 
 struct Tree {
-
     No *head;
-    No *no; // temp
 
     // constructor
     Tree() {
         head = 0;
     }
 
-    // TODO: add func
     Tree * add(int x) {
-        no = head;
-        int key;
-        bool
-
-        while(no && (no->key < valor)
-
-        if (!head) {
-            head = new No(x);
-            return this;
-        }
-
+        No **no = &head;
+        while(*no) no = &(*no)->links[(*no)->key < x];
+        No *newNo = new No(x);
+        *no = newNo;
         return this;
     }
-
-    /*
-    Tree * add(int x)
-    {
-        while(head && head->chave < valor)
-            *head = &(head)->next;
-        No *no = new No;
-        no->chave = valor;
-        no->next = *next;
-        head = no;
-    }
-
-    void inserir(int valor, No **next)
-    {
-        while(*next && (*next)->chave < valor)
-            next = &(*next)->next;
-        No *no = new No;
-        no->chave = valor;
-        no->next = *next;
-        *next = no;
-    }
-    /*
 
     // (sem parâmetros) = (mostrar todos)
     Tree * show() {
@@ -81,32 +49,17 @@ struct Tree {
     }
     // overload function
     Tree * rm(No *p) {
+        // TODO: remover elementos recursivamente
 
     }
 
 };
 
-
-
-
-
-
 int main() {
 
     Tree *tree= new Tree();
-    tree->add(20)->show();
+    tree->add(8)->add(6)->add(4)->add(5)->show();
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
 

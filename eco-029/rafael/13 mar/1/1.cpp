@@ -1,14 +1,22 @@
+// input / output
 #include <iostream>
+
+// random
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+
 using namespace std;
 
 struct No {
     int key;
-    No *links[2];
+    No **links;
 
     // constructor
     No (int x){
         key = x;
-        links = {0,0}; // left, right
+        links = new No*[2]; // left, right
+        links[0] = links[1] =  0;
     }
 };
 
@@ -18,8 +26,10 @@ struct Tree {
     // constructor
     Tree() {
         head = 0;
-    }
 
+        // random
+        srand(time(0));
+    }
 
     // adiciona um nó
     Tree * add(int x) {
@@ -30,10 +40,14 @@ struct Tree {
         return this;
     }
 
-
     // mostrar elementos
     Tree * show() {
         show(head); // mostra todos
+        return this;
+    }
+    // overload function
+    Tree * show(int x) {
+        show(*search(x)); // mostra nós relacionados com o nó que tem a chave desejada
         return this;
     }
     // overload function
@@ -44,7 +58,6 @@ struct Tree {
         show(p->links[1]); // right
         return this;
     }
-
 
     // remover elemento
     Tree * rm() {
@@ -63,6 +76,12 @@ struct Tree {
         if(*no) cout << "\n(*no)->key: " << (*no)->key;
         cout << "\n\n";
         // TODO: ajustar ponteiros, deletar nó.
+        int r = rand() % 2; // 0, 1
+        No **links = (*no)->links;
+        //if (*links) links = &(*links)[r].links;
+        //while(*links && (*links)[1-r] && (*links)[1-r].links[1-r]) links = &(*links)[1-r].links;
+        cout << "primeira etapa";
+
         return this;
     }
 
@@ -104,7 +123,7 @@ int main() {
      */
 
     Tree *tree= new Tree();
-    tree->add(5)->add(3)->add(2)->add(4)->show()->rm(6)->rm(4); // por isso que todas as funções retornam a &struct. pra voltar ao normal, botar tudo void
+    tree->add(5)->add(3)->add(2)->add(4)->show();//->rm(6)->rm(4); // por isso que todas as funções retornam a &struct. pra voltar ao normal, botar tudo void
     return 0;
 }
 

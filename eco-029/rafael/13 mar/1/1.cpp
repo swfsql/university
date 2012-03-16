@@ -92,7 +92,7 @@ struct Tree {
 
 
         if (!*no) return this; // ponteiro para nó não existe
-        No **links = (*no)->links; // links do nó a ser removido
+        No ***links = &(*no)->links; // links do nó a ser removido
         if (!*links) {
             // nó é folha
             cout << "\nno folha\n";
@@ -111,8 +111,9 @@ struct Tree {
         }
 
         //No **links2 =  (links)[r]->links;// links lá de baixo
-        No **links2 =  links; //[1-r]->links;// links lá de baixo
-        if ((links)[r]->links[1-r]) {
+        No ***links2 =  links; //[1-r]->links;// links lá de baixo
+        // todo
+        /*if ((links)[r]->links[1-r]) {
             links2 = (links)[r]->links[1-r]->links;
 
             while(*links2 && (links2)[1-r]->links)
@@ -121,7 +122,7 @@ struct Tree {
             }
             cout << ".";
 
-        }
+        }*/
 
         cout << "r: " << r << "\n";
 
@@ -137,16 +138,16 @@ struct Tree {
         //cout << "key: " << (*links2)[r-1].key;
 
         // na verdade nao precisava duplicar os dois links, só o da direcao certa
-        No *nLinks3 = new No(links2[1-r]->links); // b = f..a
+        No *nLinks3 = new No((*links2)[1-r]->links); // b = f..a
 
         cout << "\n\n";
         cout << "n: " << nLinks3->key << ", " << nLinks3->links[0] << ", " << nLinks3->links[1];
         cout << "\n\n";
 
-        links2[1-r]->links = links; // a = c
-        *no = links2[1-r]; // d = f..e
+        (*links2)[1-r]->links = *links; // a = c
+        *no = (*links2)[1-r]; // d = f..e
         //cout << "\n" << (*no)->links[1-r]->links[1]->key << "\n";
-        if (links2[1-r]->links[1-r] == links2[1-r]) links2[1-r]->links[1-r] = 0; // bugfix
+        if ((*links2)[1-r]->links[1-r] == (*links2)[1-r]) (*links2)[1-r]->links[1-r] = 0; // bugfix
 
 
 
@@ -156,7 +157,7 @@ struct Tree {
         cout << "*links2: " << *links2 << "\n";
         cout << "\nlinks2[0]: " << links2[0];
         cout << "\nlinks2[1]: " << links2[1];
-        //*links2 = nLinks3; // f = b // TODO: descomentar isso e fazer funcionar. parece que link2 tá apontando pro nó errado.
+        *links2 = &nLinks3; // f = b // TODO: descomentar isso e fazer funcionar. parece que link2 tá apontando pro nó errado.
         cout << "\nlinks2[0]: " << links2[0];
         cout << "\nlinks2[1]: " << links2[1];
 

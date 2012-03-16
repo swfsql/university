@@ -18,6 +18,13 @@ struct No {
         links = new No*[2]; // left, right
         links[0] = links[1] =  0;
     }
+    // overflow
+    No (No **l)
+    {
+        links = new No*[2];
+        links[0] = l[0];
+        links[1] = l[1];
+    }
 };
 
 struct Tree {
@@ -53,9 +60,12 @@ struct Tree {
     // overload function
     Tree * show(No *no) {
         if(!no) return this;
+        cout << "/";
         show(no->links[0]); // left
-        cout << no->key;
+        cout << "\n" << no->key << "( " << no << " )";
+        cout << "\\";
         show(no->links[1]); // right
+        cout << "|";
         return this;
     }
 
@@ -79,21 +89,81 @@ struct Tree {
         cout << "\n\n";
 
 
-        int r = rand() % 2; // 0, 1
-        if (!*no) return this; // nó não existe
-        No **links = (*no)->links;
+
+        if (!*no) return this; // ponteiro para nó não existe
+        No **links = (*no)->links; // links do nó a ser removido
         if (!*links) {
             // nó é folha
+            cout << "\nno folha\n";
+            delete *no;
             *no = 0;
             return this;
         }
 
         // TODO: remover nó que não é folha
+        int r = rand() % 2; // 0, 1
+        r = 0;
+        if ((links)[r] == 0)
+        {
+            r = 1-r;
+            cout << "\nr mudou para " << r << "\n";
+        }
 
-        links = (*links)[r].links;
-        cout << (links);
+        //No **links2 =  (links)[r]->links;// links lá de baixo
+        No **links2 =  links; //[1-r]->links;// links lá de baixo
+        if ((links)[r]->links[1-r]) {
+            links2 = (links)[r]->links[1-r]->links;
+
+            while(*links2 && (links2)[1-r]->links)
+            {
+                cout << ",";
+            }
+            cout << ".";
+
+        }
+
+        cout << "r: " << r << "\n";
+
+        cout << "links: " << (links);
         cout << "\n";
-        cout << (*links);
+        cout << "*links: " << (*links);
+        cout << "\n\n";
+
+        cout << "links2: " << (links2);
+        cout << "\n";
+        cout << "*links2: " << (*links2);
+        cout << "\n\n";
+        //cout << "key: " << (*links2)[r-1].key;
+
+        // na verdade nao precisava duplicar os dois links, só o da direcao certa
+        No *nLinks3 = new No(links2[1-r]->links); // b = f..a
+
+        cout << "\n\n";
+        cout << "n: " << nLinks3->key << ", " << nLinks3->links[0] << ", " << nLinks3->links[1];
+        cout << "\n\n";
+
+        links2[1-r]->links = links; // a = c
+        *no = links2[1-r]; // d = f..e
+        //cout << "\n" << (*no)->links[1-r]->links[1]->key << "\n";
+        if (links2[1-r]->links[1-r] == links2[1-r]) links2[1-r]->links[1-r] = 0; // bugfix
+
+
+
+        cout << "\n\ntestes:\n";
+
+        cout << "links2: " << links2 << "\n";
+        cout << "*links2: " << *links2 << "\n";
+        cout << "\nlinks2[0]: " << links2[0];
+        cout << "\nlinks2[1]: " << links2[1];
+        //*links2 = nLinks3; // f = b // TODO: descomentar isso e fazer funcionar. parece que link2 tá apontando pro nó errado.
+        cout << "\nlinks2[0]: " << links2[0];
+        cout << "\nlinks2[1]: " << links2[1];
+
+        cout << "\n\nfim";
+
+
+
+
         /*while(*links
               &&
               (*links)[1-r]
@@ -102,17 +172,10 @@ struct Tree {
             links = (*links)[1-r].links;
         cout << "primeira etapa";*/
 
+        cout << "\n\n.\n\n";
         return this;
     }
 
-    /*
-    Tree * add(int x) {
-        No **no = &head;
-        while(*no) no = &(*no)->links[(*no)->key < x];
-        *no = new No(x);
-        return this;
-    }
-    */
 
     // procura nó que tenha a chave
     No ** search (int x) {
@@ -153,7 +216,7 @@ int main() {
     Tree *tree= new Tree();
     tree->add(5)->add(3)->add(2)->add(4)->show();
     cout << "\n\n";
-    tree->rm(2);//->rm(4);
+    tree->rm(3);//->rm(4);
     tree->show();
     return 0;
 }

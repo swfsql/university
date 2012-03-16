@@ -62,7 +62,7 @@ struct Tree {
         if(!no) return this;
         cout << "/";
         show(no->links[0]); // left
-        cout << "\n" << no->key << "( " << no << " )";
+        cout << "\n" << no->key << "( " << no << " ) [ " << &no->links << " ] ";
         cout << "\\";
         show(no->links[1]); // right
         cout << "|";
@@ -85,6 +85,7 @@ struct Tree {
         // debug
         cout << "\n\ncheguei. \nno: " << no;
         cout << "\n*no: " << *no;
+        cout << "\nh0: " << &(head->links[0]);
         if(*no) cout << "\n(*no)->key: " << (*no)->key;
         cout << "\n\n";
 

@@ -85,44 +85,53 @@ struct Tree {
         // debug
         cout << "\n\ncheguei. \nno: " << no;
         cout << "\n*no: " << *no;
+        if (!*no) return this; // ponteiro para nó não existe
         cout << "\nh0: " << &(head->links[0]);
         if(*no) cout << "\n(*no)->key: " << (*no)->key;
         cout << "\n\n";
 
 
 
-        if (!*no) return this; // ponteiro para nó não existe
+        cout << "VAI";
         No ***links = &(*no)->links; // links do nó a ser removido
-        if (!*links) {
+        if (!(*links)[0] && !(*links)[1]) {
             // nó é folha
             cout << "\nno folha\n";
             delete *no;
             *no = 0;
             return this;
         }
+        cout << "FOI";
 
         // TODO: remover nó que não é folha
         int r = rand() % 2; // 0, 1
-        r = 0;
+        r = 1;
         if ((links)[r] == 0)
         {
             r = 1-r;
             cout << "\nr mudou para " << r << "\n";
         }
 
-        //No **links2 =  (links)[r]->links;// links lá de baixo
         No ***links2 =  links; //[1-r]->links;// links lá de baixo
-        // todo
-        /*if ((links)[r]->links[1-r]) {
-            links2 = (links)[r]->links[1-r]->links;
 
-            while(*links2 && (links2)[1-r]->links)
+        cout << "\npreh\n";
+        // percorrerei a árvore pra pegar algum nó pra levar no lugar do removido
+        if ((*links)[1-r] && (*links)[1-r]->links[r]) {
+            cout << "FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU";
+            links2 = &(*links)[1-r]->links;
+
+            cout << "\nperai; *l2 [0]: " << (*links2)[0] << "\n";
+
+            while(*links2 && (*links2)[r] && (*links2)[r]->links[r])
             {
+
                 cout << ",";
+                links2 = &(*links2)[r]->links;
             }
             cout << ".";
+            r = 1-r;
 
-        }*/
+        }
 
         cout << "r: " << r << "\n";
 
@@ -136,19 +145,19 @@ struct Tree {
         cout << "*links2: " << (*links2);
         cout << "\n\n";
         //cout << "key: " << (*links2)[r-1].key;
-
+        cout << "ruim";
         // na verdade nao precisava duplicar os dois links, só o da direcao certa
         No *nLinks3 = new No((*links2)[1-r]->links); // b = f..a
-
+        cout << "bom";
         cout << "\n\n";
         cout << "n: " << nLinks3->key << ", " << nLinks3->links[0] << ", " << nLinks3->links[1];
         cout << "\n\n";
+        cout << "--- " << (*links2)[1-r]->key << " -- "  << (*links2)[1-r]->links[0] << " -- ";// <<  (*links2)[1-r]->links[0]->key;
 
         (*links2)[1-r]->links = *links; // a = c
         *no = (*links2)[1-r]; // d = f..e
         //cout << "\n" << (*no)->links[1-r]->links[1]->key << "\n";
-        if ((*links2)[1-r]->links[1-r] == (*links2)[1-r]) (*links2)[1-r]->links[1-r] = 0; // bugfix
-
+        if ((*links2)[1-r]->links[1-r] == (*links2)[1-r]) (*links2)[1-r]->links[1-r] = nLinks3->links[0]; // bugfix
 
 
         cout << "\n\ntestes:\n";
@@ -157,22 +166,11 @@ struct Tree {
         cout << "*links2: " << *links2 << "\n";
         cout << "\nlinks2[0]: " << links2[0];
         cout << "\nlinks2[1]: " << links2[1];
-        *links2 = &nLinks3; // f = b // TODO: descomentar isso e fazer funcionar. parece que link2 tá apontando pro nó errado.
+        *links2 = nLinks3->links; // f = b // TODO: descomentar isso e fazer funcionar. parece que link2 tá apontando pro nó errado.
         cout << "\nlinks2[0]: " << links2[0];
         cout << "\nlinks2[1]: " << links2[1];
 
         cout << "\n\nfim";
-
-
-
-
-        /*while(*links
-              &&
-              (*links)[1-r]
-              &&
-              (*links)[1-r].links[1-r])
-            links = (*links)[1-r].links;
-        cout << "primeira etapa";*/
 
         cout << "\n\n.\n\n";
         return this;
@@ -216,10 +214,22 @@ int main() {
      */
 
     Tree *tree= new Tree();
-    tree->add(5)->add(3)->add(2)->add(4)->show();
+    
+    /*tree->add(9)->add(5)->add(3)->add(2)->add(4)->add(1)->show();
     cout << "\n\n";
     tree->rm(3);//->rm(4);
     tree->show();
+    */
+
+
+
+
+cout << "\n\n______a953421 rm1__a1 rm2__a2 rm3_____a3 rm4_____a4 rm5_____a5 rm9_______ rm53421__\n\n";
+
+tree->add(9)->add(5)->add(3)->add(4)->add(1)->add(2);
+cout << "_______________________________________________";
+tree->show()->rm(3)->show();//->add(3)->rm(4)->show()->add(4)->rm(5)->show()->add(5)->rm(9)->show(5)->rm(4)->rm(3)->rm(2)->rm(1)->show();
+
     return 0;
 }
 

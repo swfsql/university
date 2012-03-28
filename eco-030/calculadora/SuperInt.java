@@ -10,7 +10,7 @@ public class SuperInt {
 
 	private SuperInt(int v[], int n) {
 		x = v;
-		numDigitos = n;
+		l = n;
 	}
 
 	public String toString() {

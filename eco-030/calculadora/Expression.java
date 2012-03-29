@@ -27,7 +27,7 @@ public class Expression {
 			c = _input.charAt(i);
 			//System.out.println(c);
 
-
+			// TODO: use regular expressions
 
 			if ((int) c >= 48 && (int) c <= 57) {
 				// to get the number: by each char, build an list, then make it a char array, then an String, then send to SuperInt.
@@ -44,7 +44,7 @@ public class Expression {
 
 				// TODO: a * -b -> a * (-b)
 
-				// TODO: make the positive String. TODO: negative if need to, but I'll have to change the SuperInt class.
+				// TODO: negative number if need to, but I'll have to change the SuperInt class.
 				char[] number = new char[j-i];
 				num = numHead;
 				int k = i-1; 
@@ -52,11 +52,15 @@ public class Expression {
 					number[++k-i] = num.value;
 				}
 
-				System.out.println(number);
+				//System.out.println(number); // debug
+				_right.add(new String(number));
 
 				i = j-1;
 				j = 0;
-			}
+				continue;
+			} 
+
+
 
 
 		}

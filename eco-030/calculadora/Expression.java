@@ -14,12 +14,16 @@ public class Expression {
 	public void setInput(String s) {
 		
 		_input = s;
-		if (s.equals("") || s.equals("exit")) return;
+		if (s.equals("") || s.equals("exit")) {
+			_right.clear();
+			return;
+		}
 
 		// TODO: get an Number, an Operator, an Number.
 		_right.clear();
 
-		char c, int ic;
+		char c; 
+		int ic;
 		NumberSegment numHead, num;
 
 		int i = -1, j = 0, l = _input.length();
@@ -66,7 +70,7 @@ public class Expression {
 			// *42 +43 -45 /47
 			// get operators
 			if (ic == 42 || ic == 43 || ic == 45 || ic == 47) {
-				_right.add(new String(c));
+				_right.add(Character.toString(c));
 				continue;
 			}
 		}
@@ -87,10 +91,14 @@ public class Expression {
 	public String getInput() {
 		return _input;
 	}
+	// overload
 	public Boolean getInput(String s) {
 		return _input.equals(s);
 	}
 
+	public List getRight() {
+		return _right;
+	}
 
 }
 

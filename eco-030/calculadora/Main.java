@@ -39,6 +39,7 @@ public class Main {
 		while(!exp.getInput("exit")){
 			System.out.println("");
 			exp.setInput(scan.nextLine());
+			System.out.println(calc.right(exp)); // TODO - extra: calc.rpn(); // to calculate from RPN, not from the right side of an equation
 		}
 
 

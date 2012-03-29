@@ -17,6 +17,10 @@ public class List {
 		_unit = _unit.next;
 	}
 
+	public StringUnit head() {
+		return _head;
+	}
+
 }
 
 class StringUnit {

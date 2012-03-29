@@ -20,15 +20,42 @@ public class Expression {
 		_right.clear();
 
 		char c;
-		int i = -1, l = _input.length();
+		NumberSegment numHead, num;
+
+		int i = -1, j = 0, l = _input.length();
 		while(++i < l) {
 			c = _input.charAt(i);
-			System.out.println(c);
+			//System.out.println(c);
+
+
 
 			if ((int) c >= 48 && (int) c <= 57) {
-				// build the number by each character. Then make it an String, then pass it to the SuperInt. 
-				System.out.println("eh numero!");
+				// to get the number: by each char, build an list, then make it a char array, then an String, then send to SuperInt.
 
+				// TODO - extra: (a) b -> (a) * b 
+
+				j = i;
+				numHead = num = new NumberSegment('0');
+				while((int) c >= 48 && (int) c <= 57) {
+					num = num.next = new NumberSegment(c);
+					if (++j >= l) break; // idk if I can reach an element outside the String length. TODO: verify that, to see if I can remove that if().
+					c = _input.charAt(j);
+				}
+
+				// TODO: a * -b -> a * (-b)
+
+				// TODO: make the positive String. TODO: negative if need to, but I'll have to change the SuperInt class.
+				char[] number = new char[j-i];
+				num = numHead;
+				int k = i-1; 
+				while( (num = num.next) != null) {
+					number[++k-i] = num.value;
+				}
+
+				System.out.println(number);
+
+				i = j-1;
+				j = 0;
 			}
 
 
@@ -47,4 +74,15 @@ public class Expression {
 	}
 
 
+}
+
+// Since idk how to create objects, I'll create a class instead.
+class NumberSegment {
+	public NumberSegment next;
+	public char value;
+
+	public NumberSegment(char c) {
+		this.value = c;
+		next = null;
+	}
 }

@@ -16,6 +16,7 @@ public class Main {
 	 * - teacher: Fernando (Universidade Federal de Itajubá, Campus Itabira).
 	 * - text editor: Sublime text 2.
 	 * - compiler: javac.
+	 * - some of the code is from http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read
 	 *
 	 * instructions:
 	 * - type 'exit' to end the program.

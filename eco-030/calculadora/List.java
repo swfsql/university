@@ -7,6 +7,11 @@ public class List {
 		
 	}
 
+	public void clear() {
+
+		
+	}
+
 
 
 }

@@ -19,27 +19,30 @@ public class Expression {
 		// TODO: get an Number, an Operator, an Number.
 		_right.clear();
 
-		char c;
+		char c, int ic;
 		NumberSegment numHead, num;
 
 		int i = -1, j = 0, l = _input.length();
 		while(++i < l) {
 			c = _input.charAt(i);
+			ic = (int) c;
 			//System.out.println(c);
 
 			// TODO: use regular expressions
 
-			if ((int) c >= 48 && (int) c <= 57) {
+			// get numbers
+			if (ic >= 48 && ic <= 57) {
 				// to get the number: by each char, build an list, then make it a char array, then an String, then send to SuperInt.
 
 				// TODO - extra: (a) b -> (a) * b 
 
 				j = i;
 				numHead = num = new NumberSegment('0');
-				while((int) c >= 48 && (int) c <= 57) {
+				while(ic >= 48 && ic <= 57) {
 					num = num.next = new NumberSegment(c);
 					if (++j >= l) break; // idk if I can reach an element outside the String length. TODO: verify that, to see if I can remove that if().
 					c = _input.charAt(j);
+					ic = (int) c;
 				}
 
 				// TODO: a * -b -> a * (-b)
@@ -60,13 +63,24 @@ public class Expression {
 				continue;
 			} 
 
-
-
-
+			// *42 +43 -45 /47
+			// get operators
+			if (ic == 42 || ic == 43 || ic == 45 || ic == 47) {
+				_right.add(new String(c));
+				continue;
+			}
 		}
 
 
+
+
 		// TODO - extra: get an expression and turn it into an RPN expression, including variables.
+
+	}
+
+	// TODO - extra: the rpn transformation.
+	private void _rpn() {
+
 
 	}
 

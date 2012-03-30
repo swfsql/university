@@ -25,6 +25,7 @@ public class Calculator {
 		} else return "error";
 
 		if (op == '+') return num1.soma(num2).toString();
+		if (op == '-') return num1.subtrai(num2).toString();
 		return "";
 	}
 

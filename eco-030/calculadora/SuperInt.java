@@ -34,18 +34,17 @@ public class SuperInt {
 
 	public SuperInt plus (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
-		int plusOne = 0,
-			bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1-bigger]._l, // small length.
 			res[] = new int[100];
 
 		// calculate the sum.
 		{
-			int i = -1, temp;
+			int i = -1, plusOne = 0;
 			while(++i < lBig) {
-				res[i] = temp = ints[bigger]._x[i] + plusOne + ( i < lSmall ?  ints[1 - bigger]._x[i] : 0 );
-				if (temp < 10) plusOne = 0; 
+				res[i] = ints[bigger]._x[i] + plusOne + ( i < lSmall ?  ints[1 - bigger]._x[i] : 0 );
+				if (res[i] < 10) plusOne = 0; 
 				else {
 					plusOne = 1;
 					res[i] -= 10;
@@ -60,8 +59,7 @@ public class SuperInt {
 
 	public SuperInt minus (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
-		int minusTen = 0,
-			bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1 - bigger]._l, // small lenght.
 			res[] = new int[100],
@@ -70,12 +68,10 @@ public class SuperInt {
 		// look for the biggest number.
 		{
 			int i = -1, l2 = lBig - lSmall,
-				a, b,
-				j = 0; // extra (000001 -> 1).
+				a, b;
 			while(++i < lBig) {
 				a = ints[bigger]._x[lBig - i - 1];
 				b = i < l2 ? 0 : ints[1 - bigger]._x[lBig - i - 1];
-				if (a + b == 0) ++j; // extra.
 				if (a == b) continue;
 				if (b > a) { 
 					// if we got '1-2', we calculate '(-) 2-1'.
@@ -85,16 +81,15 @@ public class SuperInt {
 				}
 				break;
 			}
-			lBig -= j; // extra.
 			if (bigger + positive == 2) positive = 0; // fix the example: '1-20'.
 		}
 		
 		// calculate the subtraction.
 		{
-			int i = -1, temp;
+			int i = -1, minusTen = 0;
 			while(++i < lBig) {
-				res[i] = temp = ints[bigger]._x[i] - minusTen - ( i < lSmall ? ints[1 - bigger]._x[i] : 0);
-				if (temp >= 0) minusTen = 0;
+				res[i] = ints[bigger]._x[i] - minusTen - ( i < lSmall ? ints[1 - bigger]._x[i] : 0);
+				if (res[i] >= 0) minusTen = 0;
 				else {
 					minusTen = 1;
 					res[i] += 10;

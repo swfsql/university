@@ -38,7 +38,7 @@ public class Main {
 		Calculator calc = new Calculator(); // output calculated List.
 
 		Scanner scan = new Scanner(System.in);
-		System.out.println("'exit' quits\n\n1 + 1\n2\n\n0 - 1\n-1");
+		System.out.println("'exit' quits");
 
 		while(!exp.getInput("exit")){
 			System.out.println("");

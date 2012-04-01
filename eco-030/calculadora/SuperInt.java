@@ -1,33 +1,33 @@
 public class SuperInt {
 	private int x[], // int array  // TODO - extra: use bits istead of ints or bytes - java.util.BitSet.
 				l; // length.
-	public boolean positive = true; // if the SuperInt is positive or negative.
+	public int positive = 1; // 0 = negative; 1 = positive
 
 	public SuperInt(String v) {
-		init(v);
-	}
-	// overload
-	public SuperInt(String v, boolean positive) {
-		this.positive = positive;
-		init(v);
-	}
-	// overload
-	private SuperInt(int v[], int n) {
-		x = v;
-		l = n;
-	}
-
-	private void init(String v) {
 		x = new int[100];
 		l = v.length();
 		int i = -1;
 		while(++i < l) x[l - i - 1] = (int) v.charAt(i) - 48;
 	}
+	// overload
+	private SuperInt(int v[], int n) {
+		init(v, n);
+	}
+	// overload
+	private SuperInt(int v[], int n, int positive) {
+		this.positive = positive;
+		init(v, n);
+	}
+	private void init(int v[], int n) {
+		x = v;
+		l = n;
+	}
 
 	public String toString() {
-		byte temp[] = new byte[l];
+		byte temp[] = new byte[l + 1 - positive];
 		int i = -1;
-		while(++i < l) temp[l - i - 1] = (byte) (x[i] + 48);
+		while(++i < l) temp[l - i - positive] = (byte) (x[i] + 48);
+		if(positive == 0) temp[0] = '-';
 		return new String(temp);
 	}
 
@@ -46,9 +46,8 @@ public class SuperInt {
 		while(++i < maiorTam) {
 			res[i] = aux = (i < menorTam) ? x[i] + si.x[i] + vaiUm : 
 				ints[maior].x[i] + vaiUm;
-			if (aux < 10){
-				vaiUm = 0;
-			} else {
+			if (aux < 10) vaiUm = 0; 
+			else {
 				vaiUm = 1;
 				res[i] -= 10;
 			}
@@ -59,72 +58,49 @@ public class SuperInt {
 
 	public SuperInt subtrai(SuperInt si) {
 		
-		// TODO - extra: '-1 - 1 -> -2' '-1 - -1 -> 0'
-		/*if (!positive) {
-			if (si.positive) {} // soma
-			else {} // subtração
-		}*/
-
-		// por enquanto considera-se 'positivo - positivo'
-
-		//        casos:				|	lê da esquerda pra direita
-		//		  2-2; 0-0;				|	
-		//        2-1; 1-0; 11-09;		|	11-90
-		//        1-2; 0-1; 09-11;		|	90-11
-
 		SuperInt[] ints = {this, si};
-		int aux, vaiUm = 0, vaiDez = 0,
-			maior = (si.l > l) ? 1 : 0, // número mais longo. // 0 = this; 1 = si;
+		int aux, foiDez = 0,
+			maior = (si.l > l) ? 1 : 0, // índice do número mais longo.
 			maiorTam = ints[maior].l,
 			menorTam = ints[1 - maior].l,
 			res[] = new int[100],
-			i = -1, l2;
+			i = -1, l2 = maiorTam - menorTam,
+			positive = 1;
 
-		// cuida da conta enquanto há um número mais 'longo' que o outro
-		l2 = maiorTam - menorTam;
-		while(++i < l2) res[maiorTam - i - 1] = ints[maior].x[maiorTam - i - 1]; // 11111-99 ---> 111xx
-		--i;
-		if (res[maiorTam - i - 1] > 0) { // 11111-99 ---> 1110(x+10)x 
-			--res[maiorTam - i - 1];
-			vaiDez = 10;
+		//  procurar o númeoro maior
+		int j = 0;
+		while(++i < maiorTam) {
+			int a = ints[maior].x[maiorTam - i - 1], b;
+			if (i < l2) {
+				if (a == 0) {
+					++j; // o quanto o maior tamanho será reduzido
+					continue; 
+				}
+				break;
+			}
+			b = ints[1 - maior].x[maiorTam - i - 1];
+			if (a == b) continue;
+			if (b > a) { 
+				positive = 0; // vemos aonde o numero é negativo
+				maior = 1 - maior;
+				break;
+			}
+			break;
 		}
+		maiorTam -= j;
+		if (maior + positive == 2) positive = 0;
 
-		// agora tem que cuidar da conta até o fim dos números
-		l2 = menorTam;
 		i = -1;
-		maior = (si.x[menorTam - 1] > x[menorTam - 1]) ? 1 : 0; // número realmente maior. TODO@ parei aqui
-
-
-
-		// ir diminuindo
 		while(++i < maiorTam) {
-
-
-			aux = (i < menorTam) ? x[i] - si.x[i] + vaiUm + vaiDez : 
-				  (maiorTam == l) ? x[i] + vaiUm :
-				  si.x[i] + vaiUm;
-
-			res[i] = aux;
-			if (aux < 10){
-				vaiUm = 0;
-			} else {
-				vaiUm = 1;
-				res[i] -= 10;
-			}
+			res[i] = aux = (i < menorTam) ? ints[maior].x[i] - ints[1 - maior].x[i] - foiDez : 
+				ints[maior].x[i] - foiDez;
+			if (aux < 0){
+				foiDez = 1;
+				res[i] += 10;
+			} else foiDez = 0; 
 		}
+		res[maiorTam] -= foiDez;
+		return new SuperInt(res, maiorTam, positive);
 
-		while(++i < maiorTam) {
-			res[i] = aux = (i < menorTam) ? x[i] + si.x[i] + vaiUm : 
-				  (maiorTam == l) ? x[i] + vaiUm :
-				  si.x[i] + vaiUm;
-			if (aux < 10){
-				vaiUm = 0;
-			} else {
-				vaiUm = 1;
-				res[i] -= 10;
-			}
-		}
-		res[maiorTam] = vaiUm;
-		return new SuperInt(res, maiorTam + vaiUm);
 	}
 }

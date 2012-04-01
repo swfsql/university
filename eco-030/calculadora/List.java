@@ -1,10 +1,9 @@
 public class List {
+
 	private StringUnit _head, _unit;
-
-
+	
 	public List() {
-		clear();
-		
+		clear();	
 	}
 
 	public void clear() {
@@ -20,7 +19,6 @@ public class List {
 	public StringUnit head() {
 		return _head;
 	}
-
 }
 
 class StringUnit {

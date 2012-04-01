@@ -1,57 +1,42 @@
 public class Expression {
 
-	
-
 	private String _input;
-	private List _left, _right; // 'left = right'. for example: 'A = 123 + 123'.
+	private List _right;
+	// TODO - extra: private List _left;
+	// 'left = right'. for example: 'A = 123 + 123'. left = A. right = 123 + 123.
 
 	public Expression(){
 		_input = "";
-		_left = new List(); // we dont use left yet, we dont support named variable creation.
 		_right = new List();
 	}
 
 	public void setInput(String s) {
-		
-		_input = s;
-		if (s.equals("") || s.equals("exit")) {
-			_right.clear();
-			return;
-		}
 
-		// TODO: get an Number, an Operator, an Number.
 		_right.clear();
+		_input = s;
+		if (s.equals("") || s.equals("exit")) return;
 
-		char c; 
+		char c;
 		int ic;
-		NumberSegment numHead, num;
-
+		NumberSegment numHead, num; // number builder.
 		int i = -1, j = 0, l = _input.length();
 		while(++i < l) {
 			c = _input.charAt(i);
 			ic = (int) c;
-			//System.out.println(c);
 
-			// TODO: use regular expressions
-
-			// get numbers
-			if (ic >= 48 && ic <= 57) {
-				// to get the number: by each char, build an list, then make it a char array, then an String, then send to SuperInt.
-
-				// TODO - extra: (a) b -> (a) * b 
+			// numbers.
+			if (ic >= 48 && ic <= 57) { // TODO: use regular expressions.
+				// building an number: 1) build a list of char. 2) an array of char. 3) then an string. 4) That string will be part of an List of String's.
 
 				j = i;
 				numHead = num = new NumberSegment('0');
 				while(ic >= 48 && ic <= 57) {
 					num = num.next = new NumberSegment(c);
-					if (++j >= l) break; // idk if I can reach an element outside the String length. TODO: verify that, to see if I can remove that if().
+					if (++j >= l) break; // input has ended.
 					c = _input.charAt(j);
 					ic = (int) c;
 				}
 
-				// TODO: a * -b -> a * (-b)
-
-				// TODO: negative number if need to, but I'll have to change the SuperInt class.
 				char[] number = new char[j-i];
 				num = numHead;
 				int k = i-1; 
@@ -59,50 +44,35 @@ public class Expression {
 					number[++k-i] = num.value;
 				}
 
-				//System.out.println(number); // debug
 				_right.add(new String(number));
-
 				i = j-1;
 				j = 0;
 				continue;
 			} 
 
-			// *42 +43 -45 /47
-			// get operators
-			if (ic == 42 || ic == 43 || ic == 45 || ic == 47) {
+			// get operators.
+			if (ic == 42 || ic == 43 || ic == 45 || ic == 47) { // TODO: use regular expressions.
+				// *42 +43 -45 /47
 				_right.add(Character.toString(c));
 				continue;
 			}
 		}
-
-
-
-
-		// TODO - extra: get an expression and turn it into an RPN expression, including variables.
-
-	}
-
-	// TODO - extra: the rpn transformation.
-	private void _rpn() {
-
-
 	}
 
 	public String getInput() {
 		return _input;
 	}
-	// overload
+	// overload.
 	public Boolean getInput(String s) {
-		return _input.equals(s);
+		return _input.equals(s); // compares.
 	}
 
 	public List getRight() {
 		return _right;
 	}
-
 }
 
-// Since idk how to create objects, I'll create a class instead.
+// TODO: try to create just an object instead of an entire class.
 class NumberSegment {
 	public NumberSegment next;
 	public char value;

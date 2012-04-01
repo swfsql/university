@@ -7,44 +7,45 @@ public class Main {
 	 * - Thiago Machado da Silva (21215).
 	 * - Thiago Paixão Visconti (22233).
 	 * 
-	 * patterns:
+	 * @patterns:
+	 * - english.
 	 * - i/o on Main class only.
-	 * - use _ in private variables or functions.
+	 * - use _ in private atributes or methods.
 	 * - { (opening brackets) on same line.
+	 * - scope for grouped commands.
+	 * - use alternate operators when possible '?:'.
+	 * - avoid the usage of 'else'. Always use 'continue' or 'return'. 
 	 * 
-	 * about:
+	 * @about:
 	 * - teacher: Fernando (Universidade Federal de Itajubá, Campus Itabira).
-	 * - text editor: Sublime text 2.
+	 * - text editor: Sublime text 2, BlueJ, Eclipse.
 	 * - compiler: javac.
-	 * - some of the code is from http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read
+	 * - some of the code is from the flash apps http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read, from Machado.
+	 * - project hosted on https://github.com/thyfl/unifei/tree/master/eco-030/calculadora.
 	 *
-	 * instructions:
+	 * @instructions:
 	 * - type 'exit' to end the program.
-	 * - type '123 + 123' to recive '246'. (TODO). 
-     * - - minimum pattern: 'number operator number'. (TODO)
-     * - - expression pattern: just any supported expression. (TODO - extra)
-	 * - - - type 'A = 123' 'A + 123' to recive '246'. (TODO - extra)
+	 * - type 'an number', 'an operator', 'an number' to get results. eg.: '123 + 123' (= '246').
+	 *
+	 * @todo (extra):
+	 * - calculations like the wonderfl's ones (RPN features). eg.: '1 - 1 * 2' (= '-1').
+	 * - use of variables. eg.: 'A = 1' 'B = -1' 'C = A + 2B' (= '-1').
 	 */
 
 
 	public static void main(String[] args) {
-		Expression exp = new Expression(); // receberá os inputs e o transformará em uma expressão RPN
-		Calculator calc = new Calculator(); // irá calcular a expressão RPN
-		Var vars = new Var(); // será o head da lista de variáveis, usadas na expressão e calculadora
+		Expression exp = new Expression(); // recive inputs, make a List out of it.
+		Calculator calc = new Calculator(); // output calculated List.
 
 		Scanner scan = new Scanner(System.in);
-		System.out.println("'exit' quits");
-
+		System.out.println("'exit' quits\n\n1 + 1\n2\n\n0 - 1\n-1");
 
 		while(!exp.getInput("exit")){
 			System.out.println("");
 			exp.setInput(scan.nextLine());
-			System.out.println(calc.right(exp)); // TODO - extra: calc.rpn(); // to calculate from RPN, not from the right side of an equation
-		}
-
-
-		
+			System.out.println(calc.right(exp)); 
+			// called 'right' because in the example: 'A = 2+2', we consider '2+2' the 'right side'.
+			// future plans include calculations on the 'left side', 'A ='. 
+		}	
 	}
-
-
 }

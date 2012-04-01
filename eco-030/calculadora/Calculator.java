@@ -1,17 +1,9 @@
 public class Calculator {
-
-
-
-
-	public Calculator(){
-
-		
-	}
-
-
+	
 	public String right(Expression e) {
 		return _right(e.getRight().head());
 	}
+
 	private String _right(StringUnit h) {
 		SuperInt num1, num2;
 		char op;
@@ -24,17 +16,8 @@ public class Calculator {
 			if (op != 42 && op != 43 && op != 45 && op != 47) return "error";
 		} else return "error";
 
-		if (op == '+') return num1.soma(num2).toString();
-		if (op == '-') return num1.subtrai(num2).toString();
+		if (op == '+') return num1.plus(num2).toString();
+		if (op == '-') return num1.minus(num2).toString();
 		return "";
 	}
-
-	// TODO - extra: rpn calculation
-	public String rpn(List l, List r) {
-		return "";
-	}
-
-
-
-
 }

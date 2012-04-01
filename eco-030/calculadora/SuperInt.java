@@ -40,6 +40,7 @@ public class SuperInt {
 			lSmall = ints[1-bigger]._l, // small length.
 			res[] = new int[100];
 
+		// calculate the sum.
 		{
 			int i = -1, temp;
 			while(++i < lBig) {
@@ -50,13 +51,12 @@ public class SuperInt {
 					res[i] -= 10;
 				}
 			}
+			res[lBig] = plusOne;
+			return new SuperInt(res, lBig + plusOne);
 		}
-		
-		res[lBig] = plusOne;
-		return new SuperInt(res, lBig + plusOne);
 	}
 
-	// obs.: there's some code duplication between plus() and minus()
+	// obs.: there's some code duplication between plus() and minus().
 
 	public SuperInt minus (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
@@ -69,32 +69,27 @@ public class SuperInt {
 
 		// look for the biggest number.
 		{
-			int l2 = lBig - lSmall,
-				i = -1, j = 0,
-				a, b;
+			int i = -1, l2 = lBig - lSmall,
+				a, b,
+				j = 0; // extra (000001 -> 1).
 			while(++i < lBig) {
 				a = ints[bigger]._x[lBig - i - 1];
-				if (i < l2) {
-					if (a == 0) {
-						++j; // later lBig will be lesser.
-						continue; 
-					}
-					break;
-				}
-				b = ints[1 - bigger]._x[lBig - i - 1];
+				b = i < l2 ? 0 : ints[1 - bigger]._x[lBig - i - 1];
+				if (a + b == 0) ++j; // extra.
 				if (a == b) continue;
 				if (b > a) { 
-					// if we got something like '1-2', we will do something like '(-) 2-1'.
+					// if we got '1-2', we calculate '(-) 2-1'.
 					positive = 0; 
 					bigger = 1 - bigger;
 					break;
 				}
 				break;
 			}
-			lBig -= j;
+			lBig -= j; // extra.
 			if (bigger + positive == 2) positive = 0; // fix the example: '1-20'.
 		}
 		
+		// calculate the subtraction.
 		{
 			int i = -1, temp;
 			while(++i < lBig) {

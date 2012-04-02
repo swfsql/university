@@ -43,7 +43,7 @@ public class SuperInt {
 		{
 			int i = -1, plusOne = 0;
 			while(++i < lBig) {
-				res[i] = ints[bigger]._x[i] + plusOne + ( i < lSmall ?  ints[1 - bigger]._x[i] : 0 );
+				res[i] = ints[bigger]._x[i] + ( i < lSmall ?  ints[1 - bigger]._x[i] : 0 ) + plusOne;
 				if (res[i] < 10) plusOne = 0; 
 				else {
 					plusOne = 1;
@@ -88,7 +88,7 @@ public class SuperInt {
 		{
 			int i = -1, minusTen = 0;
 			while(++i < lBig) {
-				res[i] = ints[bigger]._x[i] - minusTen - ( i < lSmall ? ints[1 - bigger]._x[i] : 0);
+				res[i] = ints[bigger]._x[i] - ( i < lSmall ? ints[1 - bigger]._x[i] : 0) - minusTen;
 				if (res[i] >= 0) minusTen = 0;
 				else {
 					minusTen = 1;
@@ -97,6 +97,33 @@ public class SuperInt {
 			}
 			res[lBig] -= minusTen;
 			return new SuperInt(res, lBig, positive);
+		}
+	}
+
+	public SuperInt times (SuperInt si) {
+		SuperInt[] ints = {this, si}; // easy reference.
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+			lBig = ints[bigger]._l, // big length.
+			lSmall = ints[1-bigger]._l, // small length.
+			res[] = new int[100];
+		SuperInt siRes = new SuperInt("0"); 
+
+		// calculate the multiplication.
+		{
+			int i = -1, j, plus = 0; // 0 to 8.
+			while(++i < lBig) {
+				j = -1;
+				plus = 0;
+				while(++j < lSmall) {
+					res[j+i] = ints[bigger]._x[i] * ints[1 - bigger]._x[j] + plus;
+					plus = res[j+i] / 10;
+					res[j+i] %= 10;
+				}
+				res[j+i] += plus;
+				siRes = siRes.plus(new SuperInt(res, lBig + lSmall)); // TODO: optmize.
+				res = new int[100]; // TODO: optmize.
+			}
+			return siRes;
 		}
 	}
 }

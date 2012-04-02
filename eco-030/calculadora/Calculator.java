@@ -18,6 +18,7 @@ public class Calculator {
 
 		if (op == '+') return num1.plus(num2).toString();
 		if (op == '-') return num1.minus(num2).toString();
+		if (op == '*') return num1.times(num2).toString();
 		return "";
 	}
 }

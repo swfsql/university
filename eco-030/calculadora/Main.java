@@ -17,10 +17,11 @@ public class Main {
 	 * - avoid the usage of 'else'. Always use 'continue' or 'return'. 
 	 * 
 	 * @about:
-	 * - teacher: Fernando (Universidade Federal de Itajubá, Campus Itabira).
+	 * - teacher: Fernando Santos (Universidade Federal de Itajubá, Campus Itabira).
 	 * - text editor: Sublime text 2, BlueJ, Eclipse.
 	 * - compiler: javac.
-	 * - some of the code is from the flash apps http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read, from Machado.
+	 * - some of the code is from the flash apps http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read, from Silva.
+	 * - division is also inspired on the binary search https://github.com/thyfl/unifei/blob/master/eco-010/claudia/Aula%201/find/find.cpp, from Silva, Visconti.
 	 * - project hosted on https://github.com/thyfl/unifei/tree/master/eco-030/calculadora.
 	 *
 	 * @instructions:

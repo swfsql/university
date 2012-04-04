@@ -19,7 +19,11 @@ public class Calculator {
 		if (op == '+') return num1.plus(num2).toString();
 		if (op == '-') return num1.minus(num2).toString();
 		if (op == '*') return num1.times(num2).toString();
-		if (op == '/') return num1.divide(num2).toString();
+		if (op == '/') return num2.toString().equals("0") ? 
+				(num1.toString().equals("0") ? 
+					"indeterminate" :  
+					"error - divide by 0") : 
+			num1.divide(num2).toString();
 		return "error";
 	}
 }

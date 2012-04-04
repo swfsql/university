@@ -71,11 +71,11 @@ public class SuperInt {
 
 		// look for the biggest number.
 		{
-			int i = -1, l2 = lBig - lSmall,
+			int i = -1, l = lBig - lSmall,
 				a, b;
 			while(++i < lBig) {
 				a = ints[bigger]._x[lBig - i - 1];
-				b = i < l2 ? 0 : ints[1 - bigger]._x[lBig - i - 1];
+				b = i < l ? 0 : ints[1 - bigger]._x[lBig - i - 1];
 				if (a == b) continue;
 				if (b > a) { 
 					// if we got '1-2', we calculate '(-) 2-1'.
@@ -199,6 +199,38 @@ public class SuperInt {
 		 * -> (so the answer is 6).
 		 */
 
-		return null;
+		SuperInt[] ints = {this, si}; // easy reference.
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+			lBig = ints[bigger]._l, // big length.
+			lSmall = ints[1-bigger]._l, // small length.
+			res[] = new int[100];
+
+
+		SuperInt siRes = new SuperInt("0"); 
+
+		// binary search the division
+		{
+
+			int l = lBig - lSmall;
+			
+
+
+			int i = -1, j, plus = 0; // 0 to 8.
+			while(++i < lBig) {
+				j = -1;
+				plus = 0;
+				while(++j < lSmall) {
+					res[j+i] = ints[bigger]._x[i] * ints[1 - bigger]._x[j] + plus;
+					plus = res[j+i] / 10;
+					res[j+i] %= 10;
+				}
+				res[j+i] += plus;
+				siRes = siRes.plus(new SuperInt(res, lBig + lSmall)); // TODO: optmize.
+				res = new int[100]; // TODO: optmize.
+			}
+			return siRes;
+		}
+
+
 	}
 }

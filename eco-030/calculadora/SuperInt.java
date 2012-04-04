@@ -198,6 +198,9 @@ public class SuperInt {
 		 * -> 6 == 6.
 		 * -> (so the answer is 6).
 		 */
+		
+		return new SuperInt("0");
+		/*
 
 		SuperInt[] ints = {this, si}; // easy reference.
 		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
@@ -212,7 +215,7 @@ public class SuperInt {
 		{
 
 			int l = lBig - lSmall;
-			
+
 
 
 			int i = -1, j, plus = 0; // 0 to 8.
@@ -230,6 +233,7 @@ public class SuperInt {
 			}
 			return siRes;
 		}
+		*/
 
 
 	}

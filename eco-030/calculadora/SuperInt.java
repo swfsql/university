@@ -7,8 +7,14 @@ public class SuperInt {
 	public SuperInt(String v) {
 		_x = new int[100];
 		_l = v.length();
-		int i = -1;
-		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i) - 48;
+		int i = -1, j = 0;
+		while(++i < _l) if (v.charAt(i) == '0') ++j; else break; // 00001 -> 01.
+		i = -1; _l -= j;
+		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j) - 48;
+		if (_l == 0) {
+			++_l;
+			_x[0] = 0;
+		}
 	}
 	// overload
 	private SuperInt(int v[], int n) {
@@ -22,6 +28,13 @@ public class SuperInt {
 	private void _init(int v[], int n) {
 		_x = v;
 		_l = n;
+		int i = -1, j = 0;
+		while(++i < _l) if (v[_l - i - 1] == 0) ++j; else break; // 00001 -> 01.
+		_l -= j;
+		if (_l == 0) {
+			++_l;
+			_x[0] = 0;
+		}
 	}
 
 	public String toString() {
@@ -129,20 +142,7 @@ public class SuperInt {
 
 	public SuperInt divide (SuperInt si) {
 		/* 
-		 * algorithm 1 example: 20 / 3.
-		 * -> 3*0 = 0. 20-0 > 0.
-		 * -> 3*1 = 3. 20-3 > 0.
-		 * -> 3*2 = 6. 20-6 > 0.
-		 * -> 3*3 = 9. 20-9 > 0.
-		 * -> 3*4 = 12. 20-12 > 0.
-		 * -> 3*5 = 15. 20-15 > 0.
-		 * -> 3*6 = 18. 20-18 > 0.
-		 * -> 3*7 = 21. 20-21 < 0.
-		 * -> (so the answer is 6).
-         *
-		 *
-		 *
-		 * algorith 2 example: 20 / 3 (inspired on binary search).
+		 * algorithm 2 example: 20 / 3 (inspired on binary search).
 		 * -> 3 length is 1. so 100+1 / 2 = 50.
 		 * -> 3 * 10^50 = 300000000000000000000000000000000000000000000000000.
 		 * -> 20 - 300000000000000000000000000000000000000000000000000 < 0.
@@ -210,7 +210,6 @@ public class SuperInt {
 		 * -> 6 == 6.
 		 * -> (so the answer is 6).
 		 */
-
 
 		return null;
 	}

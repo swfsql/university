@@ -173,23 +173,34 @@ public class SuperInt {
 		 * 
 		 * -> 1+1 / 2 = 1.
 		 * -> 1 == 1.
-		 * -> (so the answer is between 0 and 3*10^1).
+		 * -> (so the answer is between 0 and 10^1).
 		 * 
-		 * -> 0+30 / 2 = 15.
-		 * -> 3 * 15 = 45.
-		 * -> 20 - 45 < 0.
+		 * -> 0+10 / 2 = 5.
+		 * -> 3 * 5 = 15.
+		 * -> 20 - 15 > 0.
 		 * 
-		 * -> 0+15 / 2 = 7.
+		 * -> 5+10 / 2 = 7.
 		 * -> 3 * 7 = 21.
 		 * -> 20 - 21 < 0.
 		 * 
-		 * -> 0+7 / 2 = 3.
-		 * -> 3 * 3 = 9.
-		 * -> 20 - 9 > 0.
+		 * -> 5+7 / 2 = 6.
+		 * -> 3 * 6 = 18.
+		 * -> 20 - 18 > 0.
 		 * 
-		 * -> 3+7 / 2 = 5.
+		 * -> 6+7 / 2 = 6.
+		 * -> 6 == 6.
+		 * -> (so the answer is 6).
+		 *
+		 * algorithm 3: justa like the algorithm 2, but we see the length difference. example:
+		 * -> 20 / 3. the length dif is 1 -> 10^1. to the answer is between 0 and 10.
+		 *
+		 * -> 0+10 / 2 = 5.
 		 * -> 3 * 5 = 15.
 		 * -> 20 - 15 > 0.
+		 * 
+		 * -> 5+10 / 2 = 7.
+		 * -> 3 * 7 = 21.
+		 * -> 20 - 21 < 0.
 		 * 
 		 * -> 5+7 / 2 = 6.
 		 * -> 3 * 6 = 18.
@@ -199,6 +210,7 @@ public class SuperInt {
 		 * -> 6 == 6.
 		 * -> (so the answer is 6).
 		 */
+
 
 		return null;
 	}

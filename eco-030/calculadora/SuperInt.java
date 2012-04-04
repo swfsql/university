@@ -11,10 +11,7 @@ public class SuperInt {
 		while(++i < _l) if (v.charAt(i) == '0') ++j; else break; // 00001 -> 01.
 		i = -1; _l -= j;
 		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j) - 48;
-		if (_l == 0) {
-			++_l;
-			_x[0] = 0;
-		}
+		if (_l == 0) _x[_l++] = 0;
 	}
 	// overload
 	private SuperInt(int v[], int n) {
@@ -31,10 +28,7 @@ public class SuperInt {
 		int i = -1, j = 0;
 		while(++i < _l) if (v[_l - i - 1] == 0) ++j; else break; // 00001 -> 01.
 		_l -= j;
-		if (_l == 0) {
-			++_l;
-			_x[0] = 0;
-		}
+		if (_l == 0) _x[_l++] = 0;
 	}
 
 	public String toString() {
@@ -57,11 +51,8 @@ public class SuperInt {
 			int i = -1, plusOne = 0;
 			while(++i < lBig) {
 				res[i] = ints[bigger]._x[i] + ( i < lSmall ?  ints[1 - bigger]._x[i] : 0 ) + plusOne;
-				if (res[i] < 10) plusOne = 0; 
-				else {
-					plusOne = 1;
-					res[i] -= 10;
-				}
+				plusOne = res[i] / 10;
+				res[i] %= 10;
 			}
 			res[lBig] = plusOne;
 			return new SuperInt(res, lBig + plusOne);
@@ -102,11 +93,8 @@ public class SuperInt {
 			int i = -1, minusTen = 0;
 			while(++i < lBig) {
 				res[i] = ints[bigger]._x[i] - ( i < lSmall ? ints[1 - bigger]._x[i] : 0) - minusTen;
-				if (res[i] >= 0) minusTen = 0;
-				else {
-					minusTen = 1;
-					res[i] += 10;
-				}  
+				minusTen = res[i] < 0 ? 1 : 0;
+				res[i] += minusTen * 10;
 			}
 			res[lBig] -= minusTen;
 			return new SuperInt(res, lBig, positive);

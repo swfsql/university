@@ -46,6 +46,11 @@ public class SuperInt {
 	// 10 ^ e
 	private SuperInt e10(int e) {
 		_x = new int[100];
+		if (e < 0) {
+			_l = 1;
+			_x[0] = 0;
+			return this;
+		}
 		_l = e + 1;
 		_x[_l - 1] = 1;
 		return this;
@@ -221,54 +226,31 @@ public class SuperInt {
 
 		SuperInt siRes = new SuperInt("0"); 
 
-		// binary search the division
+		// binary search the division.
 		{
 			SuperInt multiplier = new SuperInt("0");
-			int l = lBig - lSmall + 1, i = l>>1;
-			
-			// testing '99 / 1'
-			
-			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
-			System.out.print("mult: "); System.out.println(multiplier);
+			int l = lBig - lSmall, i = l - (l/2);
 
+			while (l != 0) i += (l >>= 1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+
+			// just some debug answer.
+			{
+
+				SuperInt temp = new SuperInt("0");
+				temp.e10(i + this.minus(si.times(multiplier.e10(i))).getPositive());
+				System.out.print("between "); System.out.print(temp); System.out.print(" and ");
+
+			}
+
+			/*
 			System.out.print("\ni: "); System.out.println(i);
 			System.out.print("l: "); System.out.println(l);
-			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
 			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
 			System.out.print("mult: "); System.out.println(multiplier);
+			*/
 
-			System.out.print("\ni: "); System.out.println(i);
-			System.out.print("l: "); System.out.println(l);
-			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
-			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
-			System.out.print("mult: "); System.out.println(multiplier);
-
-			System.out.print("\ni: "); System.out.println(i);
-			System.out.print("l: "); System.out.println(l);
-			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
-			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
-			System.out.print("mult: "); System.out.println(multiplier);
-
-			System.out.print("\ni: "); System.out.println(i);
-			System.out.print("l: "); System.out.println(l);
-			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
-			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
-			System.out.print("mult: "); System.out.println(multiplier);
-
-			System.out.print("\ni: "); System.out.println(i);
-			System.out.print("l: "); System.out.println(l);
-			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
-			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
-			System.out.print("mult: "); System.out.println(multiplier);
-
-
-
-			
-
-			System.out.println("___________");
-			System.out.print("i: "); System.out.println(i);
-			System.out.print("l: "); System.out.println(l);
-			System.out.print("mult: "); System.out.println(multiplier);
+			// TODO: find out that between. problem: between, say, 10^89 and 10^90 still does not fit on an int.
 
 			return multiplier; //new SuperInt("0");
 

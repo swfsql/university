@@ -224,27 +224,51 @@ public class SuperInt {
 		// binary search the division
 		{
 			SuperInt multiplier = new SuperInt("0");
-			int l = lBig - lSmall + 1;
+			int l = lBig - lSmall + 1, i = l>>1;
 			
 			// testing '99 / 1'
 			
-			multiplier.e10(l);
-			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(l))).getPositive());
+			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
+			System.out.print("mult: "); System.out.println(multiplier);
+
+			System.out.print("\ni: "); System.out.println(i);
 			System.out.print("l: "); System.out.println(l);
+			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
+			System.out.print("mult: "); System.out.println(multiplier);
+
+			System.out.print("\ni: "); System.out.println(i);
+			System.out.print("l: "); System.out.println(l);
+			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
+			System.out.print("mult: "); System.out.println(multiplier);
+
+			System.out.print("\ni: "); System.out.println(i);
+			System.out.print("l: "); System.out.println(l);
+			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
+			System.out.print("mult: "); System.out.println(multiplier);
+
+			System.out.print("\ni: "); System.out.println(i);
+			System.out.print("l: "); System.out.println(l);
+			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
+			System.out.print("mult: "); System.out.println(multiplier);
+
+			System.out.print("\ni: "); System.out.println(i);
+			System.out.print("l: "); System.out.println(l);
+			i += (l>>=1) * this.minus(si.times(multiplier.e10(i))).getPositive();
+			System.out.print("positivo? "); System.out.println(this.minus(si.times(multiplier.e10(i))).getPositive());
 			System.out.print("mult: "); System.out.println(multiplier);
 
 
 
-			l += l/2 * this.minus(si.times(multiplier.e10(l))).getPositive();
-			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(l))).getPositive());
+			
+
+			System.out.println("___________");
+			System.out.print("i: "); System.out.println(i);
 			System.out.print("l: "); System.out.println(l);
 			System.out.print("mult: "); System.out.println(multiplier);
-
-			l += l/2 * this.minus(si.times(multiplier.e10(l))).getPositive();
-			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(l))).getPositive());
-			System.out.print("l: "); System.out.println(l);
-			System.out.print("mult: "); System.out.println(multiplier);
-
 
 			return multiplier; //new SuperInt("0");
 

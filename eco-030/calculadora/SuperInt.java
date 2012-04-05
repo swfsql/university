@@ -13,11 +13,11 @@ public class SuperInt {
 		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j) - 48;
 		if (_l == 0) _x[_l++] = 0;
 	}
-	// overload
+	// overload (by vector)
 	private SuperInt(int v[], int n) {
 		_init(v, n);
 	}
-	// overload
+	// overload (negative)
 	private SuperInt(int v[], int n, int positive) {
 		_positive = positive;
 		_init(v, n);
@@ -37,6 +37,18 @@ public class SuperInt {
 		while(++i < _l) temp[_l - i - _positive] = (byte) (_x[i] + 48);
 		if(_positive == 0) temp[0] = '-';
 		return new String(temp);
+	}
+
+	public int getPositive() {
+		return _positive * 2 - 1; // in this case, 1 for positive, -1 for negative.
+	}
+
+	// 10 ^ e
+	private SuperInt e10(int e) {
+		_x = new int[100];
+		_l = e + 1;
+		_x[_l - 1] = 1;
+		return this;
 	}
 
 	public SuperInt plus (SuperInt si) {
@@ -199,8 +211,6 @@ public class SuperInt {
 		 * -> (so the answer is 6).
 		 */
 		
-		return new SuperInt("0");
-		/*
 
 		SuperInt[] ints = {this, si}; // easy reference.
 		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
@@ -213,11 +223,33 @@ public class SuperInt {
 
 		// binary search the division
 		{
+			SuperInt multiplier = new SuperInt("0");
+			int l = lBig - lSmall + 1;
+			
+			// testing '99 / 1'
+			
+			multiplier.e10(l);
+			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(l))).getPositive());
+			System.out.print("l: "); System.out.println(l);
+			System.out.print("mult: "); System.out.println(multiplier);
 
-			int l = lBig - lSmall;
 
 
+			l += l/2 * this.minus(si.times(multiplier.e10(l))).getPositive();
+			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(l))).getPositive());
+			System.out.print("l: "); System.out.println(l);
+			System.out.print("mult: "); System.out.println(multiplier);
 
+			l += l/2 * this.minus(si.times(multiplier.e10(l))).getPositive();
+			System.out.print("\npositivo? "); System.out.println(this.minus(si.times(multiplier.e10(l))).getPositive());
+			System.out.print("l: "); System.out.println(l);
+			System.out.print("mult: "); System.out.println(multiplier);
+
+
+			return multiplier; //new SuperInt("0");
+
+
+			/*
 			int i = -1, j, plus = 0; // 0 to 8.
 			while(++i < lBig) {
 				j = -1;
@@ -232,8 +264,9 @@ public class SuperInt {
 				res = new int[100]; // TODO: optmize.
 			}
 			return siRes;
+			*/
 		}
-		*/
+		
 
 
 	}

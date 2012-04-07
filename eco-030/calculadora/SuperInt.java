@@ -159,28 +159,30 @@ public class SuperInt {
 		}
 	}
 
+	// binary search the answer, assuming its not x/0 or 0/0.
 	public SuperInt divide (SuperInt si) { // very slow
 		SuperInt mid = new SuperInt("0");
-		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
-			lBig = this._l, // big length.
-			lSmall = si._l; // small length.
-		if (lBig < lSmall) return mid;
 		SuperInt 
-			si1 = new SuperInt("1"),
+			si1 = new SuperInt("1"), // has a value of 1.
 			temp,
-			left = new SuperInt("0"),
-			right = new SuperInt("0");
+			left = new SuperInt("0"), // for binary search. TODO: change this constructor, ("0") is ugly.
+			right = new SuperInt("0"); // for binary search.
+		{
+			int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+				lBig = this._l, // big length.
+				lSmall = si._l; // small length.
+			if (lBig < lSmall) return mid;
+			right = right.e10(lBig - lSmall + 1).minus(si1);
+			left = left.e10(lBig - lSmall - 1).minus(si1);
+		}
 
-		right = right.e10(lBig - lSmall + 1).minus(si1);
-		left = left.e10(lBig - lSmall - 1).minus(si1);
-
+		// example: 20 / 3. what happens: lets say we're on '6'. 20 - 6*3 = 2 > 0, so maybe its not '6'. 
+		// now lets say we're on '7'. 20 - 7*3 = -1 < 0, so its below 7, wich is 6.
 		while(right.minus(left).getPositive() == 1) {
 			mid = new SuperInt("0").plus(left).plus(right);
 			mid.d2();
-
-			temp = this.minus(si.times(mid));
-			if (temp._l + temp._x[0] == 1) return mid;
-
+			temp = this.minus(si.times(mid)); 
+			if (temp._l + temp._x[0] == 1) return mid; // found the exact answer.
 			if (temp.getPositive() == 1) left = new SuperInt("0").plus(mid).plus(si1);
 			else right = new SuperInt("0").plus(mid).minus(si1);
 		}

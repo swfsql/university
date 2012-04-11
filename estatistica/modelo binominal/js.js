@@ -14,13 +14,13 @@ function mb(k) {
   return bin(n, k) * Math.pow(p, k) * Math.pow(1-p, n-k);
 }
 
-/* exemple 2th list, 2th exercise, c) */
+/* exemple 2th list, 3th exercise, c) */
 
 n = 15;
 p = .4;
-mb(4) + mb(5); // returns 0.31271364801331214
+mb (0) + mb (1) + mb (11) + mb (12) + mb (13) + mb (14) + mb (15); // returns 0.014519695605760009
 
-/* exemple 2th list, 3th exercise, c) */
+/* exemple 2th list, 4th exercise, c) */
 
 var i, soma;
 

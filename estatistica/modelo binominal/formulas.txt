@@ -1,7 +1,6 @@
 bin n,k
 n!/  k! n-k !
 
-
 model bin n,p, k
 bin n,k p^k 1-p ^ n-k
 

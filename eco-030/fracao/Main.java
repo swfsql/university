@@ -16,22 +16,17 @@ public class Main {
 	 * - use alternate operators when possible '?:'.
 	 * - avoid the usage of 'else'. Always use 'continue' or 'return'. 
 	 * 
-	 * @about: TODO: update this
+	 * @about:
 	 * - teacher: Fernando Santos (Universidade Federal de Itajubá, Campus Itabira).
 	 * - text editor: Sublime text 2, BlueJ, Eclipse.
 	 * - compiler: javac.
-	 * - some of the code is from the flash apps http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read, from Silva.
-	 * - division is also inspired on the binary search http://en.wikipedia.org/wiki/Binary_search_algorithm.
-	 * - project hosted on https://github.com/thyfl/unifei/tree/master/eco-030/calculadora.
+	 * - forked from https://github.com/thyfl/unifei/tree/master/eco-030/calculadora, from Silva and Visconti.
+	 * - project hosted on https://github.com/thyfl/unifei/tree/master/eco-030/fracao.
 	 *
 	 * @instructions:
 	 * - type 'exit' to end the program.
 	 * - type 'numerator', '/', 'denominator', 'operator', 'numerator', '/', 'denominator'. 
 	 *   eg.: '1/2 * 3/2' (= '3/4').
-	 *
-	 * @todo (extra):
-	 * - calculations like the wonderfl's ones (RPN features). eg.: '1/2 - 1/2 * 2/2' (= '-1/2').
-	 * - use of variables. eg.: 'A = 1/2' 'B = -1/2' 'C = (A + 2B)/3' (= '-1/3').
 	 */
 
 

@@ -24,9 +24,28 @@ public class List {
 class StringUnit {
 	public StringUnit next;
 	public String value;
+	private int _l; // length
 
 	public StringUnit(String s) {
 		this.value = s;
 		next = null;
+	}
+
+	public String[] array () {
+		int i = -1;
+		StringUnit su = this;
+		String[] s = new String[length()];
+		while(++i < _l) {
+			su = su.next;
+			s[i] = su.value;
+		}
+		return s;
+	}
+
+	public int length () {
+		_l = 0;
+		StringUnit su = this;
+		while((su = su.next) != null) ++_l; // length
+		return _l;
 	}
 }

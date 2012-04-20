@@ -1,3 +1,4 @@
+// basically an linked list of strings.
 public class List {
 
 	private StringUnit _head, _unit;
@@ -21,6 +22,7 @@ public class List {
 	}
 }
 
+// the 'node' of the linked list.
 class StringUnit {
 	public StringUnit next;
 	public String value;
@@ -31,6 +33,7 @@ class StringUnit {
 		next = null;
 	}
 
+	// returns an static array os Strings of this StringUnit 'til its end.
 	public String[] array () {
 		int i = -1;
 		StringUnit su = this;
@@ -42,6 +45,7 @@ class StringUnit {
 		return s;
 	}
 
+	// returns the length of this StringUnit 'til its end.
 	public int length () {
 		_l = 0;
 		StringUnit su = this;

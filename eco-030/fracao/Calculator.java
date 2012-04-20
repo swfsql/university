@@ -1,3 +1,5 @@
+// get the input and send to the exercise's Class, Fracao, and returns the output.
+// this class, Calculator, its still not general enought, so we must adapt it to each exercise from the teacher.
 public class Calculator {
 	
 	public String right(Expression e) {

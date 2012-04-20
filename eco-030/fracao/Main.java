@@ -10,16 +10,9 @@ public class Main {
 	 * @patterns:
 	 * - english.
 	 * - i/o on Main class only.
-	 * - use _ in private atributes or methods.
-	 * - { (opening brackets) on same line.
-	 * - scope for grouped commands.
-	 * - use alternate operators when possible '?:'.
-	 * - avoid the usage of 'else'. Always use 'continue' or 'return'. 
 	 * 
 	 * @about:
 	 * - teacher: Fernando Santos (Universidade Federal de Itajubá, Campus Itabira).
-	 * - text editor: Sublime text 2, BlueJ, Eclipse.
-	 * - compiler: javac.
 	 * - forked from https://github.com/thyfl/unifei/tree/master/eco-030/calculadora, from Silva and Visconti.
 	 * - project hosted on https://github.com/thyfl/unifei/tree/master/eco-030/fracao.
 	 *
@@ -40,9 +33,7 @@ public class Main {
 		while(!exp.getInput("exit")){
 			System.out.println("");
 			exp.setInput(scan.nextLine());
-			System.out.println(calc.right(exp)); 
-			// called 'right' because in the example: 'A = 2+2', we consider '2+2' the 'right side'.
-			// future plans include calculations on the 'left side', 'A ='. 
+			System.out.println(calc.right(exp)); // called right like 'A = 1+1', the '1+1' is the right part.
 		}	
 	}
 }

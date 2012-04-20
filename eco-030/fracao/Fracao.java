@@ -53,21 +53,21 @@ public class Fracao {
 
 	//
 
-	public Fracao plus (Fracao f) {
-		return new Fracao(this.num * f.den + f.num * this.den, this.den * f.den);
+	public Fracao plus (Fracao that) {
+		return new Fracao(this.num * that.den + that.num * this.den, this.den * that.den);
 	}
 
-	public Fracao minus (Fracao f) {
-		int n1 = this.num * f.den, n2 = f.num * this.den;
-		return new Fracao(n1 - n2, this.den * f.den, n1 >= n2);
+	public Fracao minus (Fracao that) {
+		int n1 = this.num * that.den, n2 = that.num * this.den;
+		return new Fracao(n1 - n2, this.den * that.den, n1 >= n2);
 	}
 
-	public Fracao times (Fracao f) {
-		return new Fracao(this.num * f.num, this.den * f.den);
+	public Fracao times (Fracao that) {
+		return new Fracao(this.num * that.num, this.den * that.den);
 	}
 
 	// assuming its not x/0 or 0/0.
-	public Fracao divide (Fracao f) {
-		return new Fracao(this.num * f.den, this.den * f.num);
+	public Fracao divide (Fracao that) {
+		return new Fracao(this.num * that.den, this.den * that.num);
 	}
 }

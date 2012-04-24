@@ -52,7 +52,7 @@ public class Expression {
 
 			// get operators.
 			if (ic == 42 || ic == 43 || ic == 45 || ic == 47) { // TODO: use regular expressions.
-				// *42 +43 -45 /47
+				// *42 +43 -45 /47.
 				_right.add(Character.toString(c));
 				continue;
 			}

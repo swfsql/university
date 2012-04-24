@@ -49,7 +49,7 @@ class StringUnit {
 	public int length () {
 		_l = 0;
 		StringUnit su = this;
-		while((su = su.next) != null) ++_l; // length
+		while((su = su.next) != null) ++_l; // length.
 		return _l;
 	}
 }

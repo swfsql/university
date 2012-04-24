@@ -8,7 +8,7 @@ public class Main {
 	 * - Thiago Paixão Visconti (22233).
 	 * 
 	 * @patterns:
-	 * - english.
+	 * - english i/o.
 	 * - i/o on Main class only.
 	 * 
 	 * @about:

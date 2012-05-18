@@ -16,19 +16,6 @@ struct No
 		ra = chave;
 		strcpy(n, nome); 
 	}
-	
-	No* put (No *no) {
-		if (!next) {
-			next = no;
-			return 0;
-		}
-		if (no->ra == next->ra) {
-			No *antigo = next;
-			next = no;
-			return antigo;
-		}
-		return next->put(no);
-	}
 
 	int ra; // chave
 	char n[40];
@@ -60,13 +47,22 @@ struct Hashmap {
 
 	No get(/*K*/) {}
 
-	
-	No* put(No *no) {
-		return hash[no->ra % L]->put(no);
-	}
 	No* put(int K, No *no) {
-		no->ra = K;
-		return put(no);
+		// substitui no, retorna substituido.
+		No **next = &hash[no->ra % L]->next;
+		cout << "\n\nlet the carnage beggin!\n";
+		while(*next && (*next)->ra - K) {
+			cout << "*nxt: " << *next << "\n";
+			next = &(*next)->next;
+			cout << "*nxt: " << *next << "\n";
+			cout << "\n";
+		}
+		cout << "out!\n";
+		No *ret = *next;
+		*next = no;
+		cout << "no: " << no << "; " << *next << "\n";
+		cout << "return: " << ret << "\n\n";
+		return ret;
 	}
 
 	No remove(/*K*/) {}
@@ -92,14 +88,15 @@ int main()
 	//
 
 	strcpy(nome, "aluno1");
-	aluno = new No (nome);
-	hm->put(2, aluno);
-	cout << "\nadicionou: " << hm->hash[2]->next->n << ", de ra = 2.\n";
+	aluno = new No (2, nome);
+	hm->put(aluno->ra, aluno);
+	cout << "\nadicionou: " << hm->hash[2]->next->n << ", de ra = " << hm->hash[2]->next->ra << ".\n";
 
 	strcpy(nome, "aluno2");
-	aluno = new No (nome);
-	cout << "\nfoi subtituido: " << hm->put(2, aluno)->n << ".";
-	cout << "\nno lugar: " << hm->hash[2]->next->n << ", de ra = 2.\n";
+	aluno = new No (2, nome);
+	cout << "\nfoi subtituido: " << hm->put(aluno->ra, aluno)->n << ".";
+	cout << "\nno lugar: " << hm->hash[2]->next->n << ", de ra = " << hm->hash[2]->next->ra << ".\n";
+	
 	
 	return 0;
 }

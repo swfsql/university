@@ -4,13 +4,7 @@ using namespace std;
 
 struct No
 {
-	No () {
-		next = 0;
-	}
-	No (char nome[40]) {
-		next = 0;
-		strcpy(n, nome); 
-	}
+	No () { next = 0;}
 	No (int chave, char nome[40]) {
 		next = 0;
 		ra = chave;
@@ -35,21 +29,21 @@ struct Hashmap {
 	}
 
 	// para implementar
-	int size() {return l;}
+	int size() {return l;} // length
 
-	bool isEmpty() {return l == 0;}	
+	bool isEmpty() {return l == 0;}	// 0: nao-vazia; 1: vazia
 
-	No* get(int K) {
-		return *get2(K);
-	}
+	No* get(int K) { return *get2(K);} // retorna o endereco de um No.
+
 	No** get2(int K) {
+		// retorna um atributo de No, o next. O endereco dele.
 		No** next = &hash[K % L]->next;
 		while(*next && (*next)->ra - K) next = &(*next)->next;
 		return next;
 	}
 
 	No* put(int K, No *no) {
-		// substitui no, retorna substituido, null se nao substituiu.
+		// Adiciona um No. retorna o No substituido, se houver. Senao retorna null.
 		No **next = get2(K);
 		No *ret = *next;
 		*next = no;
@@ -58,6 +52,7 @@ struct Hashmap {
 	}
 
 	No* remove(int K) {
+		// remove e retorna um No do hash. Se nao existe, retorna null.
 		No** next = get2(K);
 		No* ret = *next;
 		if(*next) *next = (*next)->next; else (*next) = 0;
@@ -67,7 +62,19 @@ struct Hashmap {
 
 	/*I keys() {}*/
 
-	void clear() {}
+	void clear() {
+		// remove todos os No do hash.
+		int i = -1;
+		while(++i < l) rmr(hash[i]->next);
+		l = 0;
+	}
+
+	void rmr(No* no) {
+		// remove deste No pra frente (remove recursivo).
+		if (!no) return;
+		rmr(no->next);
+		delete no;
+	}
 
 	/*I iterator() {}*/
 };
@@ -132,6 +139,14 @@ int main()
 
 	cout << "lista esta vazia? " << hm->isEmpty() << "\n";
 	cout << "qual o tamanho dela? " << hm->size() << "\n";
+
+	cout << "\nclear()"; hm->clear();
+
+	cout << "\nlista esta vazia? " << hm->isEmpty() << "\n";
+	cout << "qual o tamanho dela? " << hm->size() << "\n";
+
+	cout << "mostre o nome do aluno 16: " << (hm->get(16)? hm->get(16)->n : "nao") << "\n";
+
 
 	return 0;
 }

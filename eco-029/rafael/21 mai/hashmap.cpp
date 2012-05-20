@@ -34,7 +34,7 @@ struct Hashmap {
 	// para implementar
 	int size() {return l;} // length
 
-	bool isEmpty() {return l == 0;}	// 0: nao-vazia; 1: vazia
+	bool isEmpty() {return l == 0;}	// 0: nao-vazio_e_tamanho; 1: vazio_e_tamanho
 
 	No* get(int K) { return *get2(K);} // retorna o endereco de um No.
 
@@ -72,9 +72,7 @@ struct Hashmap {
 
 	void rmr(No** next) {
 		// remove deste No pra frente (remove recursivo).
-		cout << ".";
 		if (!*next) return;
-		cout << "|||" << (*next)->ra;
 		rmr(&(*next)->next);
 		delete *next;
 		*next = 0;
@@ -117,7 +115,7 @@ struct Iterator
         // iterator
         k = new int[l];
         i = -1;
-        while(++i < l) k[i] = iter[0]->ra;
+        while(++i < l) k[i] = iter[i]->ra;
     }
     
     void getr(No *no)
@@ -139,7 +137,7 @@ Hashmap *h;
 Iterator *I;
 
 // funcoes utilizadas no main().
-void vazia();
+void vazio_e_tamanho();
 void tamanho();
 void put(int, char[40]);
 void get(int);
@@ -148,21 +146,17 @@ void iter();
 void keys();
 
 // teste das structs
-int main()
-{
-	int g = 2;
-	int *Z;
-	Z = new int[g];
-	//return 0;
-
-	cout << "Hashmap dinamico.\n Input/output nao acontece em structs.\nFuncoes fora de structs servem para testar as structs apenas.\nHashMap e Iterador sao globais para simplificar os testes.\n\n";
-
-	cout << "tamanho do hash: 7\n";
+int main() {
+	cout << "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
+	cout << "Hashmap dinamico. Input/output nao acontece em structs.\nCodigo fora de structs serve para implementa-las.\nHashMap e Iterador sao globais para simplificar os testes.\n\n";
+	cout << "Para rever os testes rodei o programa e deixei lado-a-lado com codigo, \nia veriicando o output de acordo";
+	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
+	cout << "\n\ntamanho do hash: 7.\n";
 	h = new Hashmap(7);
 
-	vazia(); tamanho();
+	vazio_e_tamanho();
 	put(2, "aluno 2a");
-	vazia(); tamanho();
+	vazio_e_tamanho();
 	put(2, "aluno 2b");
 	tamanho();
 	put(9, "aluno 9");
@@ -177,24 +171,28 @@ int main()
 	rm(3);
 	get(16);
 	get(2);
-	vazia(); tamanho();
-	cout << "\nclear()"; h->clear();
-	vazia(); tamanho();
-	get(16);
-	
+	vazio_e_tamanho();
 
-	cout << "\n\nagora faremos testes sobre o iterador. adicionaremos 16 alunos";
+	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
+
+	cout << "\nlimpado todos os cadastros."; h->clear();
+	vazio_e_tamanho();
+	get(16);
+
+	cout << "prerarar um hash para testar com um iterador:\n";
 	put(1, "aluno 1"); 
 	put(2, "aluno 2"); put(3, "aluno 3"); put(4, "aluno 4"); put(5, "aluno 5"); put(6, "aluno 6"); put(7, "aluno 7"); put(8, "aluno 8");
 	put(9, "aluno 9"); put(10, "aluno 10"); put(11, "aluno 11"); put(12, "aluno 12"); put(13, "aluno 13"); put(14, "aluno 14"); put(15, "aluno 15"); 
 	put(16, "aluno 16");
-	vazia(); tamanho();
+	vazio_e_tamanho();
 
 	// pointer error aqui.
-	cout << "agora criaremos um iterador para o hash.";
+	cout << "testes do iterador:\n";
 	I = new Iterator(h);
 	iter();
 	keys();
+
+	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
 
 	rm(0);
 	rm(1);
@@ -202,14 +200,16 @@ int main()
 	rm(4);
 	rm(5);
 	rm(5);
-	vazia(); tamanho();
+	vazio_e_tamanho();
 
 	cout << "atualizamos o Iterador."; I->refresh();
 	iter();
 	keys();
 
-	cout << "\nclear()"; h->clear();
-	vazia(); tamanho();
+	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
+
+	cout << "\nlimpado todos os cadastros."; h->clear();
+	vazio_e_tamanho();
 
 	cout << "atualizamos o Iterador."; I->refresh();
 	iter();
@@ -218,19 +218,18 @@ int main()
 }
 
 // funcoes utilizadas no main().
-void vazia() {cout << "\nhash " << (h->isEmpty() ? "" : "nao") << " esta vazio.\n";}
+void vazio_e_tamanho() {cout << "\nhash " << (h->isEmpty() ? "" : "nao " ) << "esta vazio, com " << h->size() << " alunos cadastrados.\n";}
 void tamanho() {cout << "hash possui " << h->size() << " alunos cadastrados.\n\n";}
 void put(int K, char nome[40]) {
 	No* A = new No(K, nome);
 	No* B = h->put(A->ra, A);
-	if (B) cout << "\nfoi substituido o aluno de ra " << B->ra << " chamado " << B->n << "\n";
+	if (B) cout << "\nfoi substituido o aluno de ra " << B->ra << " chamado " << B->n << ".\n";
 	get(K);
 }
 void get(int K){
 	No* A;
-	cout << "aluno de ra = " << K << ((A = h->get(K))? "" : " nao") << " existe.";
-	if(!A) return;
-	cout << " Seu ra e: " << A->ra << ", e seu nome e: " << A->n <<"\n"; 
+	cout << "aluno de ra: " << K << ((A = h->get(K))? "" : " nao") << " existe.";
+	if (A) cout << " Seu nome: " << A->n <<".\n"; else cout << "\n\n";
 }
 void rm(int K) {
 	No* A = h->remove(K);
@@ -238,13 +237,15 @@ void rm(int K) {
 	if (A) get(K);
 }
 void iter() {
-	cout << "\nagora geraremos um array das chaves do hash. e as mostraremos em ordem crescente.";
+	cout << "\nmostrar RAs em  ordem crescente:";
 	int i = -1, *is = I->iterador();
-	while(++i < I->l) cout << "ra: " << is[i];
+	while(++i < I->l) cout << " " << is[i];
+	cout << "\n";
 }
 void keys() {
-	cout << "\ntambem foi gerado um array de alunos, ordenados de acordo com suas chaves.";
+	cout << "\n\nmostrar alunos ordenados de acordo com seus RAs:";
 	int i = -1;
 	No **as = I->keys();
-	while(++i < I->l) cout << "ra: " << as[i]->ra << ", nome: " << as[i]->n;
+	while(++i < I->l) cout << "\nRA: " << as[i]->ra << ", nome: " << as[i]->n;
+	cout << "\n\n";
 }

@@ -58,7 +58,7 @@ struct Hashmap {
 		// remove e retorna um No do hash. Se nao existe, retorna null.
 		No** next = get2(K);
 		No* ret = *next;
-		if(*next) *next = (*next)->next; else (*next) = 0;
+		if(*next) *next = (*next)->next;
 		l -= !!ret;
 		return ret;
 	}
@@ -66,15 +66,18 @@ struct Hashmap {
 	void clear() {
 		// remove todos os No do hash.
 		int i = -1;
-		while(++i < l) rmr(hash[i]->next);
+		while(++i < L) rmr(&hash[i]->next);
 		l = 0;
 	}
 
-	void rmr(No* no) {
+	void rmr(No** next) {
 		// remove deste No pra frente (remove recursivo).
-		if (!no) return;
-		rmr(no->next);
-		delete no;
+		cout << ".";
+		if (!*next) return;
+		cout << "|||" << (*next)->ra;
+		rmr(&(*next)->next);
+		delete *next;
+		*next = 0;
 	}
 };
 
@@ -82,12 +85,15 @@ struct Iterator
 {
     No **iter;
     Hashmap *hm;
-    int l, j, *k;
+    int l, j;
+    int *k;
 
     // http://paulsolt.com/2009/01/stl-pointers-objects-and-sorting/
     struct Comparador { bool operator() (No* i,No* j) { return i->ra < j->ra;}};
 
-    Iterator(Hashmap* hm) { refresh(hm);}
+    Iterator(Hashmap* hm) { 
+    	refresh(hm);
+    }
 
     void refresh(Hashmap* HM) {
     	hm = HM;
@@ -96,10 +102,13 @@ struct Iterator
 
     void refresh() {
     	j = -1; 
+        if(iter) {
+        	delete[] iter;
+        	delete[] k;
+        }
         l = hm->size();
-        if(iter) delete[] iter;
         iter = new No*[l];
-        
+
         // keys
         int i = -1;
         while(++i<hm->L) getr(hm->hash[i]->next);
@@ -108,7 +117,7 @@ struct Iterator
         // iterator
         k = new int[l];
         i = -1;
-        while(++i < l) k[i] = iter[i]->ra;
+        while(++i < l) k[i] = iter[0]->ra;
     }
     
     void getr(No *no)
@@ -126,7 +135,7 @@ struct Iterator
 };
 
 // variaveis globais (utilizadas nos testes).
-Hashmap *hm;
+Hashmap *h;
 Iterator *I;
 
 // funcoes utilizadas no main().
@@ -141,10 +150,15 @@ void keys();
 // teste das structs
 int main()
 {
+	int g = 2;
+	int *Z;
+	Z = new int[g];
+	//return 0;
+
 	cout << "Hashmap dinamico.\n Input/output nao acontece em structs.\nFuncoes fora de structs servem para testar as structs apenas.\nHashMap e Iterador sao globais para simplificar os testes.\n\n";
 
 	cout << "tamanho do hash: 7\n";
-	hm = new Hashmap(7);
+	h = new Hashmap(7);
 
 	vazia(); tamanho();
 	put(2, "aluno 2a");
@@ -164,7 +178,7 @@ int main()
 	get(16);
 	get(2);
 	vazia(); tamanho();
-	cout << "\nclear()"; hm->clear();
+	cout << "\nclear()"; h->clear();
 	vazia(); tamanho();
 	get(16);
 	
@@ -178,7 +192,7 @@ int main()
 
 	// pointer error aqui.
 	cout << "agora criaremos um iterador para o hash.";
-	I = new Iterator(hm);
+	I = new Iterator(h);
 	iter();
 	keys();
 
@@ -194,7 +208,7 @@ int main()
 	iter();
 	keys();
 
-	cout << "\nclear()"; hm->clear();
+	cout << "\nclear()"; h->clear();
 	vazia(); tamanho();
 
 	cout << "atualizamos o Iterador."; I->refresh();
@@ -204,22 +218,22 @@ int main()
 }
 
 // funcoes utilizadas no main().
-void vazia() {cout << "\nhash " << (hm->isEmpty() ? "" : "nao") << " esta vazio.\n";}
-void tamanho() {cout << "hash possui " << hm->size() << " alunos cadastrados.\n\n";}
+void vazia() {cout << "\nhash " << (h->isEmpty() ? "" : "nao") << " esta vazio.\n";}
+void tamanho() {cout << "hash possui " << h->size() << " alunos cadastrados.\n\n";}
 void put(int K, char nome[40]) {
 	No* A = new No(K, nome);
-	No* B = hm->put(A->ra, A);
+	No* B = h->put(A->ra, A);
 	if (B) cout << "\nfoi substituido o aluno de ra " << B->ra << " chamado " << B->n << "\n";
 	get(K);
 }
 void get(int K){
 	No* A;
-	cout << "aluno de ra = " << K << ((A = hm->get(K))? "" : " nao") << " existe.";
+	cout << "aluno de ra = " << K << ((A = h->get(K))? "" : " nao") << " existe.";
 	if(!A) return;
 	cout << " Seu ra e: " << A->ra << ", e seu nome e: " << A->n <<"\n"; 
 }
 void rm(int K) {
-	No* A = hm->remove(K);
+	No* A = h->remove(K);
 	cout << "aluno de ra = " << K << (A? "" : " nao") << " existe para remocao.\n";
 	if (A) get(K);
 }

@@ -1,0 +1,19 @@
+1. Capa
+
+2. Descrição do trabalho:
+o trabalho envolve a construção e implementação de mapas orgaizados dinâmicamente por hash, e conuntos organizados por árvore binária. No caso do mapa implementamos usando alunos, com RA (Chave) e nome (Valor).
+
+3. Descrição das estruturas de dados utilizadas;
+No mapa, implementamos as estruturas 
+- No (Aluno), que contém um RA (Chave), um N (Nome) e um Next (Pointeiro para outro No, lista siplesmente encadeada).
+- Hashmap, que contém um tamanho máximo do hash L, um número de elementos inseridos l, e um vetor de Alunos 'heads', que servem para indicar o encadeamento, não são considerados em um sistema escolar.
+
+4. Explicação de como foi implementada cada operação;
+Mapa:
+- size(): retorna um inteiro administrado por outras operações.
+- isEmpty(): retorna um teste do número de elementos com 'nenhum'
+- get(K): retorna o get2(K) acessado, de acordo com a chave pedida.
+- - get2(K): Retorna o endereço de um ponteiro que aponta para o Nó que contenha a chave. Se a chave não é encontrada, o último ponteiro aponta para null, e este é retornado.
+a partir do Nó head de acordo com a fórmula do hash, começamos a procurar a chave numa lista encadeada. Paramos se encontrarmos o Nó ou chegamos ao último Nó.
+- put(K, no): Adicionamos um Nó. Fazemos isso de acordo com sua chave, começando com a fórmula no hash. então nos deparamos com uma lista encadeada. Percorremo-a até encontrar um RA já existente, ou o fim dela. Ou substituímos pelo novo aluno e retornamos o antigo, ou adicionamosno final da lista e retornamos null. Nos dois casos o tamanho da lista é tratado devidamente.
+- remove(K): removems um nó, de acordo com uma chave, que indica uma lista encadeada do hash. Percorremos a lista procurando a chave. Se acharmos, retornamos ela, tratando de arrumar os  ponteiros a sua volta da lista, e também do tamanho da lista. Se chegarmos ao fim da lista, retornamos null.

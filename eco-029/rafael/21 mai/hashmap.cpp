@@ -83,15 +83,13 @@ struct Iterator
 {
     No **iter;
     Hashmap *hm;
-    int l, j;
+    int l, j, pos;
     int *k;
 
     // http://paulsolt.com/2009/01/stl-pointers-objects-and-sorting/
     struct Comparador { bool operator() (No* i,No* j) { return i->ra < j->ra;}};
 
-    Iterator(Hashmap* hm) { 
-    	refresh(hm);
-    }
+    Iterator(Hashmap* hm) { refresh(hm);}
 
     void refresh(Hashmap* HM) {
     	hm = HM;
@@ -99,7 +97,8 @@ struct Iterator
     }
 
     void refresh() {
-    	j = -1; 
+    	j = -1;
+    	pos = 0; 
         if(iter) {
         	delete[] iter;
         	delete[] k;
@@ -129,6 +128,10 @@ struct Iterator
     int* iterador() { return k;}
 
     No** keys() { return iter;}
+
+    bool hasNext() { return pos < l;}
+
+    No* nextObject () { return (hasNext() ? iter[pos++] : 0 );}
 
 };
 
@@ -204,7 +207,7 @@ int main() {
 
 	cout << "atualizamos o Iterador."; I->refresh();
 	iter();
-	keys();
+	keys2();
 
 	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
 
@@ -243,6 +246,14 @@ void iter() {
 	cout << "\n";
 }
 void keys() {
+	cout << "\n\nmostrar alunos ordenados de acordo com seus RAs:";
+	I->pos = 0;
+	No* no;
+	while(no = I->nextObject()) cout << "\nRA: " << no->ra << ", nome: " << no->n;
+	cout << "\n\n";
+}
+// código alternativo que chama realmente as keys.
+void keys2() {
 	cout << "\n\nmostrar alunos ordenados de acordo com seus RAs:";
 	int i = -1;
 	No **as = I->keys();

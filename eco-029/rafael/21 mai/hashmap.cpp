@@ -148,6 +148,7 @@ void get(int);
 void rm(int);
 void iter();
 void keys();
+void keys2();
 
 // teste das structs
 int main() {

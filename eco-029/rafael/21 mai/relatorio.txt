@@ -28,3 +28,71 @@ método getr (get recursivo) adiciona cadastros encadeamente linear, recursivamet
 método iterador retorna k (vetor com chaves ordenadas), gerado no refresh, a partir do iter.
 método keys retorna iter (vetor com cadastros ordenados pelas chaves), gerado no refreh.
 
+
+
+testes:
+Realizados por implementação no main, utilizando funções.
+Primeiro indicamos a inicialização do hash. 
+Sempre verificamos a quantidade de cadastros.
+
+Adiciona aluno 2a, que depois é sustituído, aluno 2b.
+Adiciona aluno 9, que faz parte do encadeamento do aluno 2b.
+Aluno 2b é substituído por 2c, pra ver se o encadeamento sai correto.
+
+Verifica-se a existência de alunos inexistentes, aluno 15.
+Remove um aluno existente, 2c. Então verifica a existência dele.
+Depois verifica a existência do aluno 16, confirmando o encadeamento dele.
+Tenta remover um aluno inexistente, 3.
+
+Então partimos para o teste do iterador. Primeiro limpamos o hash. Então adicionamos 16 alunos, do 1 ao 16.
+Então criamos um iterador, e geramos o iter (vetor de ponteiros de cadastros) e o k (vator de chaves), mostrando-os, des-respectivamente.
+Então removemos alguns cadastros e revemos o iterador. Então limpamos e hash e revemos o iterador, vazio.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

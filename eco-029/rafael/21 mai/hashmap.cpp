@@ -76,6 +76,7 @@ struct Hashmap {
 		rmr(&(*next)->next);
 		delete *next;
 		*next = 0;
+		--l;
 	}
 };
 

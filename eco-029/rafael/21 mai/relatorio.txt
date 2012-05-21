@@ -1,3 +1,7 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 funcionamento das structs e funções no hashmap..
 
 o programa tem 3 (+1) structs, sendo 2 métodos na primeira, 9 na segunda e 9 na terceira.
@@ -29,6 +33,8 @@ método iterador retorna k (vetor com chaves ordenadas), gerado no refresh, a par
 método keys retorna iter (vetor com cadastros ordenados pelas chaves), gerado no refreh.
 
 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 
 testes:
 Realizados por implementação no main, utilizando funções.
@@ -49,15 +55,18 @@ Então criamos um iterador, e geramos o iter (vetor de ponteiros de cadastros) e 
 Então removemos alguns cadastros e revemos o iterador. Então limpamos e hash e revemos o iterador, vazio.
 
 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+Conclusão:
+
+Um bom exercício para implementar. 
+Sistemas geográficos/escolares poderiam usá-los facilmente. Como os cadastros são maiores, veríamos uma grande performace no acesso aos dados, pois a árvore binária/hash são mais eficientes do que uma lista encadeada, por exemplo. 
+Mas não vemos essa performasse com pequenos cadastros, talvez veríamos em algumas simulações gráficas com partículas.
 
 
 
-
-
-
-
-
-
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
 

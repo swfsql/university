@@ -170,21 +170,21 @@ int main() {
 	tamanho();
 	put(16, "aluno 16");
 	tamanho();
-	get(15);
+	get(15); cout << "\n";
 	rm(2);
 	tamanho();
 	rm(3);
-	get(16);
-	get(2);
+	get(16); cout << "\n";
+	get(2);	cout << "\n";
 	vazio_e_tamanho();
 
-	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
+	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n";
 
-	cout << "\nlimpado todos os cadastros."; h->clear();
+	cout << "\nLimpado todos os cadastros.\n\n\n"; h->clear();
 	vazio_e_tamanho();
 	get(16);
 
-	cout << "prerarar um hash para testar com um iterador:\n";
+	cout << "\n\nprerarar um hash para testar com um iterador:\n";
 	put(1, "aluno 1"); 
 	put(2, "aluno 2"); put(3, "aluno 3"); put(4, "aluno 4"); put(5, "aluno 5"); put(6, "aluno 6"); put(7, "aluno 7"); put(8, "aluno 8");
 	put(9, "aluno 9"); put(10, "aluno 10"); put(11, "aluno 11"); put(12, "aluno 12"); put(13, "aluno 13"); put(14, "aluno 14"); put(15, "aluno 15"); 
@@ -192,73 +192,80 @@ int main() {
 	vazio_e_tamanho();
 
 	// pointer error aqui.
-	cout << "testes do iterador:\n";
+	cout << "\nTestes do iterador:\n";
 	I = new Iterator(h);
 	iter();
 	keys();
 
-	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
+	cout << "\n\n\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n";
 
-	rm(0);
-	rm(1);
-	rm(8);
-	rm(4);
-	rm(5);
-	rm(5);
+	rm(0); cout << "\n";
+	rm(1); cout << "\n";
+	rm(8); cout << "\n";
+	rm(4); cout << "\n";
+	rm(5); cout << "\n";
+	rm(5); cout << "\n";
 	vazio_e_tamanho();
 
-	cout << "atualizamos o Iterador."; I->refresh();
+	cout << "Atualizamos o Iterador."; I->refresh();
 	iter();
 	keys2();
 
 	cout << "\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n";
 
-	cout << "\nlimpado todos os cadastros."; h->clear();
+	cout << "\nLimpado todos os cadastros.\n"; h->clear();
 	vazio_e_tamanho();
 
-	cout << "atualizamos o Iterador."; I->refresh();
+	cout << "\nAtualizamos o Iterador.\n\n"; 
+	I->refresh();
 	iter();
 	keys();
 	return 0;
 }
 
 // funcoes utilizadas no main().
-void vazio_e_tamanho() {cout << "\nhash " << (h->isEmpty() ? "" : "nao " ) << "esta vazio, com " << h->size() << " alunos cadastrados.\n";}
-void tamanho() {cout << "hash possui " << h->size() << " alunos cadastrados.\n\n";}
+void vazio_e_tamanho() {cout << "\tHash " << (h->isEmpty() ? "" : "nao " ) << "esta vazio, com " << h->size() << " alunos cadastrados.\n\n";}
+void tamanho() {cout << "\tHash tem " << h->size() << " alunos cadastrados.\n\n";}
 void put(int K, char nome[40]) {
 	No* A = new No(K, nome);
+	cout << "\nInserindo o aluno de RA: " << A->ra << ", nome " << A->n << ".\n";
 	No* B = h->put(A->ra, A);
-	if (B) cout << "\nfoi substituido o aluno de ra " << B->ra << " chamado " << B->n << ".\n";
+	if (B) cout << "Foi substituido o aluno de RA: " << B->ra << ", nome: " << B->n << ".\n";
 	get(K);
 }
 void get(int K){
 	No* A;
-	cout << "aluno de ra: " << K << ((A = h->get(K))? "" : " nao") << " existe.";
-	if (A) cout << " Seu nome: " << A->n <<".\n"; else cout << "\n\n";
+	cout << "\tAluno de RA: " << K << ((A = h->get(K))? "" : " nao") << " existe.";
+	if (A) cout << " Nome: " << A->n <<".\n"; else cout << "\n";
 }
 void rm(int K) {
 	No* A = h->remove(K);
-	cout << "aluno de ra = " << K << (A? "" : " nao") << " existe para remocao.\n";
-	if (A) get(K);
+	cout << "Aluno de RA: " << K << (A? "" : " nao") << " existe para remocao.\n";
+	if (!A) {
+		cout << "\n";
+		return;
+	}
+	cout << "Removendo o aluno de RA: " << A->ra << ", nome: " << A->n << ".\n"; 
+	get(K);
 }
 void iter() {
-	cout << "\nmostrar RAs em  ordem crescente:";
+	cout << "Mostrar RAs em  ordem crescente:\n\t";
 	int i = -1, *is = I->iterador();
 	while(++i < I->l) cout << " " << is[i];
 	cout << "\n";
 }
 void keys() {
-	cout << "\n\nmostrar alunos ordenados de acordo com seus RAs:";
+	cout << "\nMostrar alunos ordenados de acordo com seus RAs:";
 	I->pos = 0;
 	No* no;
-	while(no = I->nextObject()) cout << "\nRA: " << no->ra << ", nome: " << no->n;
+	while(no = I->nextObject()) cout << "\n\tRA: " << no->ra << ", nome: " << no->n << ".";
 	cout << "\n\n";
 }
 // código alternativo que chama realmente as keys.
 void keys2() {
-	cout << "\n\nmostrar alunos ordenados de acordo com seus RAs:";
+	cout << "\nMostrar alunos ordenados de acordo com seus RAs:";
 	int i = -1;
 	No **as = I->keys();
-	while(++i < I->l) cout << "\nRA: " << as[i]->ra << ", nome: " << as[i]->n;
+	while(++i < I->l) cout << "\n\tRA: " << as[i]->ra << ", nome: " << as[i]->n << ".";
 	cout << "\n\n";
 }

@@ -12,10 +12,39 @@ public class Calculator {
 
 		System.out.println("___");
 
-		return _right(e.getRight().head());
+		return _right(e.getRightRpn());
 	}
 
-	private String _right(StringUnit h) {
+	private String _right(List rpn) {
+		SuperInt a, b;
+		String now;
+		int iNow;
+
+		rpn.start();
+		while(rpn.next() != null) {
+			now = rpn.now.value;
+			iNow = (int) now.charAt(0);
+			System.out.print("rpn: "); System.out.println(now);
+
+			// number
+			if (iNow >= 48 && iNow <= 57) continue;
+
+			b = new SuperInt(rpn.prev().value);
+			a = new SuperInt(rpn.prev().value);
+			rpn.rmNext();
+			rpn.rmNext();
+
+			// *42 +43 -45 /47
+			if (iNow == 43)	rpn.now.value = a.plus(b).toString();
+			if (iNow == 45)	rpn.now.value = a.minus(b).toString();
+			if (iNow == 42)	rpn.now.value = a.times(b).toString();
+			if (iNow == 47)	rpn.now.value = a.divide(b).toString();
+		}
+		rpn.start();
+		return rpn.next().value;
+	}
+
+	/*private String _right(StringUnit h) {
 		SuperInt num1, num2;          
 		char op;
 
@@ -36,5 +65,5 @@ public class Calculator {
 					"error - divide by 0") : 
 			num1.divide(num2).toString();
 		return "error";
-	}
+	}*/
 }

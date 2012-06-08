@@ -14,7 +14,8 @@ public class List {
 
 	public void add (String s) {
 		_unit.next = new StringUnit(s);
-		if (_unit != _head) _unit.next.prev = _unit;
+		//if (_unit != _head) _unit.next.prev = _unit;
+		_unit.next.prev = _unit;
 		_unit = _unit.next;
 		_tail = _unit;
 		System.out.print("add: "); System.out.println(s);
@@ -43,11 +44,25 @@ public class List {
 	}
 
 	// iterator
-	public void rmNext() {
-		if(now == null || now.next == null) return;
+	public String rmNext() {
+		if(now == null || now.next == null) {
+			System.out.println("FUUUUUUU-");
+			return null;
+		}
 		if(_tail == now.next) _tail = now;
+		String ret = now.next.value;
 		now.next = now.next.next;
 		now.next.prev = now;
+		return ret;
+	}
+
+	public void print() {
+		StringUnit i = _head;
+		while(i.next != null) {
+			i = i.next;
+			System.out.print(i.value); System.out.print(" ");
+		}
+
 	}
 
 

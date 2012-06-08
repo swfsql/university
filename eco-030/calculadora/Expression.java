@@ -102,6 +102,9 @@ public class Expression {
 
 	private List a2 = new List(), a3 = new List();
 	public void rpn () {
+
+		System.out.println("\nbuilding rpn..");
+
 		a2.clear();
 		a3.clear();
 
@@ -110,6 +113,8 @@ public class Expression {
 
 		_right.start(); // iteration, from head
 		while(_right.next() != null) {
+			System.out.print("exp: "); a3.print(); System.out.println("");
+			System.out.print("stack: "); a2.print(); System.out.println("");System.out.println("");
 			now = _right.now.value;
 			iNow = (int) now.charAt(0);
 
@@ -130,8 +135,6 @@ public class Expression {
 			// *42 +43 -45 /47
 			{
 				a2.add(now);
-				a2.end();
-				a2.prev();
 				op();
 			}
 			
@@ -172,11 +175,17 @@ public class Expression {
 
 	private void op() {
 		int a, b;
-		if(a2.now == null) return;
+
+		a2.end();
+		a2.prev();
+		if(a2.now == null) {
+			System.out.println("FUUUUU- (2)");
+			return;
+		}
 		String now = a2.now.value;
 		
 		a = (int) _right.now.value.charAt(0);
-		b = (int) (int) now.charAt(0);
+		b = (int) now.charAt(0);
 
 		System.out.print("a: "); System.out.println(a);
 		System.out.print("b: "); System.out.println(b);
@@ -192,6 +201,8 @@ public class Expression {
 			op();
 		}
 	}
+
+
 }
 
 // TODO: try to create just an object instead of an entire class.

@@ -1,11 +1,22 @@
 public class Calculator {
 	
 	public String right(Expression e) {
+
+		System.out.println("___");
+		StringUnit rpn = e.getRightRpn().head();
+		while(rpn.next != null) {
+			rpn = rpn.next;
+			System.out.print("rpn: "); System.out.println(rpn.value);
+			
+		}
+
+		System.out.println("___");
+
 		return _right(e.getRight().head());
 	}
 
 	private String _right(StringUnit h) {
-		SuperInt num1, num2;
+		SuperInt num1, num2;          
 		char op;
 
 		if (h.next == null) return "";

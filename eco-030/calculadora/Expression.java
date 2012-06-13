@@ -58,15 +58,32 @@ public class Expression {
 				} // b) [1->3->2]
 
 				// TODO: example: 3,*,-,1 -> 3,*,-1.
+				int minus = 0;
+				if (iLast == '-') {
+					_right.end();
+					_right.prev();
+					StringUnit lastLast = _right.prev();
+					int iLastLast = 0;
+					if(lastLast != null) iLastLast = (int) lastLast.value.charAt(0);
+					if (iLastLast == 0 || iLastLast == '(' || iLastLast == '+' || iLastLast == '-' || iLastLast == '*' || iLastLast == '/') {
+						minus = 1;
+						if (lastLast == null) _right.start();
+						_right.rmNext();
+					}
+				}
 				
 
-				char[] number = new char[j-i];
+				char[] number = new char[j - i + minus];
 				num = numHead;
 				int k = i-1; 
-				while( (num = num.next) != null) number[++k-i] = num.value; // c) [132]
+				while( (num = num.next) != null) number[++k-i+minus] = num.value; // c) [132]
+				if (minus == 1) number[0] = '-';
 				
 
 				_right.add(new String(number));
+				_right.start();
+				_right.next();
+				System.out.print("FDPPPPPPPPPPPP: ");System.out.println(_right.now.value);
 				i = j-1;
 				j = 0;
 				continue;

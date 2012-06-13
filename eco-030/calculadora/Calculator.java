@@ -20,14 +20,18 @@ public class Calculator {
 		String now;
 		int iNow;
 
-		System.out.println("-=-=-=-=-=-=-=-=");
+		System.out.println("-=-=-=-=-=-=-=-=:");
 
 		rpn.start();
 		while(rpn.next() != null) {
 			System.out.print("exp: "); rpn.print(); System.out.println("");
 
 			now = rpn.now.value;
-			iNow = (int) now.charAt(0);
+			iNow = (int) now.charAt(0); 
+			if(iNow == '-' && now.length() > 1) {
+				int i2 =  now.charAt(1);
+				if (i2 >= '0' && i2 <= '9') iNow = i2;
+			}
 			System.out.print("rpn: "); System.out.println(now);
 
 			// number
@@ -48,6 +52,7 @@ public class Calculator {
 		System.out.print("exp: "); rpn.print(); System.out.println("");
 
 		rpn.start();
+		System.out.print("fuuuuuuuuuuuuuuuuuuuuu: "); System.out.println(rpn.now.value);
 		return rpn.next().value;
 	}
 

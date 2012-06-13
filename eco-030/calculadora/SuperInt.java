@@ -212,6 +212,7 @@ public class SuperInt {
 		}
 
 		temp = this.minus(si.times(mid));
+		System.out.print("shhit: "); System.out.println(mid.toString());
 		if (temp.getPositive() == 1) return mid;
 		else return mid.minus(si1);
 	}

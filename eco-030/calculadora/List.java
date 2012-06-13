@@ -50,6 +50,7 @@ public class List {
 			return null;
 		}
 		now.next.prev = null;
+		if(now == _head) _unit = now;
 		if(_tail == now.next) 
 		{
 			_tail = now;

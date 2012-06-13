@@ -43,6 +43,7 @@ public class Main {
 
 		while(!exp.getInput("exit")){
 			System.out.println("");
+			System.out.println("================================================");
 			exp.setInput(scan.nextLine());
 			System.out.println(calc.right(exp)); 
 			// called 'right' because in the example: 'A = 2+2', we consider '2+2' the 'right side'.

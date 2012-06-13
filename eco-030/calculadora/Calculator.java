@@ -20,8 +20,12 @@ public class Calculator {
 		String now;
 		int iNow;
 
+		System.out.println("-=-=-=-=-=-=-=-=");
+
 		rpn.start();
 		while(rpn.next() != null) {
+			System.out.print("exp: "); rpn.print(); System.out.println("");
+
 			now = rpn.now.value;
 			iNow = (int) now.charAt(0);
 			System.out.print("rpn: "); System.out.println(now);
@@ -40,6 +44,9 @@ public class Calculator {
 			if (iNow == 42)	rpn.now.value = a.times(b).toString();
 			if (iNow == 47)	rpn.now.value = a.divide(b).toString();
 		}
+
+		System.out.print("exp: "); rpn.print(); System.out.println("");
+
 		rpn.start();
 		return rpn.next().value;
 	}

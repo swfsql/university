@@ -49,10 +49,15 @@ public class List {
 			System.out.println("FUUUUUUU-");
 			return null;
 		}
-		if(_tail == now.next) _tail = now;
+		now.next.prev = null;
+		if(_tail == now.next) 
+		{
+			_tail = now;
+			if(_tail == _head) _tail = null;
+		}
 		String ret = now.next.value;
 		now.next = now.next.next;
-		now.next.prev = now;
+		if (now.next != null) now.next.prev = now;
 		return ret;
 	}
 

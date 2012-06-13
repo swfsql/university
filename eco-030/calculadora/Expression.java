@@ -51,13 +51,14 @@ public class Expression {
 
 				j = i;
 				numHead = num = new NumberSegment('0');
-				while(iNow >= 48 && iNow <= 57) {
+				while(iNow >= '0' && iNow <= '9') {
 					num = num.next = new NumberSegment(new Character((char) iNow));
 					if (++j >= l) break; // input has ended.
 					iNow = (int) _input.charAt(j);
 				} // b) [1->3->2]
 
 				// TODO: example: 3,*,-,1 -> 3,*,-1.
+				
 
 				char[] number = new char[j-i];
 				num = numHead;
@@ -72,27 +73,28 @@ public class Expression {
 			} 
 
 			// get operators. *42 +43 -45 /47
-			if (iNow == 42 || iNow == 43 || iNow == 45 || iNow == 47) { // TODO: use regular expressions.
+			if (iNow == '*' || iNow == '+' || iNow == '-' || iNow == '/') { // TODO: use regular expressions.
 				_right.add(new Character((char) iNow).toString());
 				continue;
 			}
 
 			// no . or ,
 
-			// (40 )41 [91 ]93 {123 }125	
-			if (iNow == 40 || iNow == 91 || iNow == 123) {
+			// (40 [91 {123	
+			if (iNow == '(' || iNow == '[' || iNow == '{') {
 				flag = true;
 
 				// != function or operator. *42 +43 -45 /47. 
-				if (iLast != 42 && iLast != 43 && iLast != 45 && iLast != 47) _right.add("*"); // ex.: 3 (2) -> 3 * 2
-				iNow = 40; // ([{ -> (((
+				if (iLast != '*' && iLast != '+' && iLast != '-' && iLast != '/' && iLast != 0) _right.add("*"); // ex.: 3 (2) -> 3 * 2
+				_right.add("(");
+				iNow = '('; // ([{ -> (((
 				continue;
 			}
 
 			// (40 )41 [91 ]93 {123 }125	
-			if (iNow == 41 || iNow == 93 || iNow == 125) {
+			if (iNow == ')' || iNow == ']' || iNow == '}') {
 				_right.add(")");
-				iNow = 41; // )]} -> )))
+				iNow = ')'; // )]} -> )))
 				continue;
 			}
 		}
@@ -149,6 +151,9 @@ public class Expression {
 			a2.prev();
 		}
 
+		System.out.print("exp: "); a3.print(); System.out.println("");
+			System.out.print("stack: "); a2.print(); System.out.println("");System.out.println("");
+
 		// a3 is the resulting rpn'zed expression
 	}
 
@@ -163,12 +168,13 @@ public class Expression {
 		// (40
 		if(iNow != 40) {
 			a3.add(now);
+			a2.prev();
 			a2.rmNext();
 			if(flag) close();
 		} else {
 			a2.prev();
-			a2.rmNext();
-			a2.rmNext();
+			System.out.print("rm: "); System.out.println(a2.rmNext());
+			System.out.print("rm: "); System.out.println(a2.rmNext());
 		}
 
 	}

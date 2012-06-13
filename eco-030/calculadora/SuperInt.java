@@ -5,12 +5,20 @@ public class SuperInt {
 		_positive = 1; // 0 = negative; 1 = positive;
 
 	public SuperInt(String v) {
+		int i = -1, j = 0, k = 0;
 		_x = new int[100];
 		_l = v.length();
-		int i = -1, j = 0;
+
+		if(v.charAt(0) == '-') {
+			_positive = 0;
+			++i;
+			++k;
+			--_l;
+		}
+		
 		while(++i < _l) if (v.charAt(i) == '0') ++j; else break; // 00001 -> 01.
 		i = -1; _l -= j;
-		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j) - 48;
+		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j + k) - 48;
 		if (_l == 0) _x[_l++] = 0;
 	}
 	// overload (by vector)
@@ -75,6 +83,14 @@ public class SuperInt {
 
 	public SuperInt plus (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
+
+		// maybe we will subtract
+		if(ints[0]._positive != ints[1]._positive) {
+			int a = ints[0]._positive;
+			ints[0]._positive = ints[1]._positive = 1;
+			return a == 1 ? minus(ints[1]) : ints[1].minus(ints[0]);
+		}
+
 		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1-bigger]._l, // small length.
@@ -89,12 +105,20 @@ public class SuperInt {
 				res[i] %= 10;
 			}
 			res[lBig] = plusOne;
-			return new SuperInt(res, lBig + plusOne);
+			return new SuperInt(res, lBig + plusOne, _positive);
 		}
 	}
 
 	public SuperInt minus (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
+
+		// maybe we will sum
+		if(ints[0]._positive != ints[1]._positive) {
+			int a = ints[0]._positive;
+			ints[0]._positive = ints[1]._positive = 0;
+			return a == 1 ? plus(ints[1]) : ints[1].plus(ints[0]);
+		}
+
 		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1 - bigger]._l, // small lenght.

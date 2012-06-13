@@ -115,7 +115,7 @@ public class SuperInt {
 		// maybe we will sum
 		if(ints[0]._positive != ints[1]._positive) {
 			int a = ints[0]._positive;
-			ints[0]._positive = ints[1]._positive = 0;
+			ints[0]._positive = ints[1]._positive = a == 1 ? 1 : 0;
 			return a == 1 ? plus(ints[1]) : ints[1].plus(ints[0]);
 		}
 
@@ -164,6 +164,7 @@ public class SuperInt {
 			res[] = new int[100];
 		SuperInt siRes = new SuperInt("0"); 
 
+
 		// calculate the multiplication.
 		{
 			int i = -1, j, plus = 0; // 0 to 8.
@@ -202,9 +203,12 @@ public class SuperInt {
 
 		// example: 20 / 3. what happens: lets say we're on '6'. 20 - 6*3 = 2 > 0, so maybe its not '6'. 
 		// now lets say we're on '7'. 20 - 7*3 = -1 < 0, so its below 7, wich is 6.
+		System.out.print("FAAAAAAAAAAACK: "); System.out.println(right.toString());
+		System.out.print("FAAAAAAAAAAACK: "); System.out.println(left.toString());
 		while(right.minus(left).getPositive() == 1) {
 			mid = new SuperInt("0").plus(left).plus(right);
 			mid.d2();
+			System.out.print("FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACK: "); System.out.println(mid.toString());
 			temp = this.minus(si.times(mid)); 
 			if (temp._l + temp._x[0] == 1) return mid; // found the exact answer.
 			if (temp.getPositive() == 1) left = new SuperInt("0").plus(mid).plus(si1);
@@ -212,7 +216,7 @@ public class SuperInt {
 		}
 
 		temp = this.minus(si.times(mid));
-		System.out.print("shhit: "); System.out.println(mid.toString());
+		System.out.print("shhiiiiiiiiiiiiiiiiit: "); System.out.println(mid.toString());
 		if (temp.getPositive() == 1) return mid;
 		else return mid.minus(si1);
 	}

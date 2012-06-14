@@ -143,6 +143,7 @@ public class Expression {
 			if (a2.now != null) {System.out.print("tail: "); System.out.println(a2.now.value);System.out.println("");}
 			now = _right.now.value;
 			iNow = (int) now.charAt(0);
+			if (iNow == '-' && now.length() > 1) iNow = (int) now.charAt(1); // -4 reads the number
 
 			// number
 			if (iNow >= 48 && iNow <= 57) 

@@ -61,15 +61,19 @@ public class Expression {
 				int minus = 0;
 				if (iLast == '-') {
 					_right.end();
-					_right.prev();
-					StringUnit lastLast = _right.prev();
+					//_right.prev();
+					StringUnit lastLast = _right.prev(false);
+					if (lastLast != null) {System.out.print("lasLast: "); System.out.println(lastLast.value);}
 					int iLastLast = 0;
 					if(lastLast != null) iLastLast = (int) lastLast.value.charAt(0);
+					System.out.print("iLasLast: "); System.out.println(iLastLast);
 					if (iLastLast == 0 || iLastLast == '(' || iLastLast == '+' || iLastLast == '-' || iLastLast == '*' || iLastLast == '/') {
 						minus = 1;
 						if (lastLast == null) _right.start();
 						_right.rmNext();
+						System.out.println("verifico aquela bagassa do menos");
 					}
+
 				}
 				
 
@@ -81,9 +85,8 @@ public class Expression {
 				
 
 				_right.add(new String(number));
-				_right.start();
-				_right.next();
-				System.out.print("FDPPPPPPPPPPPP: ");System.out.println(_right.now.value);
+				_right.end();
+				System.out.print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO: ");System.out.println(_right.now.value);
 				i = j-1;
 				j = 0;
 				continue;
@@ -122,6 +125,8 @@ public class Expression {
 	private List a2 = new List(), a3 = new List();
 	public void rpn () {
 
+		_right.print();
+
 		System.out.println("\nbuilding rpn..");
 
 		a2.clear();
@@ -132,8 +137,10 @@ public class Expression {
 
 		_right.start(); // iteration, from head
 		while(_right.next() != null) {
-			System.out.print("exp: "); a3.print(); System.out.println("");
+			System.out.print("exp: "); a3.print(); System.out.println(" ......................................");
 			System.out.print("stack: "); a2.print(); System.out.println("");System.out.println("");
+			a2.end();
+			if (a2.now != null) {System.out.print("tail: "); System.out.println(a2.now.value);System.out.println("");}
 			now = _right.now.value;
 			iNow = (int) now.charAt(0);
 
@@ -153,8 +160,8 @@ public class Expression {
 
 			// *42 +43 -45 /47
 			{
+				op(now);
 				a2.add(now);
-				op();
 			}
 			
 		}
@@ -196,32 +203,32 @@ public class Expression {
 
 	}
 
-	private void op() {
-		int a, b;
+	private void op(String now) {
+		int iNow, iLast;
 
 		a2.end();
-		a2.prev();
+
 		if(a2.now == null) {
-			System.out.println("FUUUUU- (2)");
+			System.out.println("empty stack");
 			return;
 		}
-		String now = a2.now.value;
+		String last = a2.now.value;
 		
-		a = (int) _right.now.value.charAt(0);
-		b = (int) now.charAt(0);
+		iNow = (int) now.charAt(0);
+		iLast = (int) last.charAt(0);
 
-		System.out.print("a: "); System.out.println(a);
-		System.out.print("b: "); System.out.println(b);
+		System.out.print("now: "); System.out.println(now);
+		System.out.print("last: "); System.out.println(last);
 
 		// *42 +43 -45 /47
-		a = a == 43 || a == 45 ? 1 : 2;
-		b = b == 43 || b == 45 ? 1 : b == 42 || b == 47 ? 2 : 0;
+		iNow = iNow == '+' || iNow == '-' ? 1 : 2;
+		iLast = iLast == '+' || iLast == '-' ? 1 : iLast == '*' || iLast == '/' ? 2 : 0;
 
-		if (a <= b) {
-			a3.add(now);
+		if (iNow <= iLast) {
+			a3.add(last);
 			a2.prev();
 			a2.rmNext();
-			op();
+			op(now);
 		}
 	}
 

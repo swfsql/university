@@ -29,6 +29,7 @@ public class Calculator {
 			now = rpn.now.value;
 			iNow = (int) now.charAt(0); 
 			if(iNow == '-' && now.length() > 1) {
+				System.out.println("hAHAHHAhahHAHAHAHAHAHHAhaHAHAHhAHahaaaahhaah");
 				int i2 =  now.charAt(1);
 				if (i2 >= '0' && i2 <= '9') iNow = i2;
 			}

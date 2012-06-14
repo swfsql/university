@@ -16,6 +16,7 @@ public class List {
 		_unit.next = new StringUnit(s);
 		//if (_unit != _head) _unit.next.prev = _unit;
 		_unit.next.prev = _unit;
+		System.out.print("_unit: "); System.out.println(_unit.value);
 		_unit = _unit.next;
 		_tail = _unit;
 		System.out.print("add: "); System.out.println(s);
@@ -38,6 +39,11 @@ public class List {
 	public void end() {
 		now = _tail;
 	}
+	public StringUnit prev(Boolean tail) {
+		if (now != null) now = now.prev;
+		if(!tail && _head == now) return null;
+		return now;
+	}
 	public StringUnit prev() {
 		if (now != null) now = now.prev;
 		return now;
@@ -51,6 +57,7 @@ public class List {
 		}
 		now.next.prev = null;
 		if(now == _head) _unit = now;
+		if (_unit == now.next) _unit = now;
 		if(_tail == now.next) 
 		{
 			_tail = now;

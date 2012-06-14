@@ -162,7 +162,8 @@ public class SuperInt {
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1-bigger]._l, // small length.
 			res[] = new int[100];
-		SuperInt siRes = new SuperInt("0"); 
+		SuperInt siRes = new SuperInt("0");
+
 
 
 		// calculate the multiplication.
@@ -180,12 +181,15 @@ public class SuperInt {
 				siRes = siRes.plus(new SuperInt(res, lBig + lSmall)); // TODO: optmize.
 				res = new int[100]; // TODO: optmize.
 			}
+			siRes._positive = ints[0]._positive * ints[1]._positive;
 			return siRes;
 		}
 	}
 
 	// binary search the answer, assuming its not x/0 or 0/0.
 	public SuperInt divide (SuperInt si) { // very slow
+		int positive = this._positive * si._positive;
+		this._positive = si._positive = 1;
 		SuperInt mid = new SuperInt("0");
 		SuperInt 
 			si1 = new SuperInt("1"), // has a value of 1.
@@ -210,13 +214,17 @@ public class SuperInt {
 			mid.d2();
 			System.out.print("FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACK: "); System.out.println(mid.toString());
 			temp = this.minus(si.times(mid)); 
-			if (temp._l + temp._x[0] == 1) return mid; // found the exact answer.
+			if (temp._l + temp._x[0] == 1) {
+				mid._positive = positive;
+				return mid; // found the exact answer.
+			}
 			if (temp.getPositive() == 1) left = new SuperInt("0").plus(mid).plus(si1);
 			else right = new SuperInt("0").plus(mid).minus(si1);
 		}
 
 		temp = this.minus(si.times(mid));
 		System.out.print("shhiiiiiiiiiiiiiiiiit: "); System.out.println(mid.toString());
+		mid._positive = positive;
 		if (temp.getPositive() == 1) return mid;
 		else return mid.minus(si1);
 	}

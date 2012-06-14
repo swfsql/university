@@ -39,9 +39,12 @@ public class Calculator {
 			if (iNow >= 48 && iNow <= 57) continue;
 
 			b = new SuperInt(rpn.prev().value);
-			a = new SuperInt(rpn.prev().value);
+			if (rpn.prev(false) != null){ System.out.println("oba"); a = new SuperInt(rpn.now.value);} else { System.out.println("merda"); a = new SuperInt("0");}
+			
 			rpn.rmNext();
 			rpn.rmNext();
+
+			System.out.print("o a: "); System.out.println(rpn.now.value);
 
 			// *42 +43 -45 /47
 			if (iNow == 43)	rpn.now.value = a.plus(b).toString();
@@ -56,27 +59,4 @@ public class Calculator {
 		System.out.print("fuuuuuuuuuuuuuuuuuuuuu: "); System.out.println(rpn.now.value);
 		return rpn.next().value;
 	}
-
-	/*private String _right(StringUnit h) {
-		SuperInt num1, num2;          
-		char op;
-
-		if (h.next == null) return "";
-		if (h.next.next != null && h.next.next.next != null) {
-			num1 = new SuperInt (h.next.value);
-			op = h.next.next.value.charAt(0);
-			num2 = new SuperInt (h.next.next.next.value);
-			if (op != 42 && op != 43 && op != 45 && op != 47) return "error";
-		} else return "error";
-
-		if (op == '+') return num1.plus(num2).toString();
-		if (op == '-') return num1.minus(num2).toString();
-		if (op == '*') return num1.times(num2).toString();
-		if (op == '/') return num2.toString().equals("0") ? 
-				(num1.toString().equals("0") ? 
-					"indeterminate" :  
-					"error - divide by 0") : 
-			num1.divide(num2).toString();
-		return "error";
-	}*/
 }

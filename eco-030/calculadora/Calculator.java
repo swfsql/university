@@ -39,7 +39,18 @@ public class Calculator {
 			if (iNow >= 48 && iNow <= 57) continue;
 
 			b = new SuperInt(rpn.prev().value);
-			if (rpn.prev(false) != null){ System.out.println("oba"); a = new SuperInt(rpn.now.value);} else { System.out.println("merda"); a = new SuperInt("0");}
+			if (rpn.prev(false) != null){ 
+				System.out.println("oba"); 
+				a = new SuperInt(rpn.now.value);
+				
+			} else { 
+				System.out.println("merda"); 
+				a = new SuperInt("0");
+				rpn.start();
+				rpn.add("0");
+				rpn.next();
+
+			}
 			
 			rpn.rmNext();
 			rpn.rmNext();

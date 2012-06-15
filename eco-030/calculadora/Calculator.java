@@ -1,73 +1,44 @@
 public class Calculator {
 	
-	public String right(Expression e) {
-
-		System.out.println("___");
-		StringUnit rpn = e.getRightRpn().head();
-		while(rpn.next != null) {
-			rpn = rpn.next;
-			System.out.print("rpn: "); System.out.println(rpn.value);
-			
-		}
-
-		System.out.println("___");
-
-		return _right(e.getRightRpn());
-	}
+	public String right(Expression e) {	return _right(e.getRightRpn());}
 
 	private String _right(List rpn) {
 		SuperInt a, b;
 		String now;
 		int iNow;
 
-		System.out.println("-=-=-=-=-=-=-=-=:");
-
 		rpn.start();
 		while(rpn.next() != null) {
-			System.out.print("exp: "); rpn.print(); System.out.println("");
 
 			now = rpn.now.value;
 			iNow = (int) now.charAt(0); 
 			if(iNow == '-' && now.length() > 1) {
-				System.out.println("hAHAHHAhahHAHAHAHAHAHHAhaHAHAHhAHahaaaahhaah");
 				int i2 =  now.charAt(1);
 				if (i2 >= '0' && i2 <= '9') iNow = i2;
 			}
-			System.out.print("rpn: "); System.out.println(now);
 
-			// number
-			if (iNow >= 48 && iNow <= 57) continue;
+			// number.
+			if (iNow >= '0' && iNow <= '9') continue;
 
+			// operator.
 			b = new SuperInt(rpn.prev().value);
-			if (rpn.prev(false) != null){ 
-				System.out.println("oba"); 
-				a = new SuperInt(rpn.now.value);
-				
-			} else { 
-				System.out.println("merda"); 
+			if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
+			else { 
 				a = new SuperInt("0");
 				rpn.start();
 				rpn.add("0");
 				rpn.next();
-
 			}
-			
 			rpn.rmNext();
 			rpn.rmNext();
 
-			System.out.print("o a: "); System.out.println(rpn.now.value);
-
-			// *42 +43 -45 /47
-			if (iNow == 43)	rpn.now.value = a.plus(b).toString();
-			if (iNow == 45)	rpn.now.value = a.minus(b).toString();
-			if (iNow == 42)	rpn.now.value = a.times(b).toString();
-			if (iNow == 47)	rpn.now.value = a.divide(b).toString();
+			if (iNow == '+') rpn.now.value = a.plus(b).toString();
+			if (iNow == '-') rpn.now.value = a.minus(b).toString();
+			if (iNow == '*') rpn.now.value = a.times(b).toString();
+			if (iNow == '/') rpn.now.value = a.divide(b).toString();
 		}
 
-		System.out.print("exp: "); rpn.print(); System.out.println("");
-
 		rpn.start();
-		System.out.print("fuuuuuuuuuuuuuuuuuuuuu: "); System.out.println(rpn.now.value);
 		return rpn.next().value;
 	}
 }

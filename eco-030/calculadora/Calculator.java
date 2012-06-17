@@ -21,14 +21,16 @@ public class Calculator {
 			if (iNow >= '0' && iNow <= '9') continue;
 
 			// operator.
-			b = new SuperInt(rpn.prev().value);
-			if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
-			else { 
-				a = new SuperInt("0");
-				rpn.start();
-				rpn.add("0");
-				rpn.next();
-			}
+			try {
+				b = new SuperInt(rpn.prev().value);
+				if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
+				else { 
+					a = new SuperInt("0");
+					rpn.start();
+					rpn.add("0");
+					rpn.next();
+				}
+			} catch (Exception e) { return e.getMessage();}
 			rpn.rmNext();
 			rpn.rmNext();
 
@@ -37,9 +39,7 @@ public class Calculator {
 				if (iNow == '-') rpn.now.value = a.minus(b).toString();
 				if (iNow == '*') rpn.now.value = a.times(b).toString();
 				if (iNow == '/') rpn.now.value = a.divide(b).toString();
-			} catch (Exception e) {
-				return e.getMessage();
-			}
+			} catch (Exception e) {	return e.getMessage();}
 		}
 
 		rpn.start();

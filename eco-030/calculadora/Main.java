@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> origin/thyviado
+
 import java.util.Scanner;
 
 public class Main {
@@ -81,9 +78,6 @@ public class Main {
 			// future plans include calculations on the 'left side', 'A ='. 
 		}	
 	}
-<<<<<<< HEAD
-=======
-=======
 import java.util.Scanner;
 
 public class Main {
@@ -163,6 +157,4 @@ public class Main {
 			// future plans include calculations on the 'left side', 'A ='. 
 		}	
 	}
->>>>>>> origin/master
->>>>>>> origin/thyviado
 }

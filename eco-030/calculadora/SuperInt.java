@@ -9,6 +9,7 @@ public class SuperInt {
 		_x = new int[100];
 		_l = v.length();
 
+		// if enter -1, makes it 1, positive = 0.
 		if(v.charAt(0) == '-') {
 			_positive = 0;
 			++i;
@@ -21,11 +22,9 @@ public class SuperInt {
 		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j + k) - 48;
 		if (_l == 0) _x[_l++] = 0;
 	}
-	// overload (by vector)
-	private SuperInt(int v[], int n) {
-		_init(v, n);
-	}
-	// overload (negative)
+	// overload (by vector).
+	private SuperInt(int v[], int n) { _init(v, n);}
+	// overload (negative).
 	private SuperInt(int v[], int n, int positive) {
 		_positive = positive;
 		_init(v, n);
@@ -35,7 +34,7 @@ public class SuperInt {
 		_l = n;
 		int i = -1, j = 0;
 		while(++i < _l) if (v[_l - i - 1] == 0) ++j; else break; // 00001 -> 01.
-		_l -= j;
+		_l -= j; 
 		if (_l == 0) _x[_l++] = 0;
 	}
 
@@ -47,13 +46,12 @@ public class SuperInt {
 		return new String(temp);
 	}
 
-	// misc functions
+	// misc functions.
 
-	private int getPositive() {
-		return _positive * 2 - 1; // in this case, 1 for positive, -1 for negative.
-	}
+	// in this case, 1 for positive, -1 for negative.
+	private int getPositive() {	return _positive * 2 - 1;}
 
-	// 10 ^ e
+	// 10 ^ e.
 	private SuperInt e10(int e) {
 		_x = new int[100];
 		if (e < 0) {
@@ -66,9 +64,9 @@ public class SuperInt {
 		return this;
 	}
 
-	// divide by 2
+	// divide by 2.
 	private SuperInt d2 () { 
-		//obs. easier in bits
+		//obs. easier in bits.
 		int i = -1, plusTen = 0;
 		while(++i < _l) {
 			_x[_l - i - 1] += plusTen;
@@ -84,14 +82,14 @@ public class SuperInt {
 	public SuperInt plus (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
 
-		// maybe we will subtract
+		// maybe we will subtract.
 		if(ints[0]._positive != ints[1]._positive) {
 			int a = ints[0]._positive;
 			ints[0]._positive = ints[1]._positive = 1;
 			return a == 1 ? minus(ints[1]) : ints[1].minus(ints[0]);
 		}
 
-		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si.
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1-bigger]._l, // small length.
 			res[] = new int[100];
@@ -119,7 +117,7 @@ public class SuperInt {
 			return a == 1 ? plus(ints[1]) : ints[1].plus(ints[0]);
 		}
 
-		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si.
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1 - bigger]._l, // small lenght.
 			res[] = new int[100],
@@ -158,13 +156,11 @@ public class SuperInt {
 
 	public SuperInt times (SuperInt si) {
 		SuperInt[] ints = {this, si}; // easy reference.
-		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si;
+		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si.
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1-bigger]._l, // small length.
 			res[] = new int[100];
 		SuperInt siRes = new SuperInt("0");
-
-
 
 		// calculate the multiplication.
 		{
@@ -187,7 +183,7 @@ public class SuperInt {
 	}
 
 	// binary search the answer, assuming its not x/0 or 0/0.
-	public SuperInt divide (SuperInt si) { // very slow
+	public SuperInt divide (SuperInt si) { // very slow.
 		int positive = this._positive * si._positive;
 		this._positive = si._positive = 1;
 		SuperInt mid = new SuperInt("0");
@@ -207,12 +203,9 @@ public class SuperInt {
 
 		// example: 20 / 3. what happens: lets say we're on '6'. 20 - 6*3 = 2 > 0, so maybe its not '6'. 
 		// now lets say we're on '7'. 20 - 7*3 = -1 < 0, so its below 7, wich is 6.
-		System.out.print("FAAAAAAAAAAACK: "); System.out.println(right.toString());
-		System.out.print("FAAAAAAAAAAACK: "); System.out.println(left.toString());
 		while(right.minus(left).getPositive() == 1) {
 			mid = new SuperInt("0").plus(left).plus(right);
 			mid.d2();
-			System.out.print("FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACK: "); System.out.println(mid.toString());
 			temp = this.minus(si.times(mid)); 
 			if (temp._l + temp._x[0] == 1) {
 				mid._positive = positive;
@@ -223,7 +216,6 @@ public class SuperInt {
 		}
 
 		temp = this.minus(si.times(mid));
-		System.out.print("shhiiiiiiiiiiiiiiiiit: "); System.out.println(mid.toString());
 		mid._positive = positive;
 		if (temp.getPositive() == 1) return mid;
 		else return mid.minus(si1);

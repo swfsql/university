@@ -24,7 +24,7 @@ public class Calculator {
 			b = new SuperInt(rpn.prev().value);
 			if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
 			else { 
-				a = new SuperInt("0");
+				a = new SuperInt("0"); 
 				rpn.start();
 				rpn.add("0");
 				rpn.next();

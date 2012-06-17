@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 public class SuperInt {
 	private int 
 		_x[], // TODO - extra: bits array - java.util.BitSet.
@@ -13,7 +12,7 @@ public class SuperInt {
 		// if enter -1, makes it 1, positive = 0.
 		if(v.charAt(0) == '-') {
 			_positive = 0;
-			++i;
+			++i; 
 			++k;
 			--_l;
 		}

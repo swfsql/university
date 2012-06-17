@@ -41,8 +41,6 @@ public class Calculator {
 				System.out.print("FUUUUUUUUUUUUUUUUUUUUUUUUU-");
 			}
 		}
-
-<<<<<<< HEAD
 		if (op == '+') return num1.plus(num2).toString();
 		if (op == '-') return num1.minus(num2).toString();
 		if (op == '*') return num1.times(num2).toString();
@@ -52,9 +50,7 @@ public class Calculator {
 					"error - divide by 0") : 
 			num1.divide(num2).toString(); 
 		return "error";
-=======
 		rpn.start();
 		return rpn.next().value;
->>>>>>> origin/master
 	}
 }

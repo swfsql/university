@@ -32,10 +32,14 @@ public class Calculator {
 			rpn.rmNext();
 			rpn.rmNext();
 
-			if (iNow == '+') rpn.now.value = a.plus(b).toString();
-			if (iNow == '-') rpn.now.value = a.minus(b).toString();
-			if (iNow == '*') rpn.now.value = a.times(b).toString();
-			if (iNow == '/') rpn.now.value = a.divide(b).toString();
+			try {
+				if (iNow == '+') rpn.now.value = a.plus(b).toString();
+				if (iNow == '-') rpn.now.value = a.minus(b).toString();
+				if (iNow == '*') rpn.now.value = a.times(b).toString();
+				if (iNow == '/') rpn.now.value = a.divide(b).toString();
+			} catch {
+				System.out.print("FUUUUUUUUUUUUUUUUUUUUUUUUU-");
+			}
 		}
 
 		rpn.start();

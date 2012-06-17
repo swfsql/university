@@ -5,7 +5,7 @@ public class Main {
 	/*
 	 * @author:
 	 * - Thiago Machado da Silva (21215).
-	 * - Thiago Paixão Visconti (22233).
+	 * - Tiago Paixão Visconti (22233).
 	 * 
 	 * @patterns:
 	 * - english.
@@ -43,8 +43,8 @@ public class Main {
 			System.out.println("examples that should throw an exception:");
 
 			System.out.println("\n digits overflow, ~ (10^51 * 10^50)");
-			//exp.setInput("1000000000000000000000000000000000000000000000000000 * 1000000000000000000000000000000000000000000000000000");
-			//System.out.println(calc.right(exp));
+			exp.setInput("99999999999999991000000000000000000000000000000000000000000000000000 * 199999999999999999999999000000000000000000000000000000000000000000000000000");
+			System.out.println(calc.right(exp));
 			System.out.println("  (this one actually breakes the program..)");
 
 			System.out.println("\n 0/0, = (1-1) / (0/1)");

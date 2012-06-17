@@ -3,6 +3,7 @@ public class SuperInt {
 		_x[], // TODO - extra: bits array - java.util.BitSet.
 		_l, // length.
 		_positive = 1; // 0 = negative; 1 = positive;
+	private Exc ex = new Exc(); 
 
 	public SuperInt(String v) {
 		int i = -1, j = 0, k = 0;
@@ -186,11 +187,11 @@ public class SuperInt {
 		}
 	}
 
-	// binary search the answer, assuming its not x/0 or 0/0.
-	public SuperInt divide (SuperInt si) { // very slow.
+	// binary search the answer
+	public SuperInt divide (SuperInt si) throws Exception { // very slow.
 
-
-
+		// divide by 0 error
+		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
 
 		int positive = this._positive * si._positive;
 		this._positive = si._positive = 1;

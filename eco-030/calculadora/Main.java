@@ -39,13 +39,13 @@ public class Main {
 
 		// examples:
 		{
-			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 			System.out.println("examples that should throw an exception:");
 
-			System.out.println("\n digits overflow, ~ (10^51 * 10^50)");
-			exp.setInput("99999999999999991000000000000000000000000000000000000000000000000000 * 199999999999999999999999000000000000000000000000000000000000000000000000000");
-			System.out.println(calc.right(exp));
-			System.out.println("  (this one actually breakes the program..)");
+			//System.out.println("\n digits overflow, ~ (10^51 * 10^50)");
+			//exp.setInput("99999999999999991000000000000000000000000000000000000000000000000000 * 199999999999999999999999000000000000000000000000000000000000000000000000000");
+			//System.out.println(calc.right(exp));
+			//System.out.println("  (this one actually breakes the program..)");
 
 			System.out.println("\n 0/0, = (1-1) / (0/1)");
 			exp.setInput("(1-1) / (0/1)");
@@ -55,16 +55,7 @@ public class Main {
 			exp.setInput("(-1+1*2) / (3-6/2)");
 			System.out.print("  ");System.out.println(calc.right(exp));
 
-			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\nbugs (1)");
-			System.out.println("\n 1*(3 - 0) works:");
-			exp.setInput("1*(3 - 0)");
-			System.out.print("  ");System.out.println(calc.right(exp));
-
-			System.out.println("\n 1* (3-0) don't:");
-			exp.setInput("1* (3-0)");
-			System.out.print("  ");System.out.println(calc.right(exp));
-
-			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
 			System.out.println("'exit' quits\n\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
 		}

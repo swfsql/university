@@ -38,7 +38,7 @@ public class Calculator {
 				if (iNow == '*') rpn.now.value = a.times(b).toString();
 				if (iNow == '/') rpn.now.value = a.divide(b).toString();
 			} catch (Exception e) {
-				System.out.print("FUUUUUUUUUUUUUUUUUUUUUUUUU-");
+				return e.getMessage();
 			}
 		}
 

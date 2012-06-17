@@ -2,9 +2,7 @@ public class List {
 
 	private StringUnit _head, _tail, _unit;
 	
-	public List() {
-		clear();	
-	}
+	public List() {	clear();}
 
 	public void clear() {
 		_head = new StringUnit("0");
@@ -14,31 +12,22 @@ public class List {
 
 	public void add (String s) {
 		_unit.next = new StringUnit(s);
-		//if (_unit != _head) _unit.next.prev = _unit;
 		_unit.next.prev = _unit;
-		System.out.print("_unit: "); System.out.println(_unit.value);
 		_unit = _unit.next;
 		_tail = _unit;
-		System.out.print("add: "); System.out.println(s);
 	}
 
-	public StringUnit head() {
-		return _head;
-	}
+	public StringUnit head() { return _head;}
 
-	// iterator
+	// iterator.
 	public StringUnit now = null;
-	public void start() {
-		now = _head;
-	}
+	public void start() { now = _head;}
 	public StringUnit next() {
 		if (now != null) now = now.next;
 		return now;
 	}
-	// reverse iterator
-	public void end() {
-		now = _tail;
-	}
+	// reverse iterator.
+	public void end() {	now = _tail;}
 	public StringUnit prev(Boolean tail) {
 		if (now != null) now = now.prev;
 		if(!tail && _head == now) return null;
@@ -49,17 +38,14 @@ public class List {
 		return now;
 	}
 
-	// iterator
+	// iterator.
 	public String rmNext() {
-		if(now == null || now.next == null) {
-			System.out.println("FUUUUUUU-");
-			return null;
-		}
+		if(now == null || now.next == null) return null;
+
 		now.next.prev = null;
 		if(now == _head) _unit = now;
 		if (_unit == now.next) _unit = now;
-		if(_tail == now.next) 
-		{
+		if(_tail == now.next) {
 			_tail = now;
 			if(_tail == _head) _tail = null;
 		}
@@ -69,15 +55,13 @@ public class List {
 		return ret;
 	}
 
-	public void print() {
+	/*public void print() {
 		StringUnit i = _head;
 		while(i.next != null) {
 			i = i.next;
 			System.out.print(i.value); System.out.print(" ");
 		}
-
-	}
-
+	}*/
 
 }
 

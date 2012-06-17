@@ -23,7 +23,7 @@ public class Calculator {
 				(num1.toString().equals("0") ? 
 					"indeterminate" :  
 					"error - divide by 0") : 
-			num1.divide(num2).toString();
+			num1.divide(num2).toString(); 
 		return "error";
 	}
 }

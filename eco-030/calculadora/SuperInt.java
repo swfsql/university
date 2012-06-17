@@ -16,7 +16,7 @@ public class SuperInt {
 			++k;
 			--_l;
 		}
-		
+
 		while(++i < _l) if (v.charAt(i) == '0') ++j; else break; // 00001 -> 01.
 		i = -1; _l -= j;
 		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j + k) - 48;
@@ -141,7 +141,7 @@ public class SuperInt {
 			}
 			if (bigger + positive == 2) positive = 0; // fix the example: '1-20'.
 		}
-		
+
 		// calculate the subtraction.
 		{
 			int i = -1, minusTen = 0;
@@ -163,7 +163,7 @@ public class SuperInt {
 		SuperInt siRes = new SuperInt("0");
 
 		// calculate the multiplication.
-		{
+		try {
 			int i = -1, j, plus = 0; // 0 to 8.
 			while(++i < lBig) {
 				j = -1;
@@ -179,11 +179,19 @@ public class SuperInt {
 			}
 			siRes._positive = ints[0]._positive * ints[1]._positive;
 			return siRes;
+		} catch (Exception e) {
+
+			e.getStackTrace();
+			return new SuperInt("0");
 		}
 	}
 
 	// binary search the answer, assuming its not x/0 or 0/0.
 	public SuperInt divide (SuperInt si) { // very slow.
+
+
+
+
 		int positive = this._positive * si._positive;
 		this._positive = si._positive = 1;
 		SuperInt mid = new SuperInt("0");

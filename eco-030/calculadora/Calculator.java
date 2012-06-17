@@ -1,5 +1,5 @@
 public class Calculator {
-	
+
 	public String right(Expression e) {	return _right(e.getRightRpn());}
 
 	private String _right(List rpn) {
@@ -24,7 +24,7 @@ public class Calculator {
 			b = new SuperInt(rpn.prev().value);
 			if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
 			else { 
-				a = new SuperInt("0"); 
+				a = new SuperInt("0");
 				rpn.start();
 				rpn.add("0");
 				rpn.next();
@@ -32,20 +32,16 @@ public class Calculator {
 			rpn.rmNext();
 			rpn.rmNext();
 
-			if (iNow == '+') rpn.now.value = a.plus(b).toString();
-			if (iNow == '-') rpn.now.value = a.minus(b).toString();
-			if (iNow == '*') rpn.now.value = a.times(b).toString();
-			if (iNow == '/') rpn.now.value = a.divide(b).toString();
+			try {
+				if (iNow == '+') rpn.now.value = a.plus(b).toString();
+				if (iNow == '-') rpn.now.value = a.minus(b).toString();
+				if (iNow == '*') rpn.now.value = a.times(b).toString();
+				if (iNow == '/') rpn.now.value = a.divide(b).toString();
+			} catch (Exception e) {
+				System.out.print("FUUUUUUUUUUUUUUUUUUUUUUUUU-");
+			}
 		}
-		if (op == '+') return num1.plus(num2).toString();
-		if (op == '-') return num1.minus(num2).toString();
-		if (op == '*') return num1.times(num2).toString();
-		if (op == '/') return num2.toString().equals("0") ? 
-				(num1.toString().equals("0") ? 
-					"indeterminate" :  
-					"error - divide by 0") : 
-			num1.divide(num2).toString(); 
-		return "error";
+
 		rpn.start();
 		return rpn.next().value;
 	}

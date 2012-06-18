@@ -3,8 +3,9 @@ public class SuperInt {
 		_x[], // TODO - extra: bits array - java.util.BitSet.
 		_l, // length.
 		_positive = 1; // 0 = negative; 1 = positive;
+	private Exc ex = new Exc(); 
 
-	public SuperInt(String v) {
+	public SuperInt(String v) throws Exception {
 		int i = -1, j = 0, k = 0;
 		_x = new int[100];
 		_l = v.length();
@@ -16,10 +17,12 @@ public class SuperInt {
 			++k;
 			--_l;
 		}
-		
+
 		while(++i < _l) if (v.charAt(i) == '0') ++j; else break; // 00001 -> 01.
 		i = -1; _l -= j;
-		while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j + k) - 48;
+		try { while(++i < _l) _x[_l - i - 1] = (int) v.charAt(i + j + k) - 48;} 
+		catch (ArrayIndexOutOfBoundsException e) { throw new Exception ("error: overflow.");}
+
 		if (_l == 0) _x[_l++] = 0;
 	}
 	// overload (by vector).
@@ -34,7 +37,7 @@ public class SuperInt {
 		_l = n;
 		int i = -1, j = 0;
 		while(++i < _l) if (v[_l - i - 1] == 0) ++j; else break; // 00001 -> 01.
-		_l -= j;
+		_l -= j; 
 		if (_l == 0) _x[_l++] = 0;
 	}
 
@@ -79,7 +82,7 @@ public class SuperInt {
 
 	// obs.: there's some code duplication in the functions below.
 
-	public SuperInt plus (SuperInt si) {
+	public SuperInt plus (SuperInt si) throws Exception {
 		SuperInt[] ints = {this, si}; // easy reference.
 
 		// maybe we will subtract.
@@ -95,7 +98,7 @@ public class SuperInt {
 			res[] = new int[100];
 
 		// calculate the sum.
-		{
+		try {
 			int i = -1, plusOne = 0;
 			while(++i < lBig) {
 				res[i] = ints[bigger]._x[i] + ( i < lSmall ?  ints[1 - bigger]._x[i] : 0 ) + plusOne;
@@ -104,10 +107,13 @@ public class SuperInt {
 			}
 			res[lBig] = plusOne;
 			return new SuperInt(res, lBig + plusOne, _positive);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			String error = _positive == 1 ? "error: overflow by sum." : "error: underflow by sum.";
+			throw new Exception (error);
 		}
 	}
 
-	public SuperInt minus (SuperInt si) {
+	public SuperInt minus  (SuperInt si) throws Exception  {
 		SuperInt[] ints = {this, si}; // easy reference.
 
 		// maybe we will sum
@@ -141,7 +147,7 @@ public class SuperInt {
 			}
 			if (bigger + positive == 2) positive = 0; // fix the example: '1-20'.
 		}
-		
+
 		// calculate the subtraction.
 		{
 			int i = -1, minusTen = 0;
@@ -154,7 +160,7 @@ public class SuperInt {
 		}
 	}
 
-	public SuperInt times (SuperInt si) {
+	public SuperInt times (SuperInt si) throws Exception {
 		SuperInt[] ints = {this, si}; // easy reference.
 		int bigger = (si._l > _l) ? 1 : 0, // bigger length. 0 = this; 1 = si.
 			lBig = ints[bigger]._l, // big length.
@@ -163,7 +169,7 @@ public class SuperInt {
 		SuperInt siRes = new SuperInt("0");
 
 		// calculate the multiplication.
-		try {
+		{
 			int i = -1, j, plus = 0; // 0 to 8.
 			while(++i < lBig) {
 				j = -1;
@@ -179,19 +185,34 @@ public class SuperInt {
 			}
 			siRes._positive = ints[0]._positive * ints[1]._positive;
 			return siRes;
-		} catch (Exception e) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+		} catch (ArrayIndexOutOfBoundsException e) {
+			String error = ints[0]._positive * ints[1]._positive == 1 ? "error: overflow by multiplication." : "error: underflow by multiplication.";
+			throw new Exception (error);
+		}
+	}
 
-			e.getStackTrace();
-			return new SuperInt("0");
+	// binary search the answer
+	public SuperInt divide (SuperInt si) throws Exception { // very slow.
+
+		// divide by 0 error
+		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
+
+=======
 		}
 	}
 
 	// binary search the answer, assuming its not x/0 or 0/0.
 	public SuperInt divide (SuperInt si) { // very slow.
+>>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
+=======
+		}
+	}
 
-
-
-
+	// binary search the answer, assuming its not x/0 or 0/0.
+	public SuperInt divide (SuperInt si) { // very slow.
+>>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
 		int positive = this._positive * si._positive;
 		this._positive = si._positive = 1;
 		SuperInt mid = new SuperInt("0");

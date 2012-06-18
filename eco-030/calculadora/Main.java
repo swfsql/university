@@ -14,17 +14,16 @@ public class Main {
 	 * @about:
 	 * - project hosted on https://github.com/thyfl/unifei/tree/master/eco-030/calculadora.
 	 * - teacher: Fernando Santos (Universidade Federal de Itajubá, Campus Itabira).
-	 * - text editor: Sublime text 2, BlueJ, Eclipse.
+	 * - text editor: Sublime text 2.
 	 * - compiler: javac.
 	 * - some of the code is from the flash apps http://wonderfl.net/c/kkNQ/read or http://wonderfl.net/c/3G3M/read, from Silva.
 	 * - division is also inspired on the binary search http://en.wikipedia.org/wiki/Binary_search_algorithm.
 	 *
 	 * @instructions:
 	 * - type 'exit' to end the program.
-	 * - type an expression to get result. eg.: '123 + 123 / 122' (= '124').
+	 * - type an basic expression to get result. eg.: '123 + 123 / 122' (= '124').
 	 *
 	 * @todo:
-	 * - exceptions.
 	 * - real & fraction nums.
 	 * - UI.
 	 * - variables.
@@ -40,18 +39,13 @@ public class Main {
 		// examples:
 		{
 			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-			System.out.println("examples that should throw an exception:");
+			System.out.println("examples that throw exception x/0:");
 
-			//System.out.println("\n digits overflow, ~ (10^51 * 10^50)");
-			//exp.setInput("99999999999999991000000000000000000000000000000000000000000000000000 * 199999999999999999999999000000000000000000000000000000000000000000000000000");
-			//System.out.println(calc.right(exp));
-			//System.out.println("  (this one actually breakes the program..)");
-
-			System.out.println("\n 0/0, = (1-1) / (0/1)");
+			System.out.println("\n(1-1) / (0/1)");
 			exp.setInput("(1-1) / (0/1)");
 			System.out.print("  ");System.out.println(calc.right(exp)); 
 
-			System.out.println("\n x/0, = (-1+1*2) / (3-6/2)");
+			System.out.println("\n(-1+1*2) / (3-6/2)");
 			exp.setInput("(-1+1*2) / (3-6/2)");
 			System.out.print("  ");System.out.println(calc.right(exp));
 

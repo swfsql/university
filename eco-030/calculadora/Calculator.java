@@ -52,7 +52,7 @@ public class Calculator {
 =======
 >>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
 public class Calculator {
-	
+
 	public String right(Expression e) {	return _right(e.getRightRpn());}
 
 	private String _right(List rpn) {
@@ -74,6 +74,7 @@ public class Calculator {
 			if (iNow >= '0' && iNow <= '9') continue;
 
 			// operator.
+<<<<<<< HEAD
 			b = new SuperInt(rpn.prev().value);
 			if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
 			else { 
@@ -82,6 +83,18 @@ public class Calculator {
 				rpn.add("0");
 				rpn.next();
 			}
+=======
+			try {
+				b = new SuperInt(rpn.prev().value);
+				if (rpn.prev(false) != null) a = new SuperInt(rpn.now.value); 
+				else { 
+					a = new SuperInt("0");
+					rpn.start();
+					rpn.add("0");
+					rpn.next();
+				}
+			} catch (Exception e) { return e.getMessage();}
+>>>>>>> origin/subber
 			rpn.rmNext();
 			rpn.rmNext();
 

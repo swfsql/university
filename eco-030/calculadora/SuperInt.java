@@ -188,6 +188,7 @@ public class SuperInt {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/subber
 		} catch (ArrayIndexOutOfBoundsException e) {
@@ -219,6 +220,31 @@ public class SuperInt {
 		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
 >>>>>>> origin/subber
 
+=======
+		} catch (ArrayIndexOutOfBoundsException e) {
+			String error = ints[0]._positive * ints[1]._positive == 1 ? "error: overflow by multiplication." : "error: underflow by multiplication.";
+			throw new Exception (error);
+		}
+	}
+
+	// binary search the answer
+	public SuperInt divide (SuperInt si) throws Exception { // very slow.
+
+		// divide by 0 error
+		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
+
+=======
+		}
+	}
+
+	// binary search the answer, assuming its not x/0 or 0/0.
+	public SuperInt divide (SuperInt si) { // very slow.
+>>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
+=======
+		}
+	}
+
+>>>>>>> bee6ac6828420ec7f8771ed388470a4df673f82d
 	// binary search the answer, assuming its not x/0 or 0/0.
 	public SuperInt divide (SuperInt si) { // very slow.
 >>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb

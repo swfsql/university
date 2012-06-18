@@ -89,7 +89,7 @@ public class Expression {
 			if (iNow == '(' || iNow == '[' || iNow == '{') {
 				flag = true;
 				// != function or operator.
-				if (iLast != '*' && iLast != '+' && iLast != '-' && iLast != '/' && iLast != 0) _right.add("*"); // ex.: 3 (2) -> 3 * 2.
+				if (iLast != '*' && iLast != '+' && iLast != '-' && iLast != '/' && iLast != 0 && iLast != ' ') _right.add("*"); // ex.: 3 (2) -> 3 * 2.
 				_right.add("(");
 				iNow = '('; // ([{ -> (((.
 				continue;
@@ -116,8 +116,10 @@ public class Expression {
 
 		_right.start(); // iteration, from head
 		while(_right.next() != null) {
+
 			a2.end();
 			now = _right.now.value;
+
 			iNow = (int) now.charAt(0);
 			if (iNow == '-' && now.length() > 1) iNow = (int) now.charAt(1); // -4 reads the number
 
@@ -130,7 +132,7 @@ public class Expression {
 			// parenthesis.
 			if (iNow == '(' || iNow == ')') {
 				a2.add(now);
-				if (iNow == 41) close();
+				if (iNow == ')') close();
 				continue;
 			}
 

@@ -108,7 +108,7 @@ public class SuperInt {
 			res[lBig] = plusOne;
 			return new SuperInt(res, lBig + plusOne, _positive);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			String error = positive == 1 ? "error: overflow by sum." : "error: underflow by sum.";
+			String error = _positive == 1 ? "error: overflow by sum." : "error: underflow by sum.";
 			throw new Exception (error);
 		}
 	}

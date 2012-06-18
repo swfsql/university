@@ -1,7 +1,7 @@
 public class List {
 
 	private StringUnit _head, _tail, _unit;
-	
+
 	public List() {	clear();}
 
 	public void clear() {

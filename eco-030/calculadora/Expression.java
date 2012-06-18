@@ -61,14 +61,14 @@ public class Expression {
 						_right.rmNext();
 					}
 				}
-				
+
 				// c) [132].
 				char[] number = new char[j - i + minus];
 				num = numHead;
 				int k = i-1; 
 				while( (num = num.next) != null) number[++k-i+minus] = num.value; 
 				if (minus == 1) number[0] = '-';
-				
+
 
 				_right.add(new String(number));
 				_right.end();

@@ -37,7 +37,7 @@ public class SuperInt {
 		_l = n;
 		int i = -1, j = 0;
 		while(++i < _l) if (v[_l - i - 1] == 0) ++j; else break; // 00001 -> 01.
-		_l -= j;
+		_l -= j; 
 		if (_l == 0) _x[_l++] = 0;
 	}
 
@@ -169,7 +169,7 @@ public class SuperInt {
 		SuperInt siRes = new SuperInt("0");
 
 		// calculate the multiplication.
-		try {
+		{
 			int i = -1, j, plus = 0; // 0 to 8.
 			while(++i < lBig) {
 				j = -1;
@@ -185,6 +185,42 @@ public class SuperInt {
 			}
 			siRes._positive = ints[0]._positive * ints[1]._positive;
 			return siRes;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/subber
+		} catch (ArrayIndexOutOfBoundsException e) {
+			String error = ints[0]._positive * ints[1]._positive == 1 ? "error: overflow by multiplication." : "error: underflow by multiplication.";
+			throw new Exception (error);
+		}
+	}
+
+	// binary search the answer
+	public SuperInt divide (SuperInt si) throws Exception { // very slow.
+<<<<<<< HEAD
+
+		// divide by 0 error
+		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
+
+=======
+		}
+	}
+
+	// binary search the answer, assuming its not x/0 or 0/0.
+	public SuperInt divide (SuperInt si) { // very slow.
+>>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
+=======
+		}
+	}
+=======
+
+		// divide by 0 error
+		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
+>>>>>>> origin/subber
+
+=======
 		} catch (ArrayIndexOutOfBoundsException e) {
 			String error = ints[0]._positive * ints[1]._positive == 1 ? "error: overflow by multiplication." : "error: underflow by multiplication.";
 			throw new Exception (error);
@@ -197,6 +233,21 @@ public class SuperInt {
 		// divide by 0 error
 		try { ex.divideByZero(si.toString());} catch (Exception e) { throw e;}
 
+=======
+		}
+	}
+
+	// binary search the answer, assuming its not x/0 or 0/0.
+	public SuperInt divide (SuperInt si) { // very slow.
+>>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
+=======
+		}
+	}
+
+>>>>>>> bee6ac6828420ec7f8771ed388470a4df673f82d
+	// binary search the answer, assuming its not x/0 or 0/0.
+	public SuperInt divide (SuperInt si) { // very slow.
+>>>>>>> a557b2f5d26563a178a6e47404797482dff0cecb
 		int positive = this._positive * si._positive;
 		this._positive = si._positive = 1;
 		SuperInt mid = new SuperInt("0");

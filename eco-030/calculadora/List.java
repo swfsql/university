@@ -73,4 +73,3 @@ class StringUnit {
 		this.value = s;
 		next = prev = null;
 	}
-}

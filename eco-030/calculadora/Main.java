@@ -1,4 +1,6 @@
-import java.util.Scanner;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Main {
 
@@ -30,36 +32,23 @@ public class Main {
 	 * - use stacks instead of lists.
 	 */
 
+	public static Frame frame;
+	public static Expression exp;
+	public static Calculator calc;
+
 	public static void main(String[] args) {
-		Expression exp = new Expression(); // recive inputs, make a List out of it.
-		Calculator calc = new Calculator(); // output calculated List.
+		exp = new Expression(); // recive inputs, make a List out of it.
+		calc = new Calculator(); // output calculated List.
+		frame = new Frame();
 
-		Scanner scan = new Scanner(System.in);
-
-		// examples:
-		{
-			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-			System.out.println("examples that throw exception x/0:");
-
-			System.out.println("\n(1-1) / (0/1)");
-			exp.setInput("(1-1) / (0/1)");
-			System.out.print("  ");System.out.println(calc.right(exp)); 
-
-			System.out.println("\n(-1+1*2) / (3-6/2)");
-			exp.setInput("(-1+1*2) / (3-6/2)");
-			System.out.print("  ");System.out.println(calc.right(exp));
-
-			System.out.println("\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-
-			System.out.println("'exit' quits\n\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
-		}
-
-		while(!exp.getInput("exit")){
-			System.out.println("");
-			exp.setInput(scan.nextLine());
-			System.out.println(calc.right(exp)); 
-			// called 'right' because in the example: 'A = 2+2', we consider '2+2' the 'right side'.
-			// future plans include calculations on the 'left side', 'A ='. 
-		}	
+		ActionListener ef = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (--frame.delay == 0) {
+					exp.setInput(frame.input.getText());
+					System.out.println(calc.right(exp)); 
+				}
+        	}
+        };
+        new Timer(100, ef).start();
 	}
 }

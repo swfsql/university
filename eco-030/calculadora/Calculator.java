@@ -43,6 +43,6 @@ public class Calculator {
 		}
 
 		rpn.start();
-		return rpn.next().value;
+		return rpn.next() != null ? rpn.now.value : "";
 	}
 }

@@ -45,7 +45,12 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 				if (--frame.delay == 0) {
 					exp.setInput(frame.input.getText());
-					System.out.println(calc.right(exp)); 
+					try {
+						frame.out2.setText(calc.right(exp));
+					} catch (Exception ex) {
+						frame.out2.setText(ex.getMessage());
+					}
+					
 				}
         	}
         };

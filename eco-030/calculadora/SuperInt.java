@@ -49,10 +49,20 @@ public class SuperInt {
 		return new String(temp);
 	}
 
+	public SuperInt copy() throws Exception {
+		SuperInt r;
+		try {
+			r = new SuperInt(toString());
+		} catch(Exception e) {
+			throw e;
+		}
+		return r;
+	}
+
 	// misc functions.
 
 	// in this case, 1 for positive, -1 for negative.
-	private int getPositive() {	return _positive * 2 - 1;}
+	public int getPositive() {	return _positive * 2 - 1;}
 
 	// 10 ^ e.
 	private SuperInt e10(int e) {
@@ -79,6 +89,26 @@ public class SuperInt {
 		if (_x[_l - 1] == 0 && _l > 1) --_l;
 		return this;
 	}
+
+	// %.
+	public SuperInt module (SuperInt m) throws Exception {
+		SuperInt r;
+		try {
+			SuperInt d = divide(m);
+			r = minus(times(d));
+		} catch (Exception e) {
+			throw e;
+		}
+		r._positive = 1;
+		return r;
+	}
+
+	// == 0
+	public Boolean equals0 () {
+		return toString().equals("0") || toString().equals("-0");
+	}
+
+
 
 	// obs.: there's some code duplication in the functions below.
 

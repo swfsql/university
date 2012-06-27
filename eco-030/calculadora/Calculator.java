@@ -8,7 +8,6 @@ public class Calculator {
 		try {
 			sa = sb = new SuperInt("0");
 			fa = fb = new Frac("1/1");
-
 		} catch (Exception e) {
 			throw e;
 		}
@@ -36,7 +35,10 @@ public class Calculator {
 				
 				if (rpn.prev(false) != null) {
 					if (hasDiv) fa = new Frac(rpn.now.value);
-					else sa = new SuperInt(rpn.now.value);
+					else if (hasDivision(rpn.now.value)) {
+						hasDiv = true;
+						fb = new Frac(sb.toString() + "/1");
+					} else sa = new SuperInt(rpn.now.value);
 				}
 				else { 
 					if (hasDiv) fa = new Frac("0/1");
@@ -59,7 +61,10 @@ public class Calculator {
 					if (iNow == '+') rpn.now.value = sa.plus(sb).toString();
 					if (iNow == '-') rpn.now.value = sa.minus(sb).toString();
 					if (iNow == '*') rpn.now.value = sa.times(sb).toString();
-					if (iNow == '/') rpn.now.value = sa.divide(sb).toString();
+					if (iNow == '/') {
+						if(sa.module(sb).equals0()) rpn.now.value = sa.divide(sb).toString();
+						else rpn.now.value = sa + "/" + sb;
+					}
 				}
 				
 			} catch (Exception e) {	return e.getMessage();}

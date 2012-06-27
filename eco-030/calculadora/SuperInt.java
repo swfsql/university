@@ -94,12 +94,11 @@ public class SuperInt {
 	public SuperInt module (SuperInt m) throws Exception {
 		SuperInt r;
 		try {
-			SuperInt d = divide(m);
-			r = minus(times(d));
+			SuperInt d = this.divide(m);
+			r = this.minus(m.times(d));
 		} catch (Exception e) {
 			throw e;
 		}
-		r._positive = 1;
 		return r;
 	}
 

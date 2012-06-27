@@ -28,6 +28,7 @@ public class Fracao {
 		{
 			int i = 1, ic = ib > ia ? ib : ia;
 			while(++i <= ic) {
+				System.out.print("i: "); System.out.println(i);
 				if (ia % i + ib % i == 0) {
 					ia /= i;
 					ib /= i;

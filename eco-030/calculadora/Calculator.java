@@ -97,7 +97,12 @@ public class Calculator {
 		System.out.println("_____");
 
 		rpn.start();
-		return rpn.next() != null ? rpn.now.value : "";
+		if (rpn.next() == null) return "";
+		if (hasDivision(rpn.now.value)) {
+			fa = new Frac(rpn.now.value);
+			if (fa.den.toString().equals("1")) rpn.now.value = fa.num.toString();
+		}
+		return rpn.now.value;
 	}
 
 	private Boolean hasDivision(String s) {

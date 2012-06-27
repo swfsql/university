@@ -38,7 +38,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		exp = new Expression(); // recive inputs, make a List out of it.
-		calc = new Calculator(); // output calculated List.
+		calc = new Calculator(); // output calculated List.System.out.println("a");
 		frame = new Frame();
 
 		ActionListener ef = new ActionListener() {

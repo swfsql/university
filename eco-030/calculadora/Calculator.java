@@ -17,7 +17,7 @@ public class Calculator {
 
 		rpn.start();
 		while(rpn.next() != null) {
-			System.out.println("a");
+			System.out.print("-----: "); rpn.print();
 			now = rpn.now.value;
 			iNow = (int) now.charAt(0); 
 			if(iNow == '-' && now.length() > 1) {
@@ -48,6 +48,7 @@ public class Calculator {
 						System.out.println("c2.2");
 						hasDiv = true;
 						fb = new Frac(sb.toString() + "/1");
+						fa = new Frac(rpn.now.value); 
 					} else {
 						System.out.println("c2.3");
 						sa = new SuperInt(rpn.now.value);

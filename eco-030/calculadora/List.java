@@ -55,13 +55,13 @@ public class List {
 		return ret;
 	}
 
-	/*public void print() {
+	public void print() {
 		StringUnit i = _head;
 		while(i.next != null) {
 			i = i.next;
 			System.out.print(i.value); System.out.print(" ");
 		}
-	}*/
+	}
 
 }
 

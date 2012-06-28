@@ -48,6 +48,9 @@ public class Main {
 		list = new DefaultListModel();
 		frame = new Frame(list);
 
+		// listeners
+
+		// enterFrame
 		ActionListener ef = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (--frame.delay == 0) {
@@ -58,8 +61,10 @@ public class Main {
 				}
         	}
         };
+        new Timer(100, ef).start();
 
-        ActionListener al = new ActionListener() {
+        // Enter
+        ActionListener en = new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
 				exp.setInput(frame.input.getText());
 				try { s = calc.right(exp);} 
@@ -71,9 +76,34 @@ public class Main {
 				exp.setInput(" ");
         	}
         };
+        frame.input.addActionListener(en);
 
-        frame.input.addActionListener(al);
-        new Timer(100, ef).start();
+        // buttons
+
+        // media
+        ActionListener bMedia = new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+				frame.out2.setText("APERTO MEDIA");
+        	}
+        };
+        frame.b1.addActionListener(bMedia);
+
+        // mediana
+        ActionListener bMediana = new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+				frame.out2.setText("APERTO MEDIANA");
+        	}
+        };
+        frame.b2.addActionListener(bMediana);
+
+        // sort
+        ActionListener bSort = new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+				frame.out2.setText("APERTO SORT");
+        	}
+        };
+        frame.b3.addActionListener(bSort);
+        
 	}
 	
 }

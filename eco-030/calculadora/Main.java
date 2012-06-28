@@ -1,4 +1,4 @@
-import javax.swing.Timer;
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -35,25 +35,45 @@ public class Main {
 	public static Frame frame;
 	public static Expression exp;
 	public static Calculator calc;
+	public static DefaultListModel list;
+	public static String s;
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
+		new Main();
+	}
+
+	public Main() {
 		exp = new Expression(); // recive inputs, make a List out of it.
 		calc = new Calculator(); // output calculated List.System.out.println("a");
-		frame = new Frame();
+		list = new DefaultListModel();
+		frame = new Frame(list);
 
 		ActionListener ef = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (--frame.delay == 0) {
 					exp.setInput(frame.input.getText());
-					try {
-						frame.out2.setText(calc.right(exp));
-					} catch (Exception ex) {
-						frame.out2.setText(ex.getMessage());
-					}
-					
+					try { s = calc.right(exp);} 
+					catch (Exception ex) {frame.out2.setText(ex.getMessage());}
+					frame.out2.setText(s);
 				}
         	}
         };
+
+        ActionListener al = new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+				exp.setInput(frame.input.getText());
+				try { s = calc.right(exp);} 
+				catch (Exception ex) { frame.out2.setText(ex.getMessage());}
+				frame.out2.setText(s);
+				list.addElement(s);
+				frame.input.setText("");
+				frame.out2.setText("");
+				exp.setInput(" ");
+        	}
+        };
+
+        frame.input.addActionListener(al);
         new Timer(100, ef).start();
 	}
+	
 }

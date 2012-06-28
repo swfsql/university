@@ -83,7 +83,20 @@ public class Main {
         // media
         ActionListener bMedia = new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-				frame.out2.setText("APERTO MEDIA");
+        		int i = 0, l = list.size();
+        		if (l < 1) {
+        			s = " ";
+        		} else {
+        			s = "( " + list.getElementAt(i);
+	        		while(++i < l) s += " + " + list.getElementAt(i);
+	        		s += " ) / " + l;
+        		}
+        		
+				frame.input.setText(s);
+				exp.setInput(s);
+				try { s = calc.right(exp);} 
+				catch (Exception ex) {frame.out2.setText(ex.getMessage());}
+				frame.out2.setText(s);
         	}
         };
         frame.b1.addActionListener(bMedia);

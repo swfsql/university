@@ -9,7 +9,7 @@ public class Frame extends JFrame {
 	public int delay = 0;
 	public String string;
 	public JList list;
-	public JButton b1, b2, b3;
+	public JButton b1, b2, b3, b4;
 	
 
 	public Frame(DefaultListModel strings) {
@@ -43,18 +43,21 @@ public class Frame extends JFrame {
 		// scroll
 		JScrollPane scroll = new JScrollPane(list);
 		pane.add(scroll);
-		scroll.setBounds(10, 80, 465 - 30, 465 - 30 - 80);
+		scroll.setBounds(10, 80, 465 - 30, 465 - 30 - 80 -  40);
 
 		// button (média)
 		b1 = new JButton("media");
 		b2 = new JButton("mediana");
 		b3 = new JButton("sort");
+		b4 = new JButton("del");
 		b1.setBounds(75, 50, 90, 20);
 		b2.setBounds(185, 50, 90, 20);
 		b3.setBounds(295, 50, 90, 20);
+		b4.setBounds(185, 465 - 40 - 20, 90, 20);
 		pane.add(b1);
 		pane.add(b2);
 		pane.add(b3);
+		pane.add(b4);
 
 		
 		//

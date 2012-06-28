@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.event.*;
 //
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ public class Main {
 	public static Calculator calc;
 	public static DefaultListModel list;
 	public static String s;
+	public static int pos;
 
 	public static void main(String[] args)  {
 		new Main();
@@ -47,10 +49,12 @@ public class Main {
 
 	public Main() {
 		exp = new Expression(); // recive inputs, make a List out of it.
-		calc = new Calculator(); // output calculated List.System.out.println("a");
+		calc = new Calculator(); // output calculated
 		//
 		list = new DefaultListModel();
 		frame = new Frame(list);
+		// 
+		pos = -1;
 
 		// listeners
 
@@ -76,13 +80,35 @@ public class Main {
 				try { s = calc.right(exp);} 
 				catch (Exception ex) { frame.out2.setText(ex.getMessage());}
 				frame.out2.setText(s);
-				list.addElement(s);
 				frame.input.setText("");
 				frame.out2.setText("");
 				exp.setInput(" ");
+
+				if (pos == -1) list.addElement(s);
+				else list.setElementAt(s, pos);
+				pos = -1;
         	}
         };
         frame.input.addActionListener(en);
+
+        // select from list (edit)
+        ListSelectionListener select = new ListSelectionListener() {
+        	public void valueChanged(ListSelectionEvent e)  {
+        		ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        		int min = lsm.getMinSelectionIndex();
+	            int max = lsm.getMaxSelectionIndex();
+	            int i;
+	            for (i = min; i <= max; i++) if (lsm.isSelectedIndex(i)) break;
+	          	pos = i;
+	            s = list.getElementAt(pos).toString();
+        		frame.input.setText(s);
+				exp.setInput(s);
+				try { s = calc.right(exp);} 
+				catch (Exception ex) { frame.out2.setText(ex.getMessage());}
+				frame.out2.setText(s);
+        	}
+        };
+        frame.list.getSelectionModel().addListSelectionListener(select);
 
         // buttons
 
@@ -91,25 +117,17 @@ public class Main {
         	public void actionPerformed(ActionEvent e) {
         		s = "";
         		int i = 0, l = list.size();
-        		System.out.println("H0");
         		if (l < 1) {
-        			System.out.println("H1");
         			s = " ";
         		} else {
-        			System.out.println("H2");
         			s = "( " + list.getElementAt(i);
 	        		while(++i < l) s += " + " + list.getElementAt(i);
 	        		s += " ) / " + l;
         		}
-        		System.out.println("H3");
-        		System.out.println("H4");
 				frame.input.setText(s);
-				System.out.println("H5");
 				exp.setInput(s);
-				System.out.println("H6");
 				try { s = calc.right(exp);} 
 				catch (Exception ex) {frame.out2.setText(ex.getMessage());}
-				System.out.println("H7");
 				frame.out2.setText(s);
         	}
         };
@@ -131,12 +149,9 @@ public class Main {
         			s = sorting[l].toString();
         		}
         		frame.input.setText(s);
-				System.out.println("H5");
 				exp.setInput(s);
-				System.out.println("H6");
 				try { s = calc.right(exp);} 
 				catch (Exception ex) {frame.out2.setText(ex.getMessage());}
-				System.out.println("H7");
 				frame.out2.setText(s);
         	}
         };
@@ -153,6 +168,21 @@ public class Main {
         	}
         };
         frame.b3.addActionListener(bSort);
+
+        // dlete
+        ActionListener bDelete = new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		s = "";
+        		if (pos != -1) 
+    			{
+    				//if (pos == 0 && list.size() == 1) list.removeAllElements();
+    				//else 
+    				list.removeElementAt(pos);
+    			}
+        		pos = -1;
+        	}
+        };
+        frame.b4.addActionListener(bDelete);
         
 	}
 	

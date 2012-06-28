@@ -61,7 +61,6 @@ public class Expression {
 				if (f) {
 					num = num.next = new NumberSegment('/');
 					num = num.next = new NumberSegment('1');
-					System.out.print("o tal do fl vale: "); System.out.println(fl);
 					int fl2 = fl + 1;
 					while(--fl2 != 0) num = num.next = new NumberSegment('0');
 					fl += 1;
@@ -82,7 +81,6 @@ public class Expression {
 				}
 
 				// c) [132].
-				System.out.print("tamanho seria: "); System.out.print(j - i + minus); System.out.print(" mas agr eh: "); System.out.print(j - i + minus + fl);
 				char[] number = new char[j - i + minus + fl];
 				num = numHead;
 				int k = i-1; 
@@ -224,6 +222,5 @@ class NumberSegment {
 	public NumberSegment(char c) {
 		this.value = c;
 		next = null;
-		System.out.print("num seg: "); System.out.println(c);
 	}
 }

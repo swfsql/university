@@ -9,12 +9,7 @@ public class Frac {
 	}
 	public Frac(String s) throws Exception {
 		if (hasDivision(s)) {
-			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-			System.out.print("fr: "); System.out.println(s);
-			System.out.print("num: "); System.out.print(numerator(s));
-			System.out.print("  den: "); System.out.println(denominator(s));
 			_init(new SuperInt(numerator(s)), new SuperInt(denominator(s)));
-			System.out.println("FUUU");
 		}
 		else _init(new SuperInt(s), new SuperInt("1"));
 	}
@@ -28,10 +23,7 @@ public class Frac {
 		// errors and indeterminances.
 		if(ib.equals0()) throw new Exception ("error: divide by 0.");
 
-		System.out.println("~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~. VIX");
 		int positive = ia.getPositive(); // fix this
-		System.out.print("a: "); System.out.println(ia);
-				System.out.print("b: "); System.out.println(ib);
 
 
 		// simplify
@@ -45,16 +37,8 @@ public class Frac {
 			while(i2.getPositive() == 1) {
 				t1 = ia.module(i);
 				t2 = ib.module(i);
-				System.out.print("i: "); System.out.println(i);
-				System.out.print("i2: "); System.out.println(i2);
-				System.out.print("a: "); System.out.println(ia);
-				System.out.print("b: "); System.out.println(ib);
-				System.out.print("a%i: "); System.out.println(t1);
-				System.out.print("b%i: "); System.out.println(t2);
-
 				
 				s2 = s0.minus(t1.plus(t2));
-				System.out.print("s2: "); System.out.println(t1.plus(t2));
 				if (s2.equals0()) {
 					ia = ia.divide(i);
 					ib = ib.divide(i);
@@ -68,15 +52,10 @@ public class Frac {
 
 		}
 
-		System.out.println("~~~~~~~~~~~");
 
 		num = ia.copy();
 		den = ib.copy();
-		System.out.println("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 		num.setPositive(positive); // fix this
-		System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-
-		System.out.print("chckpoint: "); System.out.println(toString());
 	}
 
 	private Boolean hasDivision(String s) {
@@ -117,8 +96,6 @@ public class Frac {
 		} catch (Exception e) {
 			throw e;
 		}
-		System.out.print("soma: seria "); System.out.print(this); System.out.print(" + "); System.out.println(that);
-		System.out.print("dai a soma daria: "); System.out.print(t1.plus(t2).toString()); System.out.print(" / "); System.out.println(this.den.times(that.den).toString());
 		return new Frac(t1.plus(t2).toString(), this.den.times(that.den).toString());
 	}
 

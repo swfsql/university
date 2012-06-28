@@ -103,7 +103,9 @@ public class Calculator {
 			fa = new Frac(rpn.now.value);
 			if (fa.den.toString().equals("1")) rpn.now.value = fa.num.toString();
 		}
-		return rpn.now.value;
+		String s = rpn.now.value;
+		rpn.now.value = "";
+		return s;
 	}
 
 	private Boolean hasDivision(String s) {

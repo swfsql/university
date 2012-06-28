@@ -39,6 +39,8 @@ public class SuperInt {
 		while(++i < _l) if (v[_l - i - 1] == 0) ++j; else break; // 00001 -> 01.
 		_l -= j;
 		if (_l == 0) _x[_l++] = 0;
+
+		if (_l == 1 && _positive == 0 && _x[0] == 0) _positive = 1;
 	}
 
 	public String toString() {
@@ -169,12 +171,13 @@ public class SuperInt {
 				if (b > a) {
 					// if we got '1-2', we calculate '(-) 2-1'.
 					positive = 1 - positive; 
-					System.out.print("positive: "); System.out.println(positive);
 					bigger = 1 - bigger;
 					break;
 				}
+				if (bigger == 1) positive = 1 - positive;
 				break;
 			}
+
 		}
 
 		// calculate the subtraction.

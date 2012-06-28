@@ -45,6 +45,7 @@ public class Main {
 	public Main() {
 		exp = new Expression(); // recive inputs, make a List out of it.
 		calc = new Calculator(); // output calculated List.System.out.println("a");
+		//
 		list = new DefaultListModel();
 		frame = new Frame(list);
 
@@ -91,7 +92,6 @@ public class Main {
 	        		while(++i < l) s += " + " + list.getElementAt(i);
 	        		s += " ) / " + l;
         		}
-        		
 				frame.input.setText(s);
 				exp.setInput(s);
 				try { s = calc.right(exp);} 
@@ -112,7 +112,7 @@ public class Main {
         // sort
         ActionListener bSort = new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-				frame.out2.setText("APERTO SORT");
+				frame.out2.setText("APERTO SORT");	
         	}
         };
         frame.b3.addActionListener(bSort);

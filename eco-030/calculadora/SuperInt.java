@@ -156,7 +156,7 @@ public class SuperInt {
 			lBig = ints[bigger]._l, // big length.
 			lSmall = ints[1 - bigger]._l, // small lenght.
 			res[] = new int[100],
-			positive = 1;
+			positive = ints[0]._positive;
 
 		// look for the biggest number.
 		{
@@ -166,15 +166,15 @@ public class SuperInt {
 				a = ints[bigger]._x[lBig - i - 1];
 				b = i < l ? 0 : ints[1 - bigger]._x[lBig - i - 1];
 				if (a == b) continue;
-				if (b > a) { 
+				if (b > a) {
 					// if we got '1-2', we calculate '(-) 2-1'.
-					positive = 0; 
+					positive = 1 - positive; 
+					System.out.print("positive: "); System.out.println(positive);
 					bigger = 1 - bigger;
 					break;
 				}
 				break;
 			}
-			if (bigger + positive == 2) positive = 0; // fix the example: '1-20'.
 		}
 
 		// calculate the subtraction.

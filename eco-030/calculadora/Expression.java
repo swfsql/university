@@ -33,20 +33,39 @@ public class Expression {
 			iNow = (int) _input.charAt(i);
 
 			// numbers.
-			if (iNow >= 48 && iNow <= 57) {
+			Boolean f = iNow == ',' || iNow == '.';
+			if (iNow >= '0' && iNow <= '9' || f) {
 				// building an number: 1) build a list of char. 2) an array of char. 3) then an string. 4) That string will be part of an List of String's.
 				// a) input example: .. 132 ..
 
 				if (iLast == ')') _right.add("*"); // eg.: (3) 2 -> 3 * 2.
 
 				// b) [1->3->2].
+				int fl = 0;
 				j = i;
 				numHead = num = new NumberSegment('0');
-				while(iNow >= '0' && iNow <= '9') {
+				while(iNow >= '0' && iNow <= '9' || !f && (iNow == ',' || iNow == '.')) {
+					if (f) ++fl;
+					if (iNow == ',' || iNow == '.') {
+						f = true;
+						if (++j >= l) break; // input has ended.
+						iNow = (int) _input.charAt(j);
+						continue;
+					}
 					num = num.next = new NumberSegment(new Character((char) iNow));
 					if (++j >= l) break; // input has ended.
 					iNow = (int) _input.charAt(j);
 				} 
+				
+				// 0.3 -> 3/10
+				if (f) {
+					num = num.next = new NumberSegment('/');
+					num = num.next = new NumberSegment('1');
+					System.out.print("o tal do fl vale: "); System.out.println(fl);
+					int fl2 = fl + 1;
+					while(--fl2 != 0) num = num.next = new NumberSegment('0');
+					fl += 1;
+				}
 
 				// 3,*,-,1 -> 3,*,-1.
 				int minus = 0;
@@ -63,7 +82,8 @@ public class Expression {
 				}
 
 				// c) [132].
-				char[] number = new char[j - i + minus];
+				System.out.print("tamanho seria: "); System.out.print(j - i + minus); System.out.print(" mas agr eh: "); System.out.print(j - i + minus + fl);
+				char[] number = new char[j - i + minus + fl];
 				num = numHead;
 				int k = i-1; 
 				while( (num = num.next) != null) number[++k-i+minus] = num.value; 
@@ -204,5 +224,6 @@ class NumberSegment {
 	public NumberSegment(char c) {
 		this.value = c;
 		next = null;
+		System.out.print("num seg: "); System.out.println(c);
 	}
 }

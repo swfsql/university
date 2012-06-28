@@ -6,12 +6,14 @@ public class SuperInt {
 	private Exc ex = new Exc(); 
 
 	public SuperInt(String v) throws Exception {
+		
 		int i = -1, j = 0, k = 0;
 		_x = new int[100];
 		_l = v.length();
 
 		// if enter -1, makes it 1, positive = 0.
 		if(v.charAt(0) == '-') {
+			System.out.print("querend criar: "); System.out.println(v);
 			_positive = 0;
 			++i;
 			++k;
@@ -24,6 +26,8 @@ public class SuperInt {
 		catch (ArrayIndexOutOfBoundsException e) { throw new Exception ("error: overflow.");}
 
 		if (_l == 0) _x[_l++] = 0;
+		if (k == 1)
+			{System.out.print("acabo criando: "); System.out.println(toString());}
 	}
 	// overload (by vector).
 	private SuperInt(int v[], int n) { _init(v, n);}
@@ -65,6 +69,11 @@ public class SuperInt {
 
 	// in this case, 1 for positive, -1 for negative.
 	public int getPositive() {	return _positive * 2 - 1;}
+	public void setPositive(int i) { 
+		if (i < 0) i = 0;
+		if (i > 1) i = 1;
+		_positive = i;
+	}
 
 	// 10 ^ e.
 	private SuperInt e10(int e) {
@@ -94,13 +103,19 @@ public class SuperInt {
 
 	// %.
 	public SuperInt module (SuperInt m) throws Exception {
+		System.out.print("this (a): "); System.out.println(toString());
 		SuperInt r;
 		try {
+			int positive = _positive;
 			SuperInt d = this.divide(m);
+			_positive = positive; // TODO: fix this.
+			System.out.print("this: "); System.out.println(toString());
 			r = this.minus(m.times(d));
+			System.out.print("this: "); System.out.println(toString());
 		} catch (Exception e) {
 			throw e;
 		}
+		System.out.print("this (b): "); System.out.println(toString());
 		return r;
 	}
 

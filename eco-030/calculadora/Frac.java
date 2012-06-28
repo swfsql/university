@@ -1,7 +1,6 @@
 public class Frac {
 	public SuperInt num, den; // numerator, denominator.
 	public Boolean
-		positive = true,
 		ind = false,
 		error = false; 
 
@@ -10,6 +9,7 @@ public class Frac {
 	}
 	public Frac(String s) throws Exception {
 		if (hasDivision(s)) {
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			System.out.print("fr: "); System.out.println(s);
 			System.out.print("num: "); System.out.print(numerator(s));
 			System.out.print("  den: "); System.out.println(denominator(s));
@@ -22,15 +22,17 @@ public class Frac {
 	private Frac(int ia, int ib) throws Exception {
 		_init(new SuperInt(Integer.toString(ia)), new SuperInt(Integer.toString(ib)));
 	}
-	// overload (negative).
-	private Frac(int ia, int ib, Boolean positive) throws Exception {
-		this.positive = positive;
-		_init(new SuperInt(Integer.toString(ia)), new SuperInt(Integer.toString(ib)));
-	}
+	
 
 	private void _init(SuperInt ia, SuperInt ib) throws Exception {
 		// errors and indeterminances.
 		if(ib.equals0()) throw new Exception ("error: divide by 0.");
+
+		System.out.println("~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~. VIX");
+		int positive = ia.getPositive(); // fix this
+		System.out.print("a: "); System.out.println(ia);
+				System.out.print("b: "); System.out.println(ib);
+
 
 		// simplify
 		{
@@ -63,10 +65,18 @@ public class Frac {
 				i = i.plus(s1);
 				i2 = ic.minus(i);
 			}
+
 		}
+
+		System.out.println("~~~~~~~~~~~");
 
 		num = ia.copy();
 		den = ib.copy();
+		System.out.println("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+		num.setPositive(positive); // fix this
+		System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+
+		System.out.print("chckpoint: "); System.out.println(toString());
 	}
 
 	private Boolean hasDivision(String s) {

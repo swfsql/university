@@ -119,7 +119,25 @@ public class Main {
         ActionListener bMediana = new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		s = "";
-				frame.out2.setText("APERTO MEDIANA");
+				s = "";
+        		Object sorting[] = list.toArray();
+        		Arrays.sort(sorting, new Comp());
+        		int l = list.size();
+        		if (l % 2 == 0) {
+        			l /= 2;
+        			s = "( " + sorting[l].toString() + " + " + sorting[l-1].toString() + " ) / 2";
+        		} else {
+        			l /= 2;
+        			s = sorting[l].toString();
+        		}
+        		frame.input.setText(s);
+				System.out.println("H5");
+				exp.setInput(s);
+				System.out.println("H6");
+				try { s = calc.right(exp);} 
+				catch (Exception ex) {frame.out2.setText(ex.getMessage());}
+				System.out.println("H7");
+				frame.out2.setText(s);
         	}
         };
         frame.b2.addActionListener(bMediana);

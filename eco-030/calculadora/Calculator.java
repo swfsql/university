@@ -87,7 +87,15 @@ public class Calculator {
 					if (iNow == '*') rpn.now.value = sa.times(sb).toString();
 					if (iNow == '/') {
 						if(sa.module(sb).equals0()) rpn.now.value = sa.divide(sb).toString();
-						else rpn.now.value = sa + "/" + sb;
+						else {
+							System.out.println("ACHOOOOOOOOOOOO");
+							int positive = sa.getPositive() * sb.getPositive();
+							System.out.print("positive: "); System.out.println(sa.getPositive());
+							sb.setPositive(1);
+							sa.setPositive(1);
+							rpn.now.value = (positive == -1 ? "-" : "") + sa + "/" + sb;
+							System.out.println(rpn.now.value);
+						}
 					}
 				}
 				

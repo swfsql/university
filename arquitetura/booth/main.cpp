@@ -1,11 +1,12 @@
 #include <iostream>
 #include <bitset>
+#include <string>
 using namespace std;
 
-#define DEBUG 
 
-
-void pr(bitset <15> bs) {
+bool debug = true;
+void pr(bitset <15> bs, string s) {
+  if (!debug) return;
   cout << "\nS C M    A    Q    Q-1";
   cout << "\n" << bs[14] << " " << bs[13] << " ";
   int i  = -1;
@@ -16,7 +17,7 @@ void pr(bitset <15> bs) {
   cout << " ";
   --i;
   while(++i < 12) cout << bs[12 - i];
-  cout << " " << bs[0] << " ";
+  cout << " " << bs[0] << " " << s << "\n";
 }
 
 
@@ -36,7 +37,7 @@ int main() {
     // 0 0 0000 0000 0000 0
     bs.reset();
 
-    DEBUG pr(bs); cout << "reset\n";
+    pr(bs, "reset");
 
     // recebe M e Q.
     {
@@ -54,7 +55,7 @@ int main() {
       bs |= (Q & 15) << 1;
     }
 
-    DEBUG pr(bs); cout << " M e Q\n";
+    pr(bs, "M e Q");
 
     // resolvi fazer por esta iteracao constante.
     int i = -1; 
@@ -71,7 +72,7 @@ int main() {
         bs.set(13, ~bs[0]); // o Carrier recebe o valor de -Q-1 (A_M).
 
         
-        DEBUG pr(bs); cout << " arrumou carrier\n";
+        pr(bs, "arrumou carrier");
 
 
         int j = -1; 
@@ -100,16 +101,16 @@ int main() {
           // agora o A recebe de verdade o s
           bs.set(j + 5, bs[14]);
 
-          DEBUG pr(bs); cout << " fim da soma\n";
+          pr(bs, " fim da soma");
         }
       }
 
       // shift.
       //
       //
-      DEBUG pr(bs); cout << "antes do shift\n";
+      pr(bs, "antes do shift");
       bs >>= 1;
-      DEBUG pr(bs); cout << "shift\n";
+      pr(bs, "shift");
 
       // como so' agora que percebi que o proprio M leva shift, tenho que
       // fazer com que ele retorne ao seu estado original.
@@ -118,11 +119,10 @@ int main() {
       bs ^= bs ^ ((bs << 6) >> 6) ^ ((bs >> 8) << 9);
       //((bs & 3840) << 1);
       bs.set(8, bs[7]); // A4 depois do shift sera igual ao A4 de antes.
-      DEBUG pr (bs); cout << "M arrumado\n";
-    }
-  }
+      pr (bs, "M arrumado");
+    } }
 
-  DEBUG pr(bs); cout << " fim\n";
+  pr(bs, " fim");
   cout << "\nresultado (binario):\n";
   int i = -1;
   while(++i < 8) cout << bs[8 - i];

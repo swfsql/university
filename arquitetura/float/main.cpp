@@ -80,12 +80,15 @@ int main() {
           break;
         }
         if (quebrado_i2 >= lim) {
-          if (!fl_primeiro && !offset) offset = -l + j; // j < 0
+          if (!fl_primeiro && !offset)  {
+            offset = -l + j; // j < 0
+            cout << "j: " << j << "\n";
+          }
           fl_primeiro = true;
           quebrado_i2 %= lim;
           cout << "vai um, agora quebrado: " << quebrado_i2 << "\n";
-          a += (1 << (23 - l - offset)) & ((1 << 23) - 1);
-          cout << "o shift disso: " << "1 << " << 23 - l - offset << "\n";
+          a += (1 << (23 - l - offset + j)) & ((1 << 23) - 1);
+          cout << "o shift disso: " << "1 << " << 23 - l - offset + j << "\n";
           cout << "offset: " << offset << "\n";
         } else {
           if (j <= 0 && !fl_primeiro) --j;
@@ -98,8 +101,9 @@ int main() {
     }
 
     // calcula o expoente
-    //a += ((j + 127) & 0b11111111) << 23;
-    a += ((j) & 0b11111111) << 23;
+    cout << "expoente: " << j << "\n";
+    a += ((j + 127) & 0b11111111) << 23;
+    //a += ((j) & 0b11111111) << 23;
 
 
 

@@ -63,20 +63,32 @@ int main() {
         quebrado_s += input[k2];
         cout << "add2 " << input[k2] << "\n";
       }
-      double quebrado_i = atoi(quebrado_s.c_str());
-      double quebrado_i2 = quebrado_i;
+      long int quebrado_i = atoi(quebrado_s.c_str());
+      long int quebrado_i2 = quebrado_i;
       cout << "\ndecimal: " << quebrado_i << "\n";
-      double lim = pow(10, k2 - i - 2);
+      long int lim = pow(10, k2 - i - 2);
       cout << "k: " << k << ", k2: " << k2 << ", i: " << i << ", lim: " << lim << "\n";
 
       int l = 0;
+      bool fl_primeiro = j != 0;
+      int offset = j;
       while(quebrado_i2 *= 2) {
-        if(++l >= 22 || l + j >= 22) break;
+        cout << "\nquebrado agora: " << quebrado_i2 << "\n";
+        cout << "++l: " << l+1 << ", j: " << j << "\n";
+        if(++l >= 22 || l + j >= 22) {
+          cout << "son the bit, l: " << l << ", j: " << j << "\n";
+          break;
+        }
         if (quebrado_i2 >= lim) {
-          quebrado_i2 = quebrado_i2 - lim * (quebrado_i2 / lim);
-          a += 1 << (23 - l - j);
+          if (!fl_primeiro && !offset) offset = -l + j; // j < 0
+          fl_primeiro = true;
+          quebrado_i2 %= lim;
+          cout << "vai um, agora quebrado: " << quebrado_i2 << "\n";
+          a += (1 << (23 - l - offset)) & ((1 << 23) - 1);
+          cout << "o shift disso: " << "1 << " << 23 - l - offset << "\n";
+          cout << "offset: " << offset << "\n";
         } else {
-          if (j <= 0) --j;
+          if (j <= 0 && !fl_primeiro) --j;
         }
         cout << quebrado_i2 << " < " << lim << "\n";
       }

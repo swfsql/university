@@ -35,7 +35,18 @@ int main() {
       
       cout << "j: " << j << "\n";
 
-    } else {
+
+      cout << "partiu significando\n";
+      a += (inteiro_i << (23 - j)) & ((1 << 23)-1);
+
+
+    cout << "\n-----\n";
+    cout << "se     1.s                     .\n";
+    cout << bitset <32> (a) << "\n";
+    }
+
+
+    { // agora cuidar dos digitos quebrados
 
       // considerando que nao ha inteiro; ex. "-.5", e a entrada eh valida..
       cout << "\ndecimal\n"; 
@@ -57,23 +68,35 @@ int main() {
       cout << "\ndecimal: " << quebrado_i << "\n";
       double lim = pow(10, k2 - i - 2);
       cout << "k: " << k << ", k2: " << k2 << ", i: " << i << ", lim: " << lim << "\n";
-      while((quebrado_i2 *= 2) < lim) {
-        --j;
+
+      int l = 0;
+      while(quebrado_i2 *= 2) {
+        if(++l >= 22 || l + j >= 22) break;
+        if (quebrado_i2 >= lim) {
+          quebrado_i2 = quebrado_i2 - lim * (quebrado_i2 / lim);
+          a += 1 << (23 - l - j);
+        } else {
+          if (j <= 0) --j;
+        }
         cout << quebrado_i2 << " < " << lim << "\n";
       }
-      --j;
-      cout << "j: " << j << "\n";
+      if (j <= 0) --j;
+    cout << "j: " << j << "\n";
 
     }
-    a += ((j + 127) & 0b11111111) << 23;
 
+    // calcula o expoente
+    //a += ((j + 127) & 0b11111111) << 23;
+    a += ((j) & 0b11111111) << 23;
+
+
+
+     
+    
     cout << "\n-----\n";
+    cout << "se     1.s                     .\n";
     cout << bitset <32> (a) << "\n";
   }
-
-
-
-
 
 
 

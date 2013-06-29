@@ -87,8 +87,8 @@ int main() {
           fl_primeiro = true;
           quebrado_i2 %= lim;
           cout << "vai um, agora quebrado: " << quebrado_i2 << "\n";
-          a += (1 << (23 - l - offset + j)) & ((1 << 23) - 1);
-          cout << "o shift disso: " << "1 << " << 23 - l - offset + j << "\n";
+          a += (1 << (23 - l - offset + (j > 0 ? 0 : j))) & ((1 << 23) - 1);
+          cout << "o shift disso: " << "1 << " << (23 - l - offset + (j > 0 ? 0 : j))<< "\n";
           cout << "offset: " << offset << "\n";
         } else {
           if (j <= 0 && !fl_primeiro) --j;

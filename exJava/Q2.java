@@ -16,9 +16,9 @@ public class Q2 {
       for (i2 = 0; i2 < l - 1; i2++) {
   
       if (a[i2] > a[i2 + 1]) {
-	  temp = a[i2];
-	  a[i2] = a[i2 + 1];
-	  a[i2 + 1] = temp;
+	      temp = a[i2];
+	      a[i2] = a[i2 + 1];
+	      a[i2 + 1] = temp;
         }
       }
     }

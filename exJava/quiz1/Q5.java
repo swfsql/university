@@ -2,36 +2,54 @@ import java.io.*;
 
 public class Q5 {
   public static void main (String args[]) {
+    new Feature();
   }
 }
 
 class Feature {
-  BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-  String line;
-  try {
-    System.out.print("input: "); 
-    line = reader.readLine()
-      if (line.equals("inu")) {
-// todo        
-      } else 
-      if (line.equals("bird")) {
+  Animal animal;
 
-      } else 
-      if (line.equals()) {
+  public Feature() {
+    String line;
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    try {
+      System.out.print("\ninput: "); 
+      line = reader.readLine();
+      animal = new Creator().create(line);
+    } catch (IOException e) {
+      System.err.println(e.getMessage());
+    }
+    check();
+  }
 
-      } else 
-      if (line.equals()) {
-
-      } else 
-      
-  } catch (IOException e) {
-    System.err.println(e.getMessage());
+  public void check() {
+    if (animal == null) {
+      System.out.println("Error"); 
+    } else {
+      System.out.print("Kind: "); 
+      System.out.println(animal.getKind()); 
+      System.out.print("Move: "); 
+      System.out.println(animal.getMove()); 
+      System.out.print("Child: "); 
+      System.out.println(animal.getHowChild()); 
+      System.out.print("Die: "); 
+      System.out.println(animal.willDie()); 
+    }
   }
 }
 
 class Creator {
-// todo
-
+  public Animal create(String line) {
+    if (line.equals("inu")) {
+      return new Dog();
+    } else if (line.equals("bird")) {
+      return new Bird();
+    } else if (line.equals("human")) {
+      return new Human();
+    } else {
+      return null; 
+    }
+  } 
 }
 
 abstract class Animal {
@@ -65,7 +83,6 @@ class Human extends Mammal {
   }
 }
 
-
 class Dog extends Mammal {
   public String getKind() {
     return "Dog";
@@ -74,7 +91,6 @@ class Dog extends Mammal {
     return "Four legs walking";
   }
 }
-
 
 class Bird extends Animal {
   public String getKind() {

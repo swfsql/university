@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Q2 {
+public class Q22 {
   public static void main(String args[]) {
     new Q22Main();   
   }

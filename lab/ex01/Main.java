@@ -1,10 +1,11 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 import net.htmlparser.jericho.*;
 
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 
     URL url;
     InputStream is = null;
@@ -12,27 +13,12 @@ public class Main {
 
     String line, html = "";
 
+    br = new BufferedReader(
+      new InputStreamReader(
+        new URL("https://www.apple.com/").openStream()));
 
-    try {
-      url = new URL("https://www.apple.com/");
-      is = url.openStream();
-      br = new BufferedReader(new InputStreamReader(is));
-
-      while((line = br.readLine()) != null) {
-
-        html += line + "\n";
-      }
-
-      //System.out.println(html);
-
-    } catch (MalformedURLException mue) {
-
-
-    } catch (IOException ioe) {
-    
-    
-    } finally {
-
+    while((line = br.readLine()) != null) {
+      html += line + "\n";
     }
 
 
@@ -49,26 +35,56 @@ public class Main {
     }
 
     Writer out;
-    try {
     out = new BufferedWriter(
       new OutputStreamWriter(
         new FileOutputStream("output/index.html"),
         "UTF-8"));
     out.write(html);
     out.close();
+
+    Source src = new Source(new File("output/index.html"));
+
+    List<Element> el = src.getAllElements(HTMLElementName.LINK);
+    for (Element e : el) {
+      String rel = e.getAttributeValue("rel");
+      String href = e.getAttributeValue("href");
+
+      if (rel.equals("stylesheet")) {
+        System.out.println("------------");
+        url = new URL(href);
+        System.out.println("------------");
+        ; // name
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream("destName");
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+
+
+        // .css
+      } else if (rel.equals("alternate")) {
+
+        // .rss
+      }
+    }
+
+
+    el = src.getAllElements(HTMLElementName.SCRIPT);
+    for (Element e : el) {
+      String a_src = e.getAttributeValue("src");
+      if (!a_src.equals("")) {
+
+      } 
+    }
+
+    el = src.getAllElements(HTMLElementName.IMG);
+    for (Element e : el) {
+      String a_src = e.getAttributeValue("src");
+
+    }
     
-    } catch (FileNotFoundException fnfe) {
-      System.out.println("Error to find file output/index.html @ FileOutputStream");
-    } catch (UnsupportedEncodingException uee) {
-      System.out.println("Error to encode file output/index.html @ OutputStreamWriter");
-
-    } catch (IOException ioe) {
-      System.out.println("Error to write/close file output/index.html");
-    }     
-
+    
+    
+    System.out.println("===========\n"+src.getCacheDebugInfo());
 
   }
-
-
 
 }

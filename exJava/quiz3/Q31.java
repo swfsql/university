@@ -2,26 +2,30 @@ import java.util.*;
 import java.io.*;
 
 public class Q31 {
-  public static void main(String args[]) {
-    new Q31Main();
-  }
-}
-
-class Q31Main {
-
-  public Q31Main() {
+  public static void main(String args[]) throws Exception {
     MultiCollection multiCol = new MultiCollection();
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    String line = reader.readLine();
-    while(!line.equals("end")) {
+    System.out.print("input: ");
+    String line = reader.readLine(),
+      END = "end",
+      MAP = "^(.+?),(.+)$";
+    while(line != null) {
+      if (line.matches(END)) {
+        break;
+      }
+      if (line.matches(MAP)) {
+        String[] strs = line.split(",");
+        multiCol.addMap(strs[0], strs[1]);  
+      } else {
+        multiCol.addList(line);
+      }
       
+      System.out.print("input: ");
       line = reader.readLine();
     }
-
-
+    multiCol.showAll();
   }
 }
-
 
 class MultiCollection {
 
@@ -38,7 +42,7 @@ class MultiCollection {
 
   public void showAll() {
     System.out.println("## List ##");
-    for(int i = 0; i < list.length(); i++) {
+    for(int i = 0; i < list.size(); i++) {
       System.out.println(list.get(i));
     }
 

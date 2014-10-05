@@ -28,8 +28,11 @@ public class Main {
       downURL(e.getAttributeValue("src"));
     }
     
-    //System.out.println("===========\n"+src.getCacheDebugInfo());
-
+    // just replace every "http://apple.com/" by "output".
+    String html = src.toString().replaceAll("\"https?://(www.)?apple.com/(.*?)\"", "\"$2\"");
+    //System.out.println(html);
+    
+    saveFile("output/index.html", new ByteArrayInputStream(html.getBytes()));
   }
 
   static void downURL(String href) throws Exception {
@@ -37,21 +40,27 @@ public class Main {
       return;
     }
 
-    // the dot actually grabs any char
-    String pathf = href.replaceFirst("^https?://(www.)?apple.com/(.*)$", "output/$2");
-    String path = pathf.replaceFirst("^(.+/)[^/]+$", "$1");
+    // "http://apple.com/a/b.file" becomes "output/a/b.file"
+    // obs. the dot grabs anything. its wrong but it works.
+    String pathf = href.replaceFirst(
+      "^https?://(www.)?apple.com/(.*)$", "output/$2"); 
+    // "output/a/b.file" becomes "output/a/"
+    String path = pathf.replaceFirst("^(.+/)[^/]+$", "$1"); 
 
     File file = new File(path);
     if (file.exists() == false && file.mkdirs() == false) {
       System.out.println("Error to create [" + path + "] folder.");
     }
+    
+    saveFile(pathf, new URL(href).openStream());
+  }
 
-    URL url = new URL(href);
-    ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+  static void saveFile(String pathf, InputStream is) throws Exception {
+    ReadableByteChannel rbc = Channels.newChannel(is);
     FileOutputStream fos = new FileOutputStream(pathf);
     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-    
-    System.out.println("file: [" + pathf + "], from: [" + href + "]");
+    fos.close();
+    System.out.println("file: [" + pathf + "]");
   }
 
 }

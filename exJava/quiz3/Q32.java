@@ -58,7 +58,7 @@ class Shop {
       Object o = list.get(i);
       if (o instanceof Phone) {
         System.out.print("Kind: phone\n  Name = ");
-      } else if (list.get(i) instanceof Book) {
+      } else if (o instanceof Book) {
         System.out.print("Kind: book\n  Index = ");
       }
 

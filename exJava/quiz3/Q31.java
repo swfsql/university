@@ -4,6 +4,7 @@ import java.io.*;
 public class Q31 {
   public static void main(String args[]) throws Exception {
     MultiCollection multiCol = new MultiCollection();
+
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     System.out.print("input: ");
     String line = reader.readLine(),
@@ -23,6 +24,7 @@ public class Q31 {
       System.out.print("input: ");
       line = reader.readLine();
     }
+
     multiCol.showAll();
   }
 }

@@ -12,59 +12,17 @@ public class Main {
     downURL("https://www.apple.com/index.html", pre); // downloads the index
 
     Source src = new Source(new File(pre + "index.html")); // jericho init
-    String txt, pathf;
     List<Element> el;
 
     // .css & .rss
     {
       // grab every img url inside the .css 
-      Pattern p = Pattern.compile("image:url\\(\"((?!data:image).*?)\"\\)");
-      Matcher m;
-      String path, href, css;
       el = src.getAllElements(HTMLElementName.LINK); 
       for (Element e : el) {
         if (e.getAttributeValue("rel").matches("stylesheet")) { 
-          href = e.getAttributeValue("href");
-          pathf = downURL(href, pre);
-
-          if (pathf == null || pathf.equals("")) { 
-            // when trying to download the font, downURL returns "" 
-            // so the font stills broken
-            continue;
-          }
-          System.out.println();
-
-          css = new Source(new File(pathf)).toString();
-          m = p.matcher(css);
-
-          int i = -1;
-          while(m.find()) {
-            i = 0;
-            txt = m.group(1); // "http://www.apple.com/img.png" or "../a/img.png"
-
-            while(txt.matches("^\\.\\./.*$")) { // if "../a/img.png"
-              // "../../a/img.png" => "../a/img.png"
-              txt = txt.replaceFirst("^\\.\\./(.*)$", "$1"); 
-              i++;
-            }
-
-            if (i > 0) { // its a relative path
-              // example: we were in "http://www.apple.com/a/b/c.css"
-              // and we got an img "../c/d.png" inside that .css
-              // (actually, now this img is already "c/d.png", and i = 1
-              // then that img => "http://www.apple.com/a/c/d.png"
-              txt = href.replaceFirst("^(.+/)(.+/){" + i + "}[^/]+$", "$1") + txt;  
-            } 
-
-            downURL(txt, pre);
-          }
-          
-          if (i != -1) {
-            replaceSave(css.toString(), pathf, 
-              pathf.replaceAll("(?:^\\w+/)|[^/]", "").replaceAll("/", "../"));
-            // we add a couple of "../" on the non-relatives images 
-          }
-
+          String href = e.getAttributeValue("href");
+          String pathf = downURL(href, pre);
+          imgFromCss(pathf, pre);
         } else if (e.getAttributeValue("rel").matches("alternate")) { // .rss
           downURL(e.getAttributeValue("href"), pre);
         }
@@ -130,5 +88,48 @@ public class Main {
     
     s = s.replaceAll("\"https?://(?:www\\.)?apple\\.com/(.*?)\"", "\"" + pre + "$1\"");
     saveFile(pathf, new ByteArrayInputStream(s.getBytes()));
+  
   }
+
+  static void imgFromCss(String pathf, String pre) throws Exception {
+    
+    Pattern p = Pattern.compile("image:url\\(\"((?!data:image).*?)\"\\)");
+    Matcher m;
+    String path, href = "", css, txt;
+
+    if (pathf == null || pathf.equals("")) { 
+      // when trying to download the font, downURL returns "" 
+      // so the font stills broken
+      return;
+    }
+
+    css = new Source(new File(pathf)).toString();
+    m = p.matcher(css);
+     int i = -1;
+    while(m.find()) {
+      i = 0;
+      txt = m.group(1); // "http://www.apple.com/img.png" or "../a/img.png"
+       while(txt.matches("^\\.\\./.*$")) { // if "../a/img.png"
+        // "../../a/img.png" => "../a/img.png"
+        txt = txt.replaceFirst("^\\.\\./(.*)$", "$1"); 
+        i++;
+      }
+       if (i > 0) { // its a relative path
+        // example: we were in "http://www.apple.com/a/b/c.css"
+        // and we got an img "../c/d.png" inside that .css
+        // (actually, now this img is already "c/d.png", and i = 1
+        // then that img => "http://www.apple.com/a/c/d.png"
+        txt = href.replaceFirst("^(.+/)(.+/){" + i + "}[^/]+$", "$1") + txt;  
+      } 
+       downURL(txt, pre);
+    }
+    
+    if (i != -1) {
+      replaceSave(css.toString(), pathf, 
+        pathf.replaceAll("(?:^\\w+/)|[^/]", "").replaceAll("/", "../"));
+      // we add a couple of "../" on the non-relatives images 
+    }
+
+  } 
 }
+ 

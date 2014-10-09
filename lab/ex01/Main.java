@@ -15,18 +15,23 @@ public class Main {
  
 class PageDown {
 
+  private String webExtensions = "com|net|org|co|jp";
+
+
   private String pre, back, baseReg;
+  private int depth;
 
   PageDown(String url, String pre, int depth, boolean cssImg) throws Exception {
 
-    String webExtensions = "com|net|org|co|jp";
+    this.depth = depth;
+    this.pre = pre;
+
     // "https://www.apple.com/" => "apple.com/" 
     String base = url.replaceFirst("^https?://(?:www\\.)?(.+?\\.(?:" + 
       webExtensions + "))/?(?:.*)$", "$1/");
-    // "apple.com/" => "apple\.com/"
     
+    // "apple.com/" => "apple\.com/"
     baseReg = base.replaceAll("\\.", "\\\\.");
-    this.pre = pre;
 
     // index.html
     String pathf = downURL(url); // downloads the index

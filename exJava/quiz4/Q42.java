@@ -6,25 +6,28 @@ public class Q42 {
 
   public static void main(String args[]) throws Exception {
     BinaryInput bi = new BinaryInput("test.dat");
-    
-    for(int i = 0; i < 26; i++) {
-      System.out.println(bi.readChar());
+    int test = 0;
+
+    switch (test) {
+      case 0:
+        for(int i = 0; i < 26; i++) {
+          System.out.println(bi.readChar());
+        }
+        break;
+
+      case 1:
+        for(int i = 0; i < 13; i++) {
+          System.out.println(bi.readShort());
+        }
+        break;
+
+      case 2:
+        for(int i = 0; i < 6; i++) {
+          System.out.println(bi.readInt());
+        }
     }
-    bi.reset();
-    
-    for(int i = 0; i < 13; i++) {
-      System.out.println(bi.readShort());
-    }
-    bi.reset();
-    
-    for(int i = 0; i < 6; i++) {
-      System.out.println(bi.readInt());
-    }
-    bi.reset();
   }
 }
-
-
 
 class BinaryInput {
 
@@ -36,26 +39,24 @@ class BinaryInput {
     fis = new FileInputStream(new File(pathf));
   }
 
-  public char readChar() {
+  public char readChar() throws Exception {
     fis.read(b, 0, 1);
-
-    return (char) b[0];
+    return (char) (b[0] << 0);
   }
 
-  public short readShort() {
+  public short readShort() throws Exception {
     fis.read(b, 0, 2);
-    return 0;
+    return (short)((b[0] << 8) | (b[1] << 0));
   }
 
-  public int readInt() {
+  public int readInt() throws Exception {
     fis.read(b, 0, 4);
-    return 0;
+    return (int)((b[0] << 24) | (b[1] << 16) | (b[2] << 8) | (b[3] << 0));
   }
 
-  public void reset() {
+  public void reset() throws Exception {
     fis.reset();
   }
-
 
 }
 

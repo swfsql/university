@@ -30,9 +30,7 @@ public class Q42 {
 }
 
 class BinaryInput {
-
   byte[] b = new byte[4];
-
   FileInputStream fis;
 
   BinaryInput(String pathf) throws Exception {
@@ -57,6 +55,5 @@ class BinaryInput {
   public void reset() throws Exception {
     fis.reset();
   }
-
 }
 

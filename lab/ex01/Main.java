@@ -21,14 +21,17 @@ class PageDown {
   private String pre, back, baseReg;
   private int depth;
 
+  private String httpReg = "(?:https?://www\\.|https?://|www\\.)";
+
   PageDown(String url, String pre, int depth, boolean cssImg) throws Exception {
 
     this.depth = depth;
     this.pre = pre;
 
-    // "https://www.apple.com/" => "apple.com/" 
-    String base = url.replaceFirst("^https?://(?:www\\.)?(.+?\\.(?:" + 
+    // "https://www.apple.com/index.html" => "apple.com/" 
+    String base = url.replaceFirst("^" + httpReg + "(.+?\\.(?:" + 
       webExtensions + "))/?(?:.*)$", "$1/");
+    System.out.println(base);
     
     // "apple.com/" => "apple\.com/"
     baseReg = base.replaceAll("\\.", "\\\\.");
@@ -65,19 +68,21 @@ class PageDown {
           }
         } 
     }
-    
-    replaceSave(src.toString(), pathf, back);
+
+    String s = src.toString();
+    s = s.replaceAll("href=\"/(.*?)\"", "href=\"www." + base + "$1\"");
+    replaceSave(s, pathf, back);
   }
 }
 
   String downURL(String href) throws Exception {
-    if (!href.matches("^https?.*$")) { // just to be sure its a link
+    if (!href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
       return "";
     }
 
     // "http://site.com/a/b.file" => "offline/site.com/a/b.file"
     String pathf = href.replaceFirst(
-      "^https?://(?:www\\.)?(.*)$", pre + "$1"); 
+      "^" + httpReg + "(.*)$", pre + "$1"); 
     
     // "output/a/b.file" => "output/a/"
     String path = pathf.replaceFirst("^(.+/)[^/]+$", "$1"); 
@@ -113,7 +118,7 @@ class PageDown {
     // paths in relation to the .css path
     
     // "http://site.com/a/b.file" => "offline/a/b.file"
-    s = s.replaceAll("\"https?://(?:www\\.)?(.*?)\"", 
+    s = s.replaceAll("\"" + httpReg + "(.*?)\"", 
       "\"" + pre + "$1\"");
     saveFile(pathf, new ByteArrayInputStream(s.getBytes()));
   

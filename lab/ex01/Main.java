@@ -8,7 +8,41 @@ import net.htmlparser.jericho.*;
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    PageDown page = new PageDown("http://www.apple.com/index.html", "offline/", 1, true);
+    MicrosoftConditionalCommentTagTypes.register();
+    StartTagType.COMMENT.register();
+    MicrosoftConditionalCommentTagTypes.DOWNLEVEL_REVEALED_VALIDATING_IF.register(); 
+    MicrosoftConditionalCommentTagTypes.DOWNLEVEL_REVEALED_VALIDATING_ENDIF.register();
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    while(true) {
+
+      System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~\n\nCtrl+C to exit.");
+
+      System.out.print("insert the url [http://apple.com/]: ");
+      String website = reader.readLine();
+      if (website.equals("")) {
+        website = "http://apple.com/";
+      }
+
+      System.out.print("how deep [1]: ");
+      String sint = reader.readLine();
+      if (sint.equals("")) {
+        sint = "1";
+      }
+      int depth = Integer.parseInt(sint);
+
+      System.out.print("the base folder [offline]: ");
+      String base = reader.readLine();
+      if (base.equals("")) {
+        base = "offline/";
+      }
+
+      System.out.print("also download resources from .css [y/N]: ");
+      String css = reader.readLine();
+      Boolean bcss = css.equals("y") ? true : false;
+
+      new PageDown(website, base, depth, bcss);
+    }
   }
 
 }
@@ -16,41 +50,57 @@ public class Main {
 class PageDown {
 
   private String webExtensions = "com|net|org|co|jp";
-
-
-  private String pre, back, baseReg;
-  private int depth;
-
   private String httpReg = "(?:https?://www\\.|https?://|www\\.)";
 
-  PageDown(String url, String pre, int depth, boolean cssImg) throws Exception {
+  private String pre, back, baseReg;
 
-    this.depth = depth;
+  PageDown(String url, String pre, int depth, boolean cssImg) throws Exception {
+    if(depth <= 0) return;
+    System.out.println("++++++++++");
+    System.out.println("+url: " + url);
+    if (url.matches("^http.*$") == false) {
+      url = url.replaceFirst("^(.+)$", "http://$1");
+    }
+    if (url.matches(".*\\.html$") == false) {
+      url = url.replaceFirst("^(.+?)/?$", "$1/index.html");
+    }
+    System.out.println("+url: " + url);
+    System.out.println("+dep: " + depth);
+
     this.pre = pre;
 
     // "https://www.apple.com/index.html" => "apple.com/" 
     String base = url.replaceFirst("^" + httpReg + "(.+?\\.(?:" + 
       webExtensions + "))/?(?:.*)$", "$1/");
-    System.out.println(base);
-    
+    System.out.println("+base: " + base);
+    System.out.println("++++++++++");
     // "apple.com/" => "apple\.com/"
     baseReg = base.replaceAll("\\.", "\\\\.");
 
     // index.html
     String pathf = downURL(url); // downloads the index
+    if (pathf == null){
+      return;
+    }
     
     // we add a couple of "../" on this pages links
     back = pathf.replaceAll("(?:^\\w+/)|[^/]", "").replaceAll("/", "../");
 
     // now we start downloading the page resources
     Source src = new Source(new File(pathf)); // jericho init
+    String src_original = src.toString();
+    String src_ie_tag = src_original.replaceAll("\\[if gte IE (.*?)\\]><!-->", "[if IE $1]>");
+    src_ie_tag = src_ie_tag.replaceAll("<!--<!\\[endif\\]-->", "<![endif]-->");
+    src = new Source(src_ie_tag);
     List<Element> el;
 
     // .js and img
     el = src.getAllElements(HTMLElementName.SCRIPT); 
     el.addAll(src.getAllElements(HTMLElementName.IMG));
     for (Element e : el) {
-      downURL(e.getAttributeValue("src"));
+      if (downURL(e.getAttributeValue("src")) == null) {
+        //System.out.println("++ Cancelled download: " + e);
+      }
     }
 
     // .css & .rss
@@ -63,48 +113,96 @@ class PageDown {
         } else if (e.getAttributeValue("rel").matches("stylesheet")) { 
           String href = e.getAttributeValue("href");
           String pathf2 = downURL(href);
-          if (cssImg) {
+          if (cssImg && pathf2 != null) {
             imgFromCss(href, pathf2);
           }
         } 
     }
 
-    String s = src.toString();
-    s = s.replaceAll("href=\"/(.*?)\"", "href=\"www." + base + "$1\"");
+    String s = src_original;
+    // .. href="/blabla/" .. => .. href="http://www.apple.com/blabla/" ..
+    s = s.replaceAll("href=\"/(.*?)\"", "href=\"http://www." + base + "$1\"");
+    // .. src=" .. ? ..  " .. => .. src=" .. %3F  .." ..
+    s = s.replaceAll("src=\"(.*?)\\?(.*?)\"", "src=\"$1%3F$2\"");
+    src = new Source(s);
     replaceSave(s, pathf, back);
+
+    // other .html
+    {
+      depth--;
+      el = src.getAllElements(HTMLElementName.A); 
+      for (Element e : el) {
+        String href = e.getAttributeValue("href");
+        new PageDown(href, "offline/", depth, true);
+      }
+    }
   }
 }
 
   String downURL(String href) throws Exception {
-    if (!href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
-      return "";
+    if (href == null || !href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
+      return null;
     }
 
     // "http://site.com/a/b.file" => "offline/site.com/a/b.file"
     String pathf = href.replaceFirst(
       "^" + httpReg + "(.*)$", pre + "$1"); 
     
+    return downURL(href, pathf);
+  }
+
+  String downURL(String href, String pathf) throws Exception {
+    if (!href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
+      return null;
+    }
+
     // "output/a/b.file" => "output/a/"
     String path = pathf.replaceFirst("^(.+/)[^/]+$", "$1"); 
 
     File file = new File(path);
     if (file.exists() == false && file.mkdirs() == false) {
       System.out.println("Error to create [" + path + "] folder.");
+      System.exit(1);
     }
     
-    saveFile(pathf, new URL(href).openStream());
-    return pathf;
+    file = new File(pathf);
+    if (file.exists() == false) {
+      try {
+        saveFile(pathf, new URL(href).openStream());
+      } catch (Exception e) {
+        System.out.println("---------- ops");
+        System.out.println("-href: " + href);
+        System.out.println("-pathf: " + pathf);
+        System.out.println("-path: " + path);
+        System.out.println("-excpetion: " + e);
+        if (href.matches("^http.*$") == false) {
+          return downURL(href.replaceFirst("^(.+)$", "http://$1"), pathf);
+        } else if (href.matches(".*\\.html$")) {
+          System.out.println("----------");
+          return downURL(href.replaceFirst("^(.+/)[^/]+$", "$1"), pathf);
+        } else {
+          System.out.println("-giving up on this link");
+          System.out.println("----------");
+          return null;
+        }
+      }
+      return pathf;
+    }
+    return null;
   }
 
   void saveFile(String pathf, InputStream is) throws Exception {
     System.out.print("<");
-    ReadableByteChannel rbc = Channels.newChannel(is);
     FileOutputStream fos = new FileOutputStream(pathf);
-    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-    fos.close();
-    System.out.print(pathf);
+    try {
+      ReadableByteChannel rbc = Channels.newChannel(is);
+      fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+    } finally {
+      fos.close();
+    }
+    //System.out.print(pathf);
     System.out.print(">");
-    System.out.print("\n");
+    //System.out.print("\n");
   }
 
   void replaceSave(String s, String pathf, String pre) throws Exception {

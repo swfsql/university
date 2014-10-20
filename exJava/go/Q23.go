@@ -23,7 +23,6 @@ type multiCollection struct {
 }
 func newMultiColl () (mc *multiCollection) {
   mc = new(multiCollection)
-//  mc.l = list.New()
   mc.m = make(map[string]int)
   return 
 }

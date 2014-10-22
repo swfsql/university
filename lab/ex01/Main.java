@@ -132,7 +132,7 @@ class PageDown {
           downURL(e.getAttributeValue("href"), null, false);
         } else if (e.getAttributeValue("rel").matches("stylesheet")) { 
           String href = e.getAttributeValue("href");
-          String pathf2 = downURL(href, null, false);
+          String pathf2 = downURL(href, null, cssImg);
           if (cssImg && pathf2 != null) {
             imgFromCss(href, pathf2);
           }
@@ -153,7 +153,7 @@ class PageDown {
         for (Element e : el) {
           String href = e.getAttributeValue("href");
           if (href != null) {
-            new PageDown(href, "offline/", depth, cssImg, ls);
+            new PageDown(href, pre, depth, cssImg, ls);
           }
         }
       }
@@ -277,7 +277,7 @@ class PageDown {
         // then that img => "http://www.site.com/a/c/d.png"
         txt = href.replaceFirst("^(.+/)(.+/){" + i + "}[^/]+$", "$1") + txt;  
       } 
-       downURL(txt, null, false);
+      downURL(txt, null, false);
     }
     
     if (i != -1) {
@@ -350,6 +350,10 @@ class SaveFile implements Runnable {
     } catch (Exception e) {
       System.out.print("x");
         System.out.println("THREAD ERROR. id: " + id);
+        System.out.print("--");
+        System.out.print(" <" + href + ">");
+        System.out.print(" <" + pathf + ">");
+        exit(1);
     } finally {
       System.out.print("<" + id + ">");
       finish();

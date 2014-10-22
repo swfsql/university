@@ -1,3 +1,4 @@
+import java.lang.Thread;
 import java.net.*;
 import java.io.*;
 import java.nio.channels.*;
@@ -13,6 +14,7 @@ public class Main {
     MicrosoftConditionalCommentTagTypes.DOWNLEVEL_REVEALED_VALIDATING_IF.register(); 
     MicrosoftConditionalCommentTagTypes.DOWNLEVEL_REVEALED_VALIDATING_ENDIF.register();
 
+    LinkStack ls = new LinkStack(); // downloading threads linked-stack 
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     while(true) {
 
@@ -41,7 +43,23 @@ public class Main {
       String css = reader.readLine();
       Boolean bcss = css.equals("y") ? true : false;
 
-      new PageDown(website, base, depth, bcss);
+      System.out.print("how many downloading threads? [1]: ");
+      sint = reader.readLine();
+      if (sint.equals("")) {
+        sint = "1";
+      }
+      int nthreads = Integer.parseInt(sint);
+      ls.head = new SaveFile(ls, 0); // at least 1 downloading thread
+      new Thread(ls.head).start();
+      SaveFile sf;
+      for (int i = 1; i < nthreads; i++) {
+        sf = new SaveFile(ls, i);
+        sf.next = ls.head;
+        ls.head = sf;
+        new Thread(sf).start();
+      }
+
+      new PageDown(website, base, depth, bcss, ls);
     }
   }
 
@@ -53,32 +71,34 @@ class PageDown {
   private String httpReg = "(?:https?://www\\.|https?://|www\\.)";
 
   private String pre, back, baseReg;
+  private LinkStack ls;
 
-  PageDown(String url, String pre, int depth, boolean cssImg) throws Exception {
+  PageDown(String url, String pre, int depth, boolean cssImg, LinkStack ls) throws Exception {
     if(depth <= 0) return;
-    System.out.println("++++++++++");
-    System.out.println("+url: " + url);
+    System.out.print("\n++");
+    System.out.print(" <" + url + ">");
+    System.out.print(" <" + depth + ">");
     if (url.matches("^http.*$") == false) {
       url = url.replaceFirst("^(.+)$", "http://$1");
     }
     if (url.matches(".*\\.html$") == false) {
       url = url.replaceFirst("^(.+?)/?$", "$1/index.html");
     }
-    System.out.println("+url: " + url);
-    System.out.println("+dep: " + depth);
 
     this.pre = pre;
+    this.ls = ls;
 
     // "https://www.apple.com/index.html" => "apple.com/" 
     String base = url.replaceFirst("^" + httpReg + "(.+?\\.(?:" + 
       webExtensions + "))/?(?:.*)$", "$1/");
-    System.out.println("+base: " + base);
-    System.out.println("++++++++++");
+    System.out.print(" <" + base + ">");
+    System.out.print(" / <" + url + ">");
+    System.out.println(" ++");
     // "apple.com/" => "apple\.com/"
     baseReg = base.replaceAll("\\.", "\\\\.");
 
     // index.html
-    String pathf = downURL(url); // downloads the index
+    String pathf = downURL(url, null, true); // downloads the index
     if (pathf == null){
       return;
     }
@@ -98,7 +118,7 @@ class PageDown {
     el = src.getAllElements(HTMLElementName.SCRIPT); 
     el.addAll(src.getAllElements(HTMLElementName.IMG));
     for (Element e : el) {
-      if (downURL(e.getAttributeValue("src")) == null) {
+      if (downURL(e.getAttributeValue("src"), null, false) == null) {
         //System.out.println("++ Cancelled download: " + e);
       }
     }
@@ -109,51 +129,49 @@ class PageDown {
       el = src.getAllElements(HTMLElementName.LINK); 
       for (Element e : el) {
         if (e.getAttributeValue("rel").matches("alternate")) { // .rss
-          downURL(e.getAttributeValue("href"));
+          downURL(e.getAttributeValue("href"), null, false);
         } else if (e.getAttributeValue("rel").matches("stylesheet")) { 
           String href = e.getAttributeValue("href");
-          String pathf2 = downURL(href);
+          String pathf2 = downURL(href, null, false);
           if (cssImg && pathf2 != null) {
             imgFromCss(href, pathf2);
           }
         } 
-    }
-
-    String s = src_original;
-    // .. href="/blabla/" .. => .. href="http://www.apple.com/blabla/" ..
-    s = s.replaceAll("href=\"/(.*?)\"", "href=\"http://www." + base + "$1\"");
-    // .. src=" .. ? ..  " .. => .. src=" .. %3F  .." ..
-    s = s.replaceAll("src=\"(.*?)\\?(.*?)\"", "src=\"$1%3F$2\"");
-    src = new Source(s);
-    replaceSave(s, pathf, back);
-
-    // other .html
-    {
-      depth--;
-      el = src.getAllElements(HTMLElementName.A); 
-      for (Element e : el) {
-        String href = e.getAttributeValue("href");
-        new PageDown(href, "offline/", depth, true);
       }
+
+      String s = src_original;
+      // .. href="/blabla/" .. => .. href="http://www.apple.com/blabla/" ..
+      s = s.replaceAll("href=\"/(.*?)\"", "href=\"http://www." + base + "$1\"");
+      // .. src=" .. ? ..  " .. => .. src=" .. %3F  .." ..
+      s = s.replaceAll("src=\"(.*?)\\?(.*?)\"", "src=\"$1%3F$2\"");
+      src = new Source(s);
+
+      // other .html
+      {
+        depth--;
+        el = src.getAllElements(HTMLElementName.A); 
+        for (Element e : el) {
+          String href = e.getAttributeValue("href");
+          if (href != null) {
+            new PageDown(href, "offline/", depth, cssImg, ls);
+          }
+        }
+      }
+
+      // href="..../" => href="..../index.html"
+      s = s.replaceAll("href=\"([^\"]*)/\"", "href=\"$1/index.html\"");
+      replaceSave(s, pathf, back);
+
     }
   }
-}
 
-  String downURL(String href) throws Exception {
+  String downURL(String href, String pathf, boolean blocking) throws Exception {
     if (href == null || !href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
       return null;
     }
-
-    // "http://site.com/a/b.file" => "offline/site.com/a/b.file"
-    String pathf = href.replaceFirst(
-      "^" + httpReg + "(.*)$", pre + "$1"); 
-    
-    return downURL(href, pathf);
-  }
-
-  String downURL(String href, String pathf) throws Exception {
-    if (!href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
-      return null;
+    if (pathf == null) {
+      // "http://site.com/a/b.file" => "offline/site.com/a/b.file"
+      pathf = href.replaceFirst("^" + httpReg + "(.*)$", pre + "$1"); 
     }
 
     // "output/a/b.file" => "output/a/"
@@ -167,43 +185,50 @@ class PageDown {
     
     file = new File(pathf);
     if (file.exists() == false) {
-      try {
-        saveFile(pathf, new URL(href).openStream());
-      } catch (Exception e) {
-        System.out.println("---------- ops");
-        System.out.println("-href: " + href);
-        System.out.println("-pathf: " + pathf);
-        System.out.println("-path: " + path);
-        System.out.println("-excpetion: " + e);
-        if (href.matches("^http.*$") == false) {
-          return downURL(href.replaceFirst("^(.+)$", "http://$1"), pathf);
-        } else if (href.matches(".*\\.html$")) {
-          System.out.println("----------");
-          return downURL(href.replaceFirst("^(.+/)[^/]+$", "$1"), pathf);
-        } else {
-          System.out.println("-giving up on this link");
-          System.out.println("----------");
-          return null;
-        }
-      }
-      return pathf;
+      return transfer(pathf, href, null, blocking);
     }
     return null;
   }
 
-  void saveFile(String pathf, InputStream is) throws Exception {
-    System.out.print("<");
-    FileOutputStream fos = new FileOutputStream(pathf);
+  String transfer(String pathf, String href, InputStream is, boolean blocking) throws Exception {
+    SaveFile sf = null;
     try {
-      ReadableByteChannel rbc = Channels.newChannel(is);
-      fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-    } finally {
-      fos.close();
+      while(ls.head == null) {
+        Thread.sleep(10);
+      }
+    } catch (Exception e) {
+      System.out.println("transfer wait exception.");
+      System.exit(1);
     }
-    //System.out.print(pathf);
-    System.out.print(">");
-    //System.out.print("\n");
+    sf = ls.head;
+    ls.head = sf.next;
+    sf.reset(pathf, href, is);
+    if (blocking == false) {
+
+      sf.interrupt();
+    } else {
+      if (sf.run2() == false) {
+        System.out.print("--");
+        System.out.print(" <" + href + ">");
+        System.out.print(" <" + pathf + ">");
+        //System.out.println("\n-excpetion: " + e);
+        //System.out.println("-msg: ");  e.printStackTrace();
+
+        if (href.matches("^http.*$") == false) {
+          return downURL(href.replaceFirst("^(.+)$", "http://$1"), pathf, blocking);
+        } else if (href.matches(".*\\.html$")) {
+          System.out.println("----------");
+          return downURL(href.replaceFirst("^(.+/)[^/]+$", "$1"), pathf, blocking);
+        } else {
+          System.out.print(" <giving up on this link>");
+          System.out.print("--");
+          return null;
+        }
+      }
+    } 
+    return pathf;
   }
+
 
   void replaceSave(String s, String pathf, String pre) throws Exception {
     // for relative = 0:
@@ -218,8 +243,7 @@ class PageDown {
     // "http://site.com/a/b.file" => "offline/a/b.file"
     s = s.replaceAll("\"" + httpReg + "(.*?)\"", 
       "\"" + pre + "$1\"");
-    saveFile(pathf, new ByteArrayInputStream(s.getBytes()));
-  
+    transfer(pathf, null, new ByteArrayInputStream(s.getBytes()), true);
   }
 
 
@@ -253,7 +277,7 @@ class PageDown {
         // then that img => "http://www.site.com/a/c/d.png"
         txt = href.replaceFirst("^(.+/)(.+/){" + i + "}[^/]+$", "$1") + txt;  
       } 
-       downURL(txt);
+       downURL(txt, null, false);
     }
     
     if (i != -1) {
@@ -264,6 +288,87 @@ class PageDown {
     }
 
   } 
+}
+
+class LinkStack {
+  public SaveFile head;
+}
+
+class SaveFile implements Runnable {
+  private String pathf, href;
+  private InputStream is;
+  public SaveFile next; // for linked stack 
+  public LinkStack ls;
+  private int id; // sysout only
+
+  SaveFile(LinkStack ls, int id) {
+    this.ls = ls;
+    this.id = id; // sysout only
+  }
+
+  void reset(String pathf, String href, InputStream is) {
+    this.pathf = pathf;
+    this.is = is;
+    this.href = href;
+  }
+
+  public synchronized void interrupt() {
+    notify();
+  }
+
+  public void run() {
+    try {
+      while(true) {
+        synchronized (this) {
+          while(pathf == null) {
+            wait();
+          }
+        }
+        run2();
+      }
+    } catch(Exception e) {
+      System.out.println("THREAD ERROR. id: " + id);
+      System.exit(1);
+    }
+  }
+
+  public boolean run2() {
+    if (is == null) {
+      try {
+        is = new URL(href).openStream();
+      } catch(Exception e) {
+        finish();
+        return false;
+      }
+    }
+
+    FileOutputStream fos = null;
+    try {
+      fos = new FileOutputStream(pathf);
+      ReadableByteChannel rbc = Channels.newChannel(is);
+      fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+    } catch (Exception e) {
+      System.out.print("x");
+        System.out.println("THREAD ERROR. id: " + id);
+    } finally {
+      System.out.print("<" + id + ">");
+      finish();
+      try {fos.close();} catch(Exception e) 
+      {
+        System.out.println("THREAD ERROR. id: " + id);
+        System.exit(1);
+      }
+      return true;
+    }
+  }
+
+  public void finish() {
+    pathf = null;
+    is = null;
+    next = ls.head;
+    ls.head = this;
+  }
+
 }
 
 

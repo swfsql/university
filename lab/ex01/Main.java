@@ -353,7 +353,7 @@ class SaveFile implements Runnable {
         System.out.print("--");
         System.out.print(" <" + href + ">");
         System.out.print(" <" + pathf + ">");
-        exit(1);
+        System.exit(1);
     } finally {
       System.out.print("<" + id + ">");
       finish();

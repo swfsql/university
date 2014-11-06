@@ -2,5 +2,4 @@
 sudo cp -r /var/lib/tomcat7/webapps/ex/ tomcat/
 sudo chown $USER tomcat/ -R
 sudo chgrp tomcat7 tomcat/ -R
-sudo chmod a+rx tomcat/ -R
 echo 'done'

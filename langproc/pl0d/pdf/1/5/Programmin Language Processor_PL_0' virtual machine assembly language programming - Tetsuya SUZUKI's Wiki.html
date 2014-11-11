@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    
+    
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="wiki.cgi?action=RSS">
+
+    
+    
+      <link rel="stylesheet" type="text/css" href="./theme/default/default.css">
+    
+    
+    
+      <style type="text/css">
+      <!--
+      /* エラーメッセージ */
+.error {
+  color       : #FF0000;
+  font-weight : bold;
+}
+
+/* 存在しないWikiページ */
+span.nopage {
+  background-color : #FFFF88;
+}
+
+/* Wikiページへのアンカ */
+a.wikipage:link {
+  text-decoration : underline;
+}
+
+a.wikipage:visited {
+  text-decoration : underline;
+}
+
+a.wikipage:hover {
+  background-color: #DDDDDD;
+  text-decoration : underline;
+}
+
+/* parteditプラグイン */
+div.partedit {
+  text-align : right;
+  font-size  : 80%;
+}
+
+/* calendarプラグイン */
+td.today {
+  background-color : #FF8888;
+}
+
+td.have {
+  font-weight : bold;
+}
+
+.calendar td {
+  text-align : right;
+}
+      -->
+      </style>
+    
+    
+    <title>Programmin Language Processor/PL/0' virtual machine assembly language programming - Tetsuya SUZUKI's Wiki</title>
+  </head>
+  <body>
+  
+  
+  
+  <!--========================================================================-->
+<!-- ヘッダ（メニューを表示） -->
+<!--========================================================================-->
+<div class="adminmenu">
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?page=FrontPage">トップ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=DIFF&amp;page=Programmin+Language+Processor%2FPL%2F0%27+virtual+machine+assembly+language+programming" rel="nofollow">差分</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=LIST">一覧</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=SOURCE&amp;page=Programmin+Language+Processor%2FPL%2F0%27+virtual+machine+assembly+language+programming" rel="nofollow">ソース</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=SEARCH" rel="nofollow">検索</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?page=Help">ヘルプ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=PDF&amp;page=Programmin+Language+Processor%2FPL%2F0%27+virtual+machine+assembly+language+programming" rel="nofollow">PDF</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=RSS" rel="nofollow">RSS</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=LOGIN">ログイン</a>
+    </span>
+  
+</div>
+
+  
+  <h1><a href="wiki.cgi?action=SEARCH&amp;word=Programmin+Language+Processor%2FPL%2F0%27+virtual+machine+assembly+language+programming">Programmin Language Processor/PL/0' virtual machine assembly language programming</a></h1>
+  
+  
+    
+  
+  
+  <div class="day">
+    <div class="body">
+      <div class="section">
+        <h2><a name="p0">Excercise 1</a></h2><p>Execute the following program 
+<a href="wiki.cgi?action=ATTACH&amp;page=Programmin+Language+Processor%2FPL%2F0%27+virtual+machine+assembly+language+programming&amp;file=add%2Es">add.s</a>(2) by pl0das.pl, and understand the execution process.</p>
+<pre>start:
+	lit,2     ; push 2.
+	lit,3     ; push 3.
+	opr,add   ; pop two constants 2 and 3, and push the value of '2+3'.
+	opr,wrt   ; pop a value and output the value.
+	opr,wrl   ; output a new line code.
+	jmp,start ; jump to the address 0 to terminate this program.
+</pre>
+<h2><a name="p1">Exercise 2</a></h2><p>Modify 'add.s' so that it can output 1 if the value of &quot;2+3&quot; is even or 0 if if the value is odd.</p>
+<p>Hints: Check the following instructions in the page <a href="wiki.cgi?page=Programming+Language+Processor%2Fa+PL%2F0%27+virtual+machine" class="wikipage">A PL/0' virtual machine</a>.</p>
+<ul>
+<li> opr,odd</li>
+<li> jpc</li>
+</ul>
+<p>Answer: 
+<a href="wiki.cgi?action=ATTACH&amp;page=Programmin+Language+Processor%2FPL%2F0%27+virtual+machine+assembly+language+programming&amp;file=even%5Fodd%2Es">even_odd.s</a>(3)</p>
+<hr>
+<p><a href="wiki.cgi?page=Programming+Language+Processor" class="wikipage">Return to Programming Language Processor</a></p>
+
+      </div>
+    </div>
+    
+      
+    
+  </div>
+
+  <!--========================================================================-->
+<!-- フッタ -->
+<!--========================================================================-->
+<div class="footer">
+  
+  <!-- 管理者の情報 -->
+  
+  
+  <!-- FSWikiのバージョン情報 -->
+  Powered by <a href="http://fswiki.poi.jp/">FreeStyleWiki3.6.2</a>
+    with Perl5.010000
+  
+  
+</div>
+
+  
+</body></html>

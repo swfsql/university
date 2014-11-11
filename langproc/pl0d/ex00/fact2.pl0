@@ -1,0 +1,30 @@
+
+function fact(n)
+var r;
+begin
+  r := n;
+
+  while n > 1 do
+  begin
+    n := n - 1;
+    r := r * n;
+  end;
+
+  return r;
+end;
+
+var x;
+begin
+  x := 1;
+
+  while x<10 do
+    begin
+      write x; 
+      write fact(x);
+      writeln;
+      x := x+1;
+    end;
+end.
+
+  
+

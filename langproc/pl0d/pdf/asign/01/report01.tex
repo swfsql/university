@@ -1,0 +1,66 @@
+%#!pdfplatex
+%
+% How to make report01.pdf
+% % latex report01.tex
+% % latex report01.tex
+% % dvipdf report01.dvi
+% 
+\documentclass{article}
+\title{Programming Language Processor \\ Assignment 1}
+\author{Your ID   Your name}
+\date{\today}
+
+\def\reporttrue{\let\ifreport=\iftrue}
+\def\reportfalse{\let\ifreport=\iffalse}
+%\reportfalse  % question
+\reporttrue  % report
+
+
+\begin{document}
+\ifreport
+\maketitle
+\else
+\begin{center}
+{\huge Programming Language Processor Assignment 1}
+\end{center}
+Answer the following questions and submit your report (Word or PDF) to
+tetsuya@shibaura-it.ac.jp before Nov. 17. 
+The subject of your mail should be of the form ``PLP Assignment 1''.
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 1}
+Translate the following infix expression into postfix.
+\begin{quote}
+ $7 + 2 \times (5 - 1)$
+\end{quote}
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer here.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 2}
+Write a PL/0' assembly language program which evaluates the following
+expression and outputs the value of the expression.
+\begin{quote}
+ $7 + 2 \times (5 - 1)$
+\end{quote}
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer (your program and an explanation) here.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

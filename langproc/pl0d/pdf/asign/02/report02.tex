@@ -1,0 +1,193 @@
+%#!pdfplatex
+%
+% How to make report01.pdf
+% % latex report01.tex
+% % latex report01.tex
+% % dvipdf report01.dvi
+% 
+\documentclass{article}
+\title{Programming Language Processor \\ Assignment 2}
+\author{Your ID   Your name}
+\date{\today}
+
+\def\reporttrue{\let\ifreport=\iftrue}
+\def\reportfalse{\let\ifreport=\iffalse}
+%\reportfalse  % question
+\reporttrue  % report
+
+
+
+\begin{document}
+\ifreport
+\maketitle
+\else
+\begin{center}
+{\huge Programming Language Processor Assignment 2}
+\end{center}
+Answer the following questions and submit your report (Word or PDF) to
+tetsuya@shibaura-it.ac.jp before Dec. 15. 
+The subject of your mail should be of the form ``PLP Assignment 2''.
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 1}
+Modify the sytax diagram of PL/0' as follows, and explain the modified parts of the diagram.
+\begin{itemize}
+ \item Introduce the following do-while statement to PL/0'.
+ \item Introduce the following repeat-until statement to PL/0'.
+ \item Introduce the following if-then-else statement to PL/0'.
+\end{itemize}
+
+
+\subsection*{do-while statement}
+Introduce the following do-while statement into PL/0'.
+\begin{description}
+ \item[Production rule] {\it statement}  $\to$ {\bf do} {\it statement} {\bf while} {\it condition}
+ \item[Action] A statement '{\bf do} {\it statement} {\bf while} {\it condition}' works as follows
+	    \begin{enumerate}
+	     \item Execute {\it statement}.
+	     \item If the value of {\it condition} is true, go to the step 1. Otherwise, exit this loop.
+	    \end{enumerate}
+\end{description}
+
+Fig.\ref{fig:do-while} shows a sample program with a do-while statement.
+\begin{figure}[h]
+\begin{verbatim}
+var x;
+begin
+   x := 0;
+   do begin
+      write x;
+      writeln;
+      x := x + 1
+   end
+   while x < 3
+end.
+\end{verbatim}
+\caption{A sample program {\tt do.pl0}}\label{fig:do-while}
+\end{figure}
+
+\subsection*{repeat-until statement}
+Introduce the following repeat-until statement into PL/0'.
+\begin{description}
+ \item[Production rule] {\it statement}  $\to$ {\bf repeat} {\it statement} {\bf until} {\it condition}
+ \item[Action] A statement '{\bf repeat} {\it statement} {\bf until} {\it condition}' works as follows.
+	    \begin{enumerate}
+	     \item Execute {\it statement}.
+	     \item If the value of {\it condition} is false, go to the step 1. Otherwise, exit this loop.
+	    \end{enumerate}
+\end{description}
+
+Fig.\ref{fig:repeat-until} shows a sample program with a repeat-until statement.
+\begin{figure}[h]
+\begin{verbatim}
+var x;
+begin
+   x := 0;
+   repeat begin
+      write x; 
+      writeln;
+      x := x + 1
+   end
+   until x=3
+end.
+\end{verbatim}
+\caption{A sample program {\tt repeat.pl0}}\label{fig:repeat-until}
+\end{figure}
+
+\subsection*{if-then-else statement}
+Modify the syntax diagram so that PL/0' can accept the following if-then-else statement.
+\begin{description}
+ \item[Production rule] {\it statement}  $\to$ {\bf if} {\it condition} {\bf then} 
+       ${\it statement}_1$ ({\bf else} ${\it statement}_2$ $\vert$ {$\epsilon$})
+ \item[Action] A statement '{\bf if} {\it condition} {\bf then} 
+	    ${\it statement}_1$ ({\bf else} ${\it statement}_2$ $\vert$ {$\epsilon$})'
+	    works as follows.
+	    \begin{enumerate}
+	     \item Evaluate {\it condition}.
+	     \item If the value of {\it condition} is true, execute ${\it statement}_1$.
+	     \item If the value of {\it condition} is false and ${\it statement}_2$ exists, 
+		   execute ${\it statement}_2$.
+	    \end{enumerate}
+ \item[Description] To resolve ambiguity of the grammar of PL/0', 
+	    we use the following rule.
+	    \begin{itemize}
+	     \item When we find an {\bf else}, we relate the {\bf else} to the nearest {\bf then}
+		   which has not be related to any {\bf else} yet.
+	    \end{itemize}
+\end{description}
+
+Fig.\ref{fig:if-then-else} shows a sample program with if-then-else statements.
+\begin{figure}[h]
+\begin{verbatim}
+var x;
+begin
+   x := 0;
+   while x<3 do begin
+      if x < 1 then write 0
+      else if x < 2 then write 1
+      else write 2;
+      writeln;
+      x := x+1;
+   end;
+end.
+\end{verbatim}
+\caption{A sample program {\tt else.pl0}}\label{fig:if-then-else}
+\end{figure}
+
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+\section*{Question 2}
+Modify your syntax diagram in Question 1 so that PL/0' can accept one-dimensional array,
+and explain the modified parts of the diagram.
+In addition, write a simple program {\ tt array.pl0} which demonstrates how to use your array.
+
+\begin{description}
+ \item[Hints] You have to consider how to declare arrays, 
+	    how to refer to array elements and how to assign values to array elements.
+\end{description}
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 3}
+
+Modify your syntax diagram of PL/0' in Question 1 so that PL/0' 
+can accept procedure declarations and procedure calls.
+A procedure means a function without any return value like a void function in C.
+
+We use the following statement to call a procedure with $n$ arguments.
+\begin{quote}
+ {\bf call} {\it procedure}($arg_1$, $arg_2$, $\dots$, $arg_n$)
+\end{quote}
+
+Explain the modified parts of your syntax diagram and 
+write a simple program 'proc.pl0' which demonstrates how to declare and call procedures.
+
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\end{document}

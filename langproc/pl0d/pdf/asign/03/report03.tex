@@ -1,0 +1,451 @@
+%#!pdfplatex
+%
+% How to make report01.pdf
+% % latex report01.tex
+% % latex report01.tex
+% % dvipdf report01.dvi
+% 
+\documentclass{article}
+\title{Programming Language Processor \\ Assignment 3}
+\author{Your ID   Your name}
+\date{\today}
+
+\def\reporttrue{\let\ifreport=\iftrue}
+\def\reportfalse{\let\ifreport=\iffalse}
+%\reportfalse  % question
+\reporttrue  % report
+
+
+\begin{document}
+\ifreport
+\maketitle
+\else
+\begin{center}
+{\huge Programming Language Processor Assignment 3}
+\end{center}
+Answer the following questions and submit your report (Word or PDF) to
+tetsuya@shibaura-it.ac.jp before Jan. 19, 2015. 
+The subject of your mail should be of the form ``PLP Assignment 3''.
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Question 1}
+
+To introduce the following do-while statement to PL/0', answer the following questions.
+\begin{description}
+ \item[Production rule] {\it statement}  $\to$ {\bf do} {\it statement} {\bf while} {\it condition}
+ \item[Action] A statement '{\bf do} {\it statement} {\bf while} {\it condition}' works as follows
+	    \begin{enumerate}
+	     \item Execute {\it statement}.
+	     \item If the value of {\it condition} is true, go to the step 1. Otherwise, exit this loop.
+	    \end{enumerate}
+\end{description}
+
+\subsection*{Question 1-1}
+To add a token {\tt do} to a set of starting tokens of {\it statement},
+modify a function {\tt isStBeginKey} in {\tt compile.c} and explain the modification in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+\subsection*{Question 1-2}
+Modify a function {\tt statement} in {\tt compile.c} 
+so that your PL/0' compiler can output object codes of Fig.\ref{fig:dowhile-code} for
+do-while statements.
+Explain the modificaiton in your report.
+
+\begin{figure}[h]
+\begin{tabular}{ll}
+label1: & Object codes of {\it statement} \\
+        & Object codes of {\it condition} \\
+        & jpc label2 \\
+        & jmp label1 \\
+label2: & \\
+\end{tabular}
+\caption{Object codes for a do-while statement}
+\label{fig:dowhile-code}
+\end{figure}
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer
+
+
+
+
+\subsection*{Question 1-3}
+What does your PL/0' compiler outputs when your PL/0' compiler compiles
+and executes a PL/0' program do.pl0 of Fig. \ref{fig:do-while}?
+
+\begin{figure}[h]
+\begin{verbatim}
+var x;
+begin
+   x := 0;
+   do begin
+      write x;
+      writeln;
+      x := x + 1
+   end
+   while x < 3
+end.
+\end{verbatim}
+\caption{A test program {\tt do.pl0}}\label{fig:do-while}
+\end{figure}
+
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Question 2}
+Answer the following questions to add the following repeat-until statement to PL/0'.
+
+\begin{description}
+ \item[Production rule] {\it statement}  $\to$ {\bf repeat} {\it statement} {\bf until} {\it condition}
+ \item[Action] A statement '{\bf repeat} {\it statement} {\bf until} {\it condition}' works as follows.
+	    \begin{enumerate}
+	     \item Execute {\it statement}.
+	     \item If the value of {\it condition} is false, go to the step 1. Otherwise, exit this loop.
+	    \end{enumerate}
+\end{description}
+
+\subsection*{Question 2-1}
+Write object codes for the repeat-until statement 
+like object codes for the do-while statement of Fig.\ref{fig:dowhile-code}.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer
+
+
+
+
+\subsection*{Question 2-2}
+Modify {\tt getSource.h} and {\tt getSource.c} to register two tokens
+{\tt repeat} and {\tt until} to your PL/0' compiler.
+Explain the modification in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+\subsection*{Question 2-3}
+To add a token {\tt repeat} to a set of starting tokens of {\it statement},
+modify a function {\tt isStBeginKey} in {\tt compile.c} and explain the modification in you report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+\subsection*{Question 2-4}
+Modify a function {\tt statement} in {\tt compile.c}
+so that your PL/0' compiler can output object codes for repeat-until statements.
+Explain the modificaiton in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\subsection*{Question 2-5}
+What does your PL/0' compiler outputs when your PL/0' compiler compiles
+and executes a PL/0' program {\tt repeat.pl0} of Fig.\ref{fig:repeat-until}?
+
+\begin{figure}[h]
+\begin{verbatim}
+var x;
+begin
+   x := 0;
+   repeat begin
+      write x; 
+      writeln;
+      x := x + 1
+   end
+   until x=3
+end.
+\end{verbatim}
+\caption{A test program {\tt repeat.pl0}}\label{fig:repeat-until}
+\end{figure}
+
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Question 3}
+Answer the following questions to add the following if-then-else statement to PL/0'.
+
+\begin{description}
+ \item[Production rule] {\it statement}  $\to$ {\bf if} {\it condition} {\bf then} 
+       ${\it statement}_1$ ({\bf else} ${\it statement}_2$ $\vert$ {$\epsilon$})
+ \item[Action] A statement '{\bf if} {\it condition} {\bf then} 
+	    ${\it statement}_1$ ({\bf else} ${\it statement}_2$ $\vert$ {$\epsilon$})'
+	    works as follows.
+	    \begin{enumerate}
+	     \item Evaluate {\it condition}.
+	     \item If the value of {\it condition} is true, execute ${\it statement}_1$.
+	     \item If the value of {\it condition} is false and ${\it statement}_2$ exists, 
+		   execute ${\it statement}_2$.
+	    \end{enumerate}
+ \item[Description] To resolve ambiguity of the grammar of PL/0', 
+	    we use the following rule.
+	    \begin{itemize}
+	     \item When we find an {\bf else}, we relate the {\bf else} to the nearest {\bf then}
+		   which has not be related to any {\bf else} yet.
+	    \end{itemize}
+\end{description}
+
+
+\subsection*{Question 3-1}
+Write object codes for 
+a statement '{\bf if} {\it condition} {\bf then}
+${\it statement}_1$ {\bf else} ${\it statement}_2$'
+like object codes for a do-while statement of Fig.\ref{fig:dowhile-code}.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\subsection*{Question 3-2}
+Modify {\tt getSource.h} and {\tt getSource.c} to register a token
+{\tt else} to your PL/0' compiler.
+Explain the modification in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\subsection*{Question 3-3}
+Modify a function {\tt statement} in {\tt compile.c}
+so that your PL/0' compiler can output object codes for if-then-else statements.
+Explain the modificaiton in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\subsection*{Question 3-4}
+What does your PL/0' compiler outputs when your PL/0' compiler compiles
+and executes a PL/0' program else.pl0 of Fig.\ref{fig:if-then-else}?
+
+\begin{figure}[h]
+\begin{verbatim}
+var x;
+begin
+   x := 0;
+   while x<3 do begin
+      if x < 1 then write 0
+      else if x < 2 then write 1
+      else write 2;
+      writeln;
+      x := x+1;
+   end;
+end.
+\end{verbatim}
+\caption{A test program else.pl0}\label{fig:if-then-else}
+\end{figure}
+
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Question 4}
+Answer the following questions to introduce one-dimensional array to PL/0'.
+
+
+\subsection*{Question 4-1}
+Explain how to modify the grammar of PL/0' to introduce one-dimensional array to PL/0'.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+\subsection*{Question 4-2}
+Do you need new instructions to the PL/0' virtual machine for one-dimensional array?
+If you need new instructions, define thier mnemonics and their actions. 
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\subsection*{Question 4-3}
+Modify your PL/0' compiler so that it can support one-dimensional array.
+Explain the modification in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+\subsection*{Question 4-4}
+Write a simple test program {\tt array.pl0} for one-dimensional array.
+Explain the test program and what your PL/0' compiler outputs when it
+compiles and executes the test program.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Question 5}
+Answer the following questions to introduce procedures (functions withaout any return values) to PL/0'.
+
+We use the following statement to call a procedure with $n$ arguments.
+\begin{quote}
+ {\bf call} {\it procedure}($arg_1$, $arg_2$, $\dots$, $arg_n$)
+\end{quote}
+
+
+\subsection*{Question 5-1}
+Explain how to modify the grammar of PL/0' to introduce procedures to PL/0'.
+
+\subsection*{Question 5-2}
+Do you need new instructions to the PL/0' virtual machine for procedures?
+If you need new instructions, define thier mnemonics and their actions. 
+
+
+\subsection*{Question 5-3}
+Modify your PL/0' compiler so that it can support procedures.
+Explain the modification in your report.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+\subsection*{Question 5-4}
+Write a simple test program {\tt proc.pl0} for procedures.
+Explain the test program and what your PL/0' compiler outputs when it
+compiles and executes the test program.
+
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Question 6}
+Introduce your own idea to your PL/0' compiler.
+
+\ifreport
+(Answer)\\
+\fi
+% Write your answer.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{1cm}
+\ifreport
+\else
+\section*{How to submit your report}
+Submit an archive file which includes the following files to
+tetsuya@shibaura-it.ac.jp before Jan. 19, 2015.
+\begin{enumerate}
+ \item Your report file report03.pdf or report03.doc (Word)
+ \item All source files of your PL/0' compiler
+ \item Makefile
+ \item The following test programs
+       \begin{enumerate}
+	\item array.pl0
+	\item proc.pl0
+	\item test programs for your own idea
+       \end{enumerate}
+\end{enumerate}
+
+The subject of your mail should be of the form ``PLP Assignment 3''.
+
+A name of the archive file should be of the form ``your\_id.tgz'' like ``xa14000.tgz''.
+You can make the the archive file on Linux as follows.
+\begin{enumerate}
+ \item Create a directory whose name is your ID.
+       For example, create a directory ``xa14000'' as follows if your ID is ``xa14000''.
+       \begin{quote}
+	{\tt \% mkdir} {\tt xa14000} 
+       \end{quote}
+
+ \item Copy all files into the directory.
+ \item Make your archive file using tar command as follows.
+       \begin{quote}
+	{\tt \% tar zcvf} \ \ {\tt xa14000}{\tt .tgz} \ \ {\tt xa14000}
+       \end{quote}
+\end{enumerate}
+
+Check your archive file before submission. You can expand your archive
+file as follows.
+\begin{quote}
+ {\tt \% tar zxvf} \ \ {\tt xa14000}{\tt .tgz}
+\end{quote}
+
+
+\fi
+
+\end{document}

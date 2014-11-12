@@ -10,6 +10,20 @@
         <servlet-name>HelloWorldServlet</servlet-name>
         <servlet-class>HelloWorldServlet</servlet-class>
     </servlet>
+
+    <servlet>
+        <servlet-name>RegistServlet</servlet-name>
+        <servlet-class>RegistServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ConfirmServlet</servlet-name>
+        <servlet-class>ConfirmServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CompleteServlet</servlet-name>
+        <servlet-class>CompleteServlet</servlet-class>
+    </servlet>
+
     <!-- <servlet>
         <servlet-name>Other</servlet-name>
         <servlet-class>Other</servlet-class>
@@ -19,6 +33,21 @@
         <servlet-name>HelloWorldServlet</servlet-name>
         <url-pattern>/01</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RegistServlet</servlet-name>
+        <url-pattern>/02</url-pattern>
+        <url-pattern>/02-01</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmServlet</servlet-name>
+        <url-pattern>/02-02</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CompleteServlet</servlet-name>
+        <url-pattern>/02-03</url-pattern>
+    </servlet-mapping>
+
     <!-- <servlet-mapping>
         <servlet-name>Other</servlet-name>
         <url-pattern>/OtherURL</url-pattern>

@@ -1,5 +1,5 @@
 
-sudo cp -r tomcat/ /var/lib/tomcat7/webapps/ex/ 
+sudo cp -r tomcat /var/lib/tomcat7/webapps/ex/ 
 sudo chown $USER /var/lib/tomcat7/webapps/ex/ -R
 sudo chgrp tomcat7 /var/lib/tomcat7/webapps/ex/ -R
 echo 'done'

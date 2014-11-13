@@ -24,6 +24,23 @@
         <servlet-class>CompleteServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>JLoginServlet</servlet-name>
+        <jsp-file>JLoginServlet</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>JRegistServlet</servlet-name>
+        <jsp-file>JRegistServlet</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>JConfirmServlet</servlet-name>
+        <jsp-file>JConfirmServlet</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>JCompleteServlet</servlet-name>
+        <jsp-file>JCompleteServlet</jsp-file>
+    </servlet>
+
     <!-- <servlet>
         <servlet-name>Other</servlet-name>
         <servlet-class>Other</servlet-class>
@@ -46,6 +63,24 @@
     <servlet-mapping>
         <servlet-name>CompleteServlet</servlet-name>
         <url-pattern>/02-03</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>JLoginServlet</servlet-name>
+        <url-pattern>/03</url-pattern>
+        <url-pattern>/03-01</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JRegistServlet</servlet-name>
+        <url-pattern>/03-02</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JConfirmServlet</servlet-name>
+        <url-pattern>/03-03</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JCompleteServlet</servlet-name>
+        <url-pattern>/03-04</url-pattern>
     </servlet-mapping>
 
     <!-- <servlet-mapping>

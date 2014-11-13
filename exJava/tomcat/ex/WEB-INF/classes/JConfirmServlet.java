@@ -7,25 +7,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ConfirmServlet extends HttpServlet {
+public class JConfirmServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-    
 
+    String mail = request.getParameter("mail");
+    String pass = request.getParameter("pass");
 
-    response.setContentType("text/html");
-
-    PrintWriter out = response.getWriter();
-    out.println("<html>");
-    out.println("<body>");
-
-    String name = request.getParameter("name");
-    String addr = request.getParameter("addr");
+    request.setAttribute("mail", mail);
+    request.setAttribute("pass", pass);
 
     if (name != null && addr != null) {
-      out.println("name = " + name + "<br>");
-      out.println("addr = " + addr);
+    } else {
+
+
     }
 
     out.println("<P>");

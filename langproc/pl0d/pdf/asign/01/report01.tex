@@ -40,7 +40,9 @@ Translate the following infix expression into postfix.
 (Answer)\\
 \fi
 % Write your answer here.
-$7\ 2\ 5\ 1\ - \times +$
+\begin{quote}
+ $7\ 2\ 5\ 1\ - \times +$
+\end{quote}
 
 
 
@@ -56,10 +58,19 @@ expression and outputs the value of the expression.
 (Answer)\\
 \fi
 % Write your answer (your program and an explanation) here.
-
-
-
-
+\begin{quote}
+start:
+	lit,7     ; push 7.\newline
+	lit,2     ; push 2.\newline
+	lit,5     ; push 5.\newline
+	lit,1     ; push 1.\newline
+	opr,sub   ; pop two constants 5 and 1, and push the value of '5-1'.\newline
+	opr,mul   ; pop two constants 2 and (5-1), and push the value of '2*4'.\newline
+	opr,add   ; pop two constants 7 and (2*4), and push the value of '7+8'.\newline
+	opr,wrt   ; pop a value and output the value.\newline
+	opr,wrl   ; output a new line code.\newline
+	jmp,start ; jump to the address 0 to terminate this program.\newline
+\end{quote}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

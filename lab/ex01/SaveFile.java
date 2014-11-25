@@ -8,7 +8,6 @@ import net.htmlparser.jericho.*;
 
 public class SaveFile implements Runnable {
   private String pathf, href;
-  private InputStream is;
   public SaveFile next; // for linked stack 
   public LinkStack ls;
   private int id; // sysout only
@@ -18,9 +17,8 @@ public class SaveFile implements Runnable {
     this.id = id; // sysout only
   }
 
-  void reset(String pathf, String href, InputStream is) {
+  void reset(String pathf, String href) {
     this.pathf = pathf;
-    this.is = is;
     this.href = href;
   }
 
@@ -39,19 +37,21 @@ public class SaveFile implements Runnable {
         run2();
       }
     } catch(Exception e) {
-      System.out.println("THREAD ERROR. id: " + id);
+      System.out.println("THREAD ERROR 01. id: " + id);
+      System.out.print("--");
+      System.out.print(" <" + href + ">");
+      System.out.print(" <" + pathf + ">");
       System.exit(1);
     }
   }
 
   public boolean run2() {
-    if (is == null) {
-      try {
-        is = new URL(href).openStream();
-      } catch(Exception e) {
-        finish();
-        return false;
-      }
+		InputStream is;
+    try {
+      is = new URL(href).openStream();
+    } catch(Exception e) {
+      finish();
+      return false;
     }
 
     FileOutputStream fos = null;
@@ -61,7 +61,7 @@ public class SaveFile implements Runnable {
       fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
     } catch (Exception e) {
       System.out.print("x");
-        System.out.println("THREAD ERROR. id: " + id);
+        System.out.println("THREAD ERROR. id 02: " + id);
         System.out.print("--");
         System.out.print(" <" + href + ">");
         System.out.print(" <" + pathf + ">");
@@ -71,7 +71,10 @@ public class SaveFile implements Runnable {
       finish();
       try {fos.close();} catch(Exception e) 
       {
-        System.out.println("THREAD ERROR. id: " + id);
+        System.out.println("THREAD ERROR. id 03: " + id);
+        System.out.print("--");
+        System.out.print(" <" + href + ">");
+        System.out.print(" <" + pathf + ">");
         System.exit(1);
       }
       return true;
@@ -80,7 +83,6 @@ public class SaveFile implements Runnable {
 
   public void finish() {
     pathf = null;
-    is = null;
     next = ls.head;
     ls.head = this;
   }

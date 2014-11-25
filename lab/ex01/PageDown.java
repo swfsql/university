@@ -14,219 +14,50 @@ public class PageDown {
   private String pre, back, baseReg;
   private LinkStack ls;
 
-  PageDown(String url, String pre, int depth, boolean cssImg, LinkStack ls) throws Exception {
-    if(depth <= 0) return;
-    System.out.print("\n++");
-    System.out.print(" <" + url + ">");
-    System.out.print(" <" + depth + ">");
-    if (url.matches("^http.*$") == false) {
-      url = url.replaceFirst("^(.+)$", "http://$1");
-    }
-    if (url.matches(".*\\.html$") == false) {
-      url = url.replaceFirst("^(.+?)/?$", "$1/index.html");
-    }
+  PageDown(String url, String pre, int depth, LinkStack ls) throws Exception {
+    if(depth-- <= 0 || url == null) return;	// if our download range has finished
+		this.ls = ls; this.pre = pre;
+    System.out.print("\n++ <" + url + "> <" + depth + ">");
+	  if (url.matches("^http.*$") == false) url = url.replaceFirst("^(.+)$", "http://$1"); // inserts "http" if it doesn't starts with one
+    if (url.matches(".*\\.html$") == false) url = url.replaceFirst("^(.+?)/?$", "$1/index.html");	// inserts "html" if it doesn't ends with one
+    String base = url.replaceFirst("^" + httpReg + "(.+?\\.(?:" + webExtensions + "))/?(?:.*)$", "$1/"); // "https://www.site.com/index.html" => "site.com/" 
+    System.out.print(" <" + base + "> / <" + url + "> ++");
+    baseReg = base.replaceAll("\\.", "\\\\."); // "site.com/" => "site\.com/"
 
-    this.pre = pre;
-    this.ls = ls;
+		DownFactory downFactory = new DownFactory();
 
-    // "https://www.apple.com/index.html" => "apple.com/" 
-    String base = url.replaceFirst("^" + httpReg + "(.+?\\.(?:" + 
-      webExtensions + "))/?(?:.*)$", "$1/");
-    System.out.print(" <" + base + ">");
-    System.out.print(" / <" + url + ">");
-    System.out.println(" ++");
-    // "apple.com/" => "apple\.com/"
-    baseReg = base.replaceAll("\\.", "\\\\.");
-
-    // index.html
-    String pathf = downURL(url, null, true); // downloads the index
-    if (pathf == null){
-      return;
-    }
+		String pathf = downFactory.create().download(ls, url, null, true, httpReg, pre); // index.html
+    if (pathf == null) return; // download fail
     
-    // we add a couple of "../" on this pages links
-    back = pathf.replaceAll("(?:^\\w+/)|[^/]", "").replaceAll("/", "../");
+    back = pathf.replaceAll("(?:^\\w+/)|[^/]", "").replaceAll("/", "../"); // we will add a couple of "../" on this pages links
 
-    // now we start downloading the page resources
+    // soon we'll start downloading the page resources
     Source src = new Source(new File(pathf)); // jericho init
-    String src_original = src.toString();
-    String src_ie_tag = src_original.replaceAll("\\[if gte IE (.*?)\\]><!-->", "[if IE $1]>");
-    src_ie_tag = src_ie_tag.replaceAll("<!--<!\\[endif\\]-->", "<![endif]-->");
-    src = new Source(src_ie_tag);
-    List<Element> el;
+    String s = src.toString();
+    s = s.replaceAll("href=\"/(.*?)\"", "href=\"http://www." + base + "$1\""); // href="/blabla/" => href="http://www.site.com/blabla/"
+    s = s.replaceAll("src=\"(.*?)\\?(.*?)\"", "src=\"$1%3F$2\""); // src="..?.." => src="..%3F.."
+    replaceSave(s.replaceAll("href=\"([^\"]*)/\"", "href=\"$1/index.html\""), pathf, back); // href="..../" => href="..../index.html"
 
-    // .js and img
-    el = src.getAllElements(HTMLElementName.SCRIPT); 
-    el.addAll(src.getAllElements(HTMLElementName.IMG));
-    for (Element e : el) {
-      if (downURL(e.getAttributeValue("src"), null, false) == null) {
-        //System.out.println("++ Cancelled download: " + e);
-      }
-    }
+		downElements(downFactory, src, HTMLElementName.SCRIPT, "src");
+		downElements(downFactory, src, HTMLElementName.IMG, "src");
+		downElements(downFactory, src, HTMLElementName.LINK, "href");
 
-    // .css & .rss
-    {
-      // grab every img url inside the .css 
-      el = src.getAllElements(HTMLElementName.LINK); 
-      for (Element e : el) {
-        if (e.getAttributeValue("rel").matches("alternate")) { // .rss
-          downURL(e.getAttributeValue("href"), null, false);
-        } else if (e.getAttributeValue("rel").matches("stylesheet")) { 
-          String href = e.getAttributeValue("href");
-          String pathf2 = downURL(href, null, cssImg);
-          if (cssImg && pathf2 != null) {
-            imgFromCss(href, pathf2);
-          }
-        } 
-      }
-
-      String s = src_original;
-      // .. href="/blabla/" .. => .. href="http://www.apple.com/blabla/" ..
-      s = s.replaceAll("href=\"/(.*?)\"", "href=\"http://www." + base + "$1\"");
-      // .. src=" .. ? ..  " .. => .. src=" .. %3F  .." ..
-      s = s.replaceAll("src=\"(.*?)\\?(.*?)\"", "src=\"$1%3F$2\"");
-      src = new Source(s);
-
-      // other .html
-      {
-        depth--;
-        el = src.getAllElements(HTMLElementName.A); 
-        for (Element e : el) {
-          String href = e.getAttributeValue("href");
-          if (href != null) {
-            new PageDown(href, pre, depth, cssImg, ls);
-          }
-        }
-      }
-
-      // href="..../" => href="..../index.html"
-      s = s.replaceAll("href=\"([^\"]*)/\"", "href=\"$1/index.html\"");
-      replaceSave(s, pathf, back);
-
-    }
+    List<Element> el = new Source(s).getAllElements(HTMLElementName.A);
+    for (Element e : el) new PageDown(e.getAttributeValue("href"), pre, depth, ls);
   }
 
-  String downURL(String href, String pathf, boolean blocking) throws Exception {
-    if (href == null || !href.matches("^" + httpReg + ".*$")) { // just to be sure its a link
-      return null;
-    }
-    if (pathf == null) {
-      // "http://site.com/a/b.file" => "offline/site.com/a/b.file"
-      pathf = href.replaceFirst("^" + httpReg + "(.*)$", pre + "$1"); 
-    }
-
-    // "output/a/b.file" => "output/a/"
-    String path = pathf.replaceFirst("^(.+/)[^/]+$", "$1"); 
-
-    File file = new File(path);
-    if (file.exists() == false && file.mkdirs() == false) {
-      System.out.println("Error to create [" + path + "] folder.");
-      System.exit(1);
-    }
-    
-    file = new File(pathf);
-    if (file.exists() == false) {
-      return transfer(pathf, href, null, blocking);
-    }
-    return null;
-  }
-
-  String transfer(String pathf, String href, InputStream is, boolean blocking) throws Exception {
-    SaveFile sf = null;
-    try {
-      while(ls.head == null) {
-        Thread.sleep(10);
-      }
-    } catch (Exception e) {
-      System.out.println("transfer wait exception.");
-      System.exit(1);
-    }
-    sf = ls.head;
-    ls.head = sf.next;
-    sf.reset(pathf, href, is);
-    if (blocking == false) {
-
-      sf.interrupt();
-    } else {
-      if (sf.run2() == false) {
-        System.out.print("--");
-        System.out.print(" <" + href + ">");
-        System.out.print(" <" + pathf + ">");
-        //System.out.println("\n-excpetion: " + e);
-        //System.out.println("-msg: ");  e.printStackTrace();
-
-        if (href.matches("^http.*$") == false) {
-          return downURL(href.replaceFirst("^(.+)$", "http://$1"), pathf, blocking);
-        } else if (href.matches(".*\\.html$")) {
-          System.out.println("----------");
-          return downURL(href.replaceFirst("^(.+/)[^/]+$", "$1"), pathf, blocking);
-        } else {
-          System.out.print(" <giving up on this link>");
-          System.out.print("--");
-          return null;
-        }
-      }
-    } 
-    return pathf;
-  }
-
+	void downElements (DownFactory downFactory, Source src, String html, String attr) throws Exception {
+    List<Element> el = src.getAllElements(html);
+    for (Element e : el) downFactory.create().download(ls, e.getAttributeValue(attr), null, false, httpReg, pre);
+	}
 
   void replaceSave(String s, String pathf, String pre) throws Exception {
-    // for relative = 0:
-    // "http://www.site.com/a.html" => "a.html".
-    //
-    // for relative > 0:
-    // "http://www.site.com/a/b/c/d.png" 
-    // in the "http://www.site.com/a/b/e.css => // "../../a/b/c/d.png"
-    // because the img inside the css looks for 
-    // paths in relation to the .css path
-    
-    // "http://site.com/a/b.file" => "offline/a/b.file"
-    s = s.replaceAll("\"" + httpReg + "(.*?)\"", 
-      "\"" + pre + "$1\"");
-    transfer(pathf, null, new ByteArrayInputStream(s.getBytes()), true);
+    FileOutputStream fos = null;
+    s = s.replaceAll("\"" + httpReg + "(.*?)\"", "\"" + pre + "$1\"");
+		InputStream is = new ByteArrayInputStream(s.getBytes());
+    fos = new FileOutputStream(pathf);
+    ReadableByteChannel rbc = Channels.newChannel(is);
+    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		fos.close();
   }
-
-
-  void imgFromCss(String href, String pathf) throws Exception {
-    
-    Pattern p = Pattern.compile("image:url\\(\"((?!data:image).*?)\"\\)");
-    Matcher m;
-    String path, css, txt;
-
-    if (pathf == null || pathf.equals("")) { 
-      // when trying to download the font, downURL returns "" 
-      // so the font stills broken
-      return;
-    }
-
-    css = new Source(new File(pathf)).toString();
-    m = p.matcher(css);
-     int i = -1;
-    while(m.find()) {
-      i = 0;
-      txt = m.group(1); // "http://www.site.com/img.png" or "../a/img.png"
-       while(txt.matches("^\\.\\./.*$")) { // if "../a/img.png"
-        // "../../a/img.png" => "../a/img.png"
-        txt = txt.replaceFirst("^\\.\\./(.*)$", "$1"); 
-        i++;
-      }
-       if (i > 0) { // its a relative path
-        // example: we were in "http://www.site.com/a/b/c.css"
-        // and we got an img "../c/d.png" inside that .css
-        // (actually, now this img is already "c/d.png", and i = 1
-        // then that img => "http://www.site.com/a/c/d.png"
-        txt = href.replaceFirst("^(.+/)(.+/){" + i + "}[^/]+$", "$1") + txt;  
-      } 
-      downURL(txt, null, false);
-    }
-    
-    if (i != -1) {
-
-      replaceSave(css.toString(), pathf, 
-        pathf.replaceAll("(?:^\\w+/)|[^/]", "").replaceAll("/", "../"));
-      // we add a couple of "../" on the non-relatives images 
-    }
-
-  } 
 }

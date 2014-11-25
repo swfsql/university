@@ -9,11 +9,6 @@ import net.htmlparser.jericho.*;
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    MicrosoftConditionalCommentTagTypes.register();
-    StartTagType.COMMENT.register();
-    MicrosoftConditionalCommentTagTypes.DOWNLEVEL_REVEALED_VALIDATING_IF.register(); 
-    MicrosoftConditionalCommentTagTypes.DOWNLEVEL_REVEALED_VALIDATING_ENDIF.register();
-
     LinkStack ls = new LinkStack(); // downloading threads linked-stack 
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     while(true) {
@@ -39,10 +34,6 @@ public class Main {
         base = "offline/";
       }
 
-      System.out.print("also download resources from .css [y/N]: ");
-      String css = reader.readLine();
-      Boolean bcss = css.equals("y") ? true : false;
-
       System.out.print("how many downloading threads? [1]: ");
       sint = reader.readLine();
       if (sint.equals("")) {
@@ -59,7 +50,7 @@ public class Main {
         new Thread(sf).start();
       }
 
-      new PageDown(website, base, depth, bcss, ls);
+      new PageDown(website, base, depth, ls);
     }
   }
 

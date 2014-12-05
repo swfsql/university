@@ -1,0 +1,82 @@
+DISK é o simulador.
+NUM_BLOCKS é o num de blocos.
+BLOCK_SIZE bytes/bloco.
+
+void read (int blockNum, byte[] buffer) le do bloco especificado, do dico
+para o buffer.
+
+void write(int blockNum, byte[] buffer) escreve.
+
+int stop (bool rmFile) quantas operações de leitura/escrita ocorreram. Se true,
+rm DISK.
+
+0 <= blockNum < NUM_BLOCKS
+
+
+construtor: procura ou cria arquivo DISK no diretório. 
+primeiro bloco = o 0, superbloco.
+
+superbloco:
+int size - n blocos
+int iSize - n blocos de índice
+int freeList - lista de blocos livres.
+
+lista de espaço livre:
+cada bloco tem POINTERS_PER_BLOCK = BLOCK_SIZE / 4
+sendo o primeiro o número de blocos do próximo na lista livre, e os outros 3
+serve pra nada?
+
+estrutura de arquivos
+cada arquivo = inode:
+final static int SIZE = 64
+int flags (ignorar)
+int owner (ignorar)
+int fileSize
+int pointer[] = new int[13]
+
+bloco 0 = super
+bloco 1.. < iSize = inodes, cada um tem inode 1 .. BLOCK_SIZE / SIZE inodes.
+arquivos referenciados por este números, os inumbers.
+
+InodeBlock
+Inode node[] = new Inode[BLOCK_SIZE / SIZE]
+for 0 .. < BLOCK_SIZE / SIZE, node[i] = new Inode()
+
+resto dos blocos sao diretos/indiretos/livres
+o pointer, da classe inode:
+-10 = blocos diretos.
+10 = bloco indireto, que por sua vez tem ponteiros para os proximos
+BLOCK_SIZE/4 blocos diretos.
+11 = indireto duplo.
+12 = triplo.
+
+se um ponteiro == 0 entao ha um buraco.
+
+
+
+FileSystem:
+int formatDisk (int size, int iSize) - estado inicial
+int shutdown() - fecha arquivos abertos e encerra disco simulado
+int create() - novo arquivo vazio e open() localiza existente, retorna num de
+arquivos abertos, de 0 a 20, mas pode servir como indice.
+int open (int inumber)
+int inumber (int fd)
+int read(int fd, byte[] buffer)
+int wirte(int fd, byte[] number)
+int seek(int fd, int offset, int whence)
+int close(int fd)
+int delete (int inumber)
+
+overload de read/write, pra blocos de inode, blocos indiretos e superblocos.
+
+parei nas explicaçoes destas funçoes.
+
+
+
+
+
+
+
+
+
+

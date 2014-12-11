@@ -6,6 +6,7 @@ import javax.swing.*;
 
 public class Game extends JApplet {
 
+	// game fps
 	static int FPS = 25;
 
   int // BAR 

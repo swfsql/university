@@ -4,6 +4,7 @@ import java.awt.geom.*;
 import javax.swing.*;
 import javax.imageio.*;
 import java.io.*;
+import java.awt.image.BufferedImage;
 
 
 public class Game extends JApplet {
@@ -11,10 +12,10 @@ public class Game extends JApplet {
 	static int FPS = 25;
 
 	int // BAR 
-	x = 10, y = 10, // middle point position
+	x = 180, y = 360, // middle point position
 	vx = 22, vy = 22, // velocity
 	pax, pay, pbx, pby, // bar extreme points 
-	len = 100, // length
+	len = 80, // length
 	rot = 0, // initial rotation
 	spin = 12, // rotation velocity
 	thick = 20; // thickness
@@ -125,7 +126,11 @@ public class Game extends JApplet {
   }
 
 	public Image loadStage(String filename) throws Exception {
-		return ImageIO.read(new File(filename));
+		Image img = ImageIO.read(new File(filename));
+		BufferedImage bimg = (BufferedImage) img;
+ 		stageW = bimg.getWidth();
+		stageH = bimg.getHeight();
+		return img;
 	}
 
 	// will delete later, this is NOT how we will draw levels!

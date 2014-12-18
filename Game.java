@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
+import javax.imageio.*;
+import java.io.*;
 
 
 public class Game extends JApplet {
@@ -31,9 +33,12 @@ public class Game extends JApplet {
 	// keyboard events trigger booleans:
   boolean kr, kl, ku, kd; // right, left, up, down
 
-  public Game() {
+	Image stage; // loaed stage image in stage folder
+
+  public Game() throws Exception {
     addKeyListener(new KeyList()); // keyboard event
     setFocusable(true); // keyboard focus
+		stage = loadStage("stages/test.png");
   }
 
 	// bar rotation
@@ -90,7 +95,7 @@ public class Game extends JApplet {
 
 		// draw
     clear(g);
-		drawLevel(g);
+		drawStage(graphics);
 		drawBar(g);
   }
 
@@ -101,29 +106,19 @@ public class Game extends JApplet {
     f.setSize(W, H);
     f.setVisible(true);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     while (true) {
       game.repaint();
       Thread.sleep(1000 / FPS);
     }
   }
 
+	public Image loadStage(String filename) throws Exception {
+		return ImageIO.read(new File(filename));
+	}
+
 	// will delete later, this is NOT how we will draw levels!
-	public void drawLevel(Graphics2D g) {
-		int []lvl1x = {20, 80, 120, 460};
-		int []lvl1y = {20, 0, 100, 1150};
-		int lvl1len = 4;
-
-		int []lvlcpx = {0, 0, 0, 0};
-		int []lvlcpy = {0, 0, 0, 0};
-
-		for (int i = 0; i < lvl1len; i++) {
-			lvlcpx[i] = lvl1x[i] - camX + W / 2;
-			lvlcpy[i] = lvl1y[i] - camY + H / 2;
-			//lvlcpx[i] = lvl1x[i];
-			//lvlcpy[i] = lvl1y[i];
-		}
-		g.fillPolygon(lvlcpx, lvlcpy, 4);
+	public void drawStage(Graphics g) {
+		g.drawImage(stage, W / 2 - camX, H / 2 - camY, this);
 	}
 
 	// keyboard events

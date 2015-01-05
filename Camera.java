@@ -4,8 +4,6 @@ import javax.swing.*;
 public class Camera extends JApplet {
 
 
-  public Game game;
-
   public Graphics gv; // Graphics for buffering
   private Image offImage; // Image for buffering
 
@@ -42,14 +40,14 @@ public class Camera extends JApplet {
     paint(g);
   }
 
-  public void paint(Graphics graphics) {
-    // buffer for flickering
+  // buffer for flickering
+  public void updateBuffer() {
     offImage = createImage(w, h);
     gv = offImage.getGraphics();
     ((Graphics2D) gv).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
-    game.update();
+  }
 
+  public void paint(Graphics graphics) {
     graphics.drawImage(offImage, 0, 0, w, h, this);
   }
 }

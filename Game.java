@@ -26,7 +26,6 @@ public class Game {
     // screen resolution
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     cam = new Camera();
-    cam.game = this;
     cam.resize(screenSize.width, screenSize.height);
 
     // keyboard events
@@ -34,9 +33,13 @@ public class Game {
     cam.addKeyListener(keys); 
     cam.setFocusable(true); // keyboard focus
 
-    stage = new Stage();
-    stage.load("stages/test.png");
+    // TODO
     
+    String st = "stages/test";
+
+    stage = new Stage();
+    stage.temp();
+    stage.load(0);
 
     bar = new Bar();
     
@@ -46,19 +49,25 @@ public class Game {
   }
 
   public void update() {
-    if (onStage) {
-      bar.collision(stage);
-      bar.move(keys, stage);
-      cam.move(bar, stage);
-      
-      cam.clear();
-      stage.draw(cam);
-      bar.draw(cam);
-    }
+    bar.collision(stage);
+    bar.move(keys, stage);
+    cam.move(bar, stage);
+    
+    cam.clear();
+    stage.drawBelow(cam);
+    bar.draw(cam);
+    stage.drawAbove(cam);
   }
 
   public void run() throws Exception {
+    cam.updateBuffer();
     while (true) {
+      if (onStage) {
+        cam.updateBuffer();
+        update();
+      } else {
+
+      }
       cam.repaint();
       Thread.sleep(1000 / FPS);
     }

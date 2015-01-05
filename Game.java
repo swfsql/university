@@ -28,24 +28,24 @@ public class Game {
     cam = new Camera();
     cam.resize(screenSize.width, screenSize.height);
 
+    // MENU HERE
+    
+
+
+    // GAME PLAY STARTS HERE (assuming stage 0 selected)
+
     // keyboard events
     keys = new KeyList();
     cam.addKeyListener(keys); 
     cam.setFocusable(true); // keyboard focus
 
-    // TODO
-    
-    String st = "stages/test";
-
-    stage = new Stage();
-    stage.temp();
-    stage.load(0);
-
     bar = new Bar();
-    
+    stage = new Stage();
+    stage.searchStages();
+
+    stage.load(0, bar);
     onStage = true;
-    bar.x = 200;
-    bar.y = 200;
+
   }
 
   public void update() {

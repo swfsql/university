@@ -18,7 +18,7 @@ public class Stage {
         ground,
         roof;
 
-  String [][] stages;
+  public String [][] stages;
 
   public boolean test_collision(int i, int j) {
     return bimg.getRGB(i, j) != -1; 

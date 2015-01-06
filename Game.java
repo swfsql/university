@@ -7,6 +7,7 @@ public class Game {
   boolean onStage;
 
   Camera cam;
+  Menu menu;
   KeyList keys;
   Stage stage;
   Bar bar;
@@ -19,6 +20,7 @@ public class Game {
     f.setBounds(0, 0, screenSize.width, screenSize.height);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setVisible(true);
+
     game.run();
   }
 
@@ -28,31 +30,48 @@ public class Game {
     cam = new Camera();
     cam.resize(screenSize.width, screenSize.height);
 
-    // MENU HERE
-    
+    // we won't draw the stage right now
+    stage = new Stage();
+    stage.searchStages(); // search for available stages in the stages directory
 
-
-    // GAME PLAY STARTS HERE (assuming stage 0 selected)
-
-    // keyboard events
-    keys = new KeyList();
-    cam.addKeyListener(keys); 
+    // Menu
+    menu = new Menu(stage.stages.length);
+    cam.addKeyListener(menu); 
     cam.setFocusable(true); // keyboard focus
 
-    bar = new Bar();
-    stage = new Stage();
-    stage.searchStages();
-
-    stage.load(0, bar);
-    onStage = true;
+    // objects for play
+    bar = new Bar(); // won't draw now, only in-play
+    keys = new KeyList(); // keys for movement
 
   }
 
-  public void update() {
-    bar.collision(stage);
+  public void update_menu() throws Exception {
+    cam.clear();
+    menu.draw(cam);
+    if (menu.playRequested) {
+      menu.playRequested = false;
+      play(menu.stageID);
+    }
+  }
+
+  public void play(int i) throws Exception {
+    cam.removeKeyListener(menu); 
+    cam.addKeyListener(keys); 
+    stage.load(i, bar);
+    onStage = true;
+  }
+
+  public void backToStageSelection() {
+
+
+  }
+
+  public void update_play() {
     bar.move(keys, stage);
+    bar.collision(stage);
+    //if (bar.collided) bar.move(keys, stage);
     cam.move(bar, stage);
-    
+
     cam.clear();
     stage.drawBelow(cam);
     bar.draw(cam);
@@ -64,9 +83,9 @@ public class Game {
     while (true) {
       if (onStage) {
         cam.updateBuffer();
-        update();
+        update_play();
       } else {
-
+        update_menu();
       }
       cam.repaint();
       Thread.sleep(1000 / FPS);

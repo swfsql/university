@@ -10,7 +10,7 @@ public class Camera extends JApplet {
 
   int x = 0, y = 0, // position
       w = 0, h = 0; // screen width, height
-  
+
   // when moving
   float speed = 1; // 0 < speed <= 1 = no delay
 

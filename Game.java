@@ -69,7 +69,7 @@ public class Game {
   public void update_play() {
     bar.move(keys, stage);
     bar.collision(stage);
-    //if (bar.collided) bar.move(keys, stage);
+    if (bar.collided == bar.collided_max) bar.move(keys, stage);
     cam.move(bar, stage);
 
     cam.clear();

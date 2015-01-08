@@ -9,29 +9,27 @@ public class KeyList implements KeyListener {
   }
 
   public void keyPressed(KeyEvent e) {
-    String key = KeyEvent.getKeyText(e.getKeyCode());
-    if (key.equals("Right") || key.equals("右") || key.equals("→")) {
+    if (e.getKeyCode() == 39) {
       right = true;
-    } else if (key.equals("Left")|| key.equals("左") || key.equals("←")) {
+    } else if (e.getKeyCode() == 37) {
       left = true;
     }
-    if (key.equals("Up")|| key.equals("上") || key.equals("↑")) {
+    if (e.getKeyCode() == 38) {
       up = true;
-    } else if (key.equals("Down")|| key.equals("下") || key.equals("↓")) {
+    } else if (e.getKeyCode() == 40) {
       down = true;
     }
   }
 
   public void keyReleased(KeyEvent e) {
-    String key = KeyEvent.getKeyText(e.getKeyCode());
-    if (key.equals("Right") || key.equals("右") || key.equals("→")) {
+    if (e.getKeyCode() == 39) {
       right = false;
-    } else if (key.equals("Left")|| key.equals("左") || key.equals("←")) {
+    } else if (e.getKeyCode() == 37) {
       left = false;
     }
-    if (key.equals("Up")|| key.equals("上") || key.equals("↑")) {
+    if (e.getKeyCode() == 38) {
       up = false;
-    } else if (key.equals("Down")|| key.equals("下") || key.equals("↓")) {
+    } else if (e.getKeyCode() == 40) {
       down = false;
     }
   }

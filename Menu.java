@@ -7,11 +7,6 @@ public class Menu implements KeyListener {
 
   int winID, stageID, stageMax;
   boolean playRequested;
-  /* 
-   * 0 = KURU / ABOUT (← QUIT)(→ SELECT STAGE / SCORE)(↓ HOW TO PLAY)(↑ -)
-   * 1 = HOW TO PLAY (← QUIT)(→ SELECT STAGE / SCORE)(↓ -)(↑ -)
-   * 2 = STAGE SELECT / SCORE (← KURU / ABOUT)(→ PLAY)(↓ change stage)(↑ change stage)
-   */
 
   Image [] bgs;
 

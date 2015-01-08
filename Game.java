@@ -4,28 +4,32 @@ import javax.swing.*;
 public class Game {
 
   static int FPS = 25;
-  boolean onStage; // if we are on the menu or if we are playing a stage
+  long time = 0;
+  boolean onStage, goalCheck;
 
+  //Main main;
+  //Menu menu; //delete better because Menu.java and Game.java needs not to depends on
   Camera cam;
-  Menu menu; // menu acts as a KeyList, but also draw to the screen
   KeyList keys;
   Stage stage;
   Bar bar;
 
-  public static void main(String s[]) throws Exception {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); // get full screen size
+  //public static void main(String[] args) throws Exception {
+  public void myMain() throws Exception {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     JFrame f = new JFrame("Kuru");
-    Game game = new Game();
-    f.add(game.cam); // Camera implements the necessary methods
+    Game game = new Game(null);
+    f.add(game.cam);
     f.setBounds(0, 0, screenSize.width, screenSize.height);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setVisible(true);
 
-    game.run(); // infinite loop
+    game.run();
   }
 
-  public Game() throws Exception {
-    // screen resolution (again)
+  public Game(Main main) throws Exception {
+	//main = main  
+	// screen resolution
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     cam = new Camera();
     cam.resize(screenSize.width, screenSize.height);
@@ -35,28 +39,15 @@ public class Game {
     stage.searchStages(); // search for available stages in the stages directory
 
     // Menu
-    menu = new Menu(stage.stages.length);
-    cam.addKeyListener(menu);
+    menu = new Menu(main);
+    menu.setStageMax(stage.stages.length);
+    cam.addKeyListener(menu); 
     cam.setFocusable(true); // keyboard focus
 
-    // objects for play, but we will use this only after choosing a stage
-    bar = new Bar();
-    keys = new KeyList(); // keys for bar movement (TODO should we actually make the bar implements the KeyList methods?)
+    // objects for play
+    bar = new Bar(); // won't draw now, only in-play
+    keys = new KeyList(); // keys for movement
 
-  }
-  
-  public void run() throws Exception {
-    cam.updateBuffer();
-	while (true) { // infinite loop
-	  if (onStage) { // we we are playing (moving the bar)
-	    cam.updateBuffer();
-	    update_play();
-	  } else { // we are NOT moving the bar, we are on the menu
-	    update_menu();
-	  }
-	  cam.repaint();
-      Thread.sleep(1000 / FPS);
-    }
   }
 
   public void update_menu() throws Exception {
@@ -68,14 +59,6 @@ public class Game {
     }
   }
 
-  // after we finished the game, we go back to stage selection
-  // TODO this function has never been used, will test in the future.
-  public void backToStageSelection() {
-    cam.removeKeyListener(keys); 
-    cam.addKeyListener(menu);
-    onStage = false;
-  }
-  
   public void play(int i) throws Exception {
     cam.removeKeyListener(menu); 
     cam.addKeyListener(keys); 
@@ -83,20 +66,41 @@ public class Game {
     onStage = true;
   }
 
+  public void backToStageSelection() {
+
+
+  }
+
   public void update_play() {
     bar.move(keys, stage);
     bar.collision(stage);
-    
-    // we dont let the bar touch a wall 
     if (bar.collided == bar.collided_max) bar.move(keys, stage);
-    
     cam.move(bar, stage);
 
     cam.clear();
     stage.drawBelow(cam);
     bar.draw(cam);
     stage.drawAbove(cam);
+
+    /*if (goalCheck == true) {
+    	main.setIsClear(true);
+    	main.setCurrentTime(time);
+    	main.setNext(main.SeqID.RESULT);
+    	main.myMain();
+    }*/
   }
 
-  
+  public void run() throws Exception {
+    cam.updateBuffer();
+    while (true) {
+      if (onStage) {
+        cam.updateBuffer();
+        update_play();
+      } else {
+        update_menu();
+      }
+      cam.repaint();
+      Thread.sleep(1000 / FPS);
+    }
+  }
 }

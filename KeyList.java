@@ -9,27 +9,29 @@ public class KeyList implements KeyListener {
   }
 
   public void keyPressed(KeyEvent e) {
-    if (e.getKeyCode() == 39) { // Right
+    String key = KeyEvent.getKeyText(e.getKeyCode());
+    if (key.equals("Right") || key.equals("âE") || key.equals("Å®")) {
       right = true;
-    } else if (e.getKeyCode() == 37) { // Left
+    } else if (key.equals("Left")|| key.equals("ç∂") || key.equals("Å©")) {
       left = true;
     }
-    if (e.getKeyCode() == 38) { // Up
+    if (key.equals("Up")|| key.equals("è„") || key.equals("Å™")) {
       up = true;
-    } else if (e.getKeyCode() == 40) { // Down
+    } else if (key.equals("Down")|| key.equals("â∫") || key.equals("Å´")) {
       down = true;
     }
   }
 
-  public void keyReleased(KeyEvent e) { 
-    if (e.getKeyCode() == 39) { // Right
+  public void keyReleased(KeyEvent e) {
+    String key = KeyEvent.getKeyText(e.getKeyCode());
+    if (key.equals("Right") || key.equals("âE") || key.equals("Å®")) {
       right = false;
-    } else if (e.getKeyCode() == 37) { // Left
+    } else if (key.equals("Left")|| key.equals("ç∂") || key.equals("Å©")) {
       left = false;
     }
-    if (e.getKeyCode() == 38) { // Up
+    if (key.equals("Up")|| key.equals("è„") || key.equals("Å™")) {
       up = false;
-    } else if (e.getKeyCode() == 40) { // Down
+    } else if (key.equals("Down")|| key.equals("â∫") || key.equals("Å´")) {
       down = false;
     }
   }

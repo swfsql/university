@@ -7,7 +7,7 @@ public class Bar {
       len = 80, // length
       thick = 20, // thickness
       spin = 12, // rotation angular velocity
-      collision_points = 1000, // number of tests in each side of the bar
+      collision_points = 5, // number of tests in each side of the bar
       collided_max = 10; // how long the bar is pushed back
   int x = 0, y = 0, // position
       vx_old = 0, vy_old = 0, // the velocity before we collided

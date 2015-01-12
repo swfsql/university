@@ -2,110 +2,169 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.imageio.*;
 import java.io.*;
+import javax.swing.*;
 
-public class Menu implements KeyListener {
+public class Menu extends JApplet implements KeyListener {
 
-	Main main;
+  private int stageID;
+  private winID win;
 
-	int winID, stageID, stageMax;
-	boolean playRequested;
-	/* 
-	 * 0 = KURU / ABOUT (Å© QUIT)(Å® SELECT STAGE / SCORE)(Å´ HOW TO PLAY)(Å™ -)
-	 * 1 = HOW TO PLAY (Å© QUIT)(Å® SELECT STAGE / SCORE)(Å´ -)(Å™ -)
-	 * 2 = STAGE SELECT / SCORE (Å© KURU / ABOUT)(Å® PLAY)(Å´ change stage)(Å™ change stage)
-	 */
+  enum winID {
+    MENU,
+    HOW_TO_PLAY,
+    STAGE_SELECTION;
 
-	Image [] bgs;
+    public int toInt() {
+      switch (this) {
+        case MENU:
+          return MENU.ordinal();
+          //break;
+        case HOW_TO_PLAY:
+          return HOW_TO_PLAY.ordinal();
+          //break;
+        case STAGE_SELECTION:
+          return STAGE_SELECTION.ordinal();
+          //break;
+        default:
+          return MENU.ordinal();
+      }
+    }
+  }
 
-	public Menu(Main main) throws Exception {
-		this.main = main;
-		winID = 0;
-		stageID = 0;
-		playRequested = false;
-		//this.stageMax = stageMax;
-		bgs = new Image[3];
-		bgs[0] = ImageIO.read(new File("resource/images/bg0.png"));
-		bgs[1] = ImageIO.read(new File("resource/images/bg1.png"));
-		bgs[2] = ImageIO.read(new File("resource/images/bg2.png"));
-	}
+  Stage stage;
+  Image [] bgs;
 
-	public void setStageMax(int stageMax) {
-		this.stageMax = stageMax;
-	}
+  private boolean leave;
 
-	public void keyTyped(KeyEvent e) {
+  private int FPS;
+  private JFrame frame;
+  public Menu(JFrame frame, int FPS) {
+    this.frame = frame; // only used in this.myMain
+    this.FPS = FPS; // only used in this.myMain
+    this.stageID = 0;
+    win = winID.MENU;
 
-	}
+    // read menu background images
+    bgs = new Image[winID.values().length];
+    try {
+      bgs[winID.MENU.ordinal()] = ImageIO.read(new File("resource/images/menu/menu.png"));
+      bgs[winID.HOW_TO_PLAY.ordinal()] = ImageIO.read(new File("resource/images/menu/how_to_play.png"));
+      bgs[winID.STAGE_SELECTION.ordinal()] = ImageIO.read(new File("resource/images/menu/stage_selection.png"));
+    } catch (Exception e) {
+      System.err.println("Exception: " + e.getMessage());
+    }
 
-	public void keyPressed(KeyEvent e) {
-		if (playRequested) return;
+    // red available stage files
+    stage = new Stage();
+    stage.searchStages(); // search for available stages in the stages directory
+  }
 
-		switch (winID) {
-		case 0:
-			switch (e.getKeyCode()) {
-			case 39: // right
-				winID = 2; // STAGE SELECT
-				break;
-			case 37: // left
-				System.exit(0); // QUIT
-				break;
-			case 40: // down
-				winID = 1; // HOW TO PLAY
-				break;
-				//case 38: // up
-				//break;
-			default:
-				return;
-			}
-			break;
-		case 1:
-			switch (e.getKeyCode()) {
-			case 39: // right
-				winID = 2; // STAGE SELECT
-				break;
-			case 37: // left
-				System.exit(0); // QUIT
-				break;
-				//case 40: // down
-				//break;
-				//case 38: // up
-				//break;
-			default:
-				return;
-			}
-			break;
-		case 2:
-			switch (e.getKeyCode()) {
-			case 39: // right
-				playRequested = true; // PLAY
-				return;
-				//break;
-			case 37: // left
-				winID = 0; // MENU
-				//draw();
-				break;
-			case 40: // down
-				stageID = stageID == stageMax - 1 ? 0 : stageID + 1;
-				// TODO draw stage number or miniature
-				break;
-			case 38: // up
-				stageID = stageID == 0 ? stageMax - 1 : stageID - 1;
-				// TODO draw stage number or miniature
-				break;
-			default:
-				return;
-			}
-			break;
-		default:
-			return;
-		}
-	}
+  public void myMain() {
+    frame.add(this);
+    frame.setVisible(true);
+    this.addKeyListener(this); 
+    this.setFocusable(true); // keyboard focus
+    leave = false;
+    while(!leave) {
+      try {      
+        Thread.sleep(1000 / FPS); // the player is running keyboard events while the code is blocked here.
+      } catch (Exception e) {
+        System.err.println("Exception: " + e.getMessage());
+      }
+    }
+    this.removeKeyListener(this); 
+    this.setFocusable(false); // keyboard focus
+    frame.setVisible(false);
+    frame.remove(this);
+  }
 
-	public void draw(Camera cam) {
-		((Graphics2D) cam.gv).drawImage(bgs[winID], 0, 0, cam);
-	}
+  public int getStageID() {
+    return stageID;
+  }
+  public Stage getStage() {
+    return stage;
+  }
 
-	public void keyReleased(KeyEvent e) {
-	}
+  public void paint(Graphics graphics) {
+    Graphics2D g = (Graphics2D) graphics;
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g.drawImage(bgs[win.toInt()], 0, 0, this);
+  }
+
+
+  public void keyTyped(KeyEvent e) {
+  }
+
+  public void keyPressed(KeyEvent e) {
+    switch (win) {
+      case MENU:
+        switch (e.getKeyCode()) {
+          case 39: // right
+            win = winID.STAGE_SELECTION;
+            this.repaint();
+            break;
+          case 37: // left
+            System.exit(0); // QUIT
+            break;
+          case 40: // down
+            win = winID.HOW_TO_PLAY; // HOW TO PLAY
+            this.repaint();
+            break;
+            //case 38: // up
+            //break;
+          default:
+            return;
+        }
+        break;
+
+      case HOW_TO_PLAY:
+        switch (e.getKeyCode()) {
+          case 39: // right
+            win = winID.STAGE_SELECTION;
+            this.repaint();
+            break;
+          case 37: // left
+            System.exit(0); // QUIT
+            break;
+            //case 40: // down
+            //break;
+            //case 38: // up
+            //break;
+          default:
+            return;
+        }
+        break;
+
+      case STAGE_SELECTION:
+        switch (e.getKeyCode()) {
+          case 39: // right
+            leave = true; // leave menu (stage selected)
+            // we could bring some calls to myMain here
+            return;
+            //break;
+          case 37: // left
+            win = winID.MENU;
+            this.repaint();
+            break;
+          case 40: // down
+            stageID = stageID == stage.getStagesLength() - 1 ? 0 : stageID + 1;
+            // TODO draw stage number or miniature
+            break;
+          case 38: // up
+            stageID = stageID == 0 ? stage.getStagesLength() - 1 : stageID - 1;
+            // TODO draw stage number or miniature
+            break;
+          default:
+            return;
+        }
+        break;
+
+      default:
+        return;
+    }
+  }
+
+  public void keyReleased(KeyEvent e) {
+  }
 
 }

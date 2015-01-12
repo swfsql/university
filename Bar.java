@@ -7,7 +7,7 @@ public class Bar {
       len = 80, // length
       thick = 20, // thickness
       spin = 12, // rotation angular velocity
-      collision_points = 1000, // number of tests in each side of the bar
+      collision_points = 5, // number of tests in each side of the bar
       collided_max = 10; // how long the bar is pushed back
   int x = 0, y = 0, // position
       vx_old = 0, vy_old = 0, // the velocity before we collided
@@ -61,10 +61,11 @@ public class Bar {
     if (new_collision) {
       collided = collided_max;
       //System.out.println("collided");
+
     }
   }
 
-  public void draw(Camera cam) {
+  public void draw(Graphics gv, Camera cam) {
     // we rotate the coordinates points, then we draw the rectangle
     double rad = Math.toRadians(rot);
     int pax = x + (int)(len * Math.cos(rad)),
@@ -72,7 +73,7 @@ public class Bar {
         pbx = x - (int)(len * Math.cos(rad)),
         pby = y - (int)(len * Math.sin(rad));
 
-    Graphics2D gv2 = (Graphics2D) cam.gv;
+    Graphics2D gv2 = (Graphics2D) gv;
     gv2.setPaint(Color.gray);
     gv2.setStroke(new BasicStroke(thick));
     gv2.draw(new Line2D.Double(pax - cam.x + cam.w / 2, pay - cam.y + cam.h / 2, pbx - cam.x + cam.w / 2, pby - cam.y + cam.h / 2));

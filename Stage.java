@@ -25,11 +25,11 @@ public class Stage {
   }
 
   @SuppressWarnings("unchecked")
-public void searchStages() {
+  public void searchStages() {
     String[] files = new File("./stages").list();
     Arrays.sort(files, new AlphabeticComparator()); 
     java.util.List<String[]> list = new ArrayList<String[]>();
-
+    
     for (int i = 0; i < files.length; i++) {
       if (!files[i].matches("^.+\\.txt$")) continue;
       String name = files[i].replaceFirst("^(.+)\\.txt$", "$1");
@@ -41,16 +41,17 @@ public void searchStages() {
       st[2] = i > 1 && files[i - 2].matches("^" + name + "-roof\\.png$")? "png" : null;
       st[3] = (st[2] == null ? (i > 1 && files[i - 2].matches("^" + name + "-ground\\.png$")? "png" : null) : (i > 2 && files[i - 3].matches("^" + name + "-ground\\.png$")? "png" : null));
       list.add(st);
-      System.out.println(files[i]);
     }
 
+    System.out.println("Stages found: ");
     stages = new String[list.size()][4];
     for (int i = 0; i < list.size(); i++) {
       stages[i] = list.get(i);
+      System.out.println("[" + i + "] " + stages[i][0]);
     }
   }
 
- 
+
   public void temp() {
     stages = new String [1][4];
     stages[0][0] = "";
@@ -60,10 +61,18 @@ public void searchStages() {
 
   }
 
-  public void load(int i, Bar bar) throws Exception {
-    ground = roof = null;
+  public int getStagesLength() {
+    return stages.length;
+  }
 
-    java.util.List<String> lines = Files.readAllLines(Paths.get("stages/" + stages[i][0] + ".txt"), StandardCharsets.UTF_8);
+  public void load(int i, Bar bar) {
+    ground = roof = null;
+    java.util.List<String> lines = null;
+    try {
+      lines = Files.readAllLines(Paths.get("stages/" + stages[i][0] + ".txt"), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      System.err.println("Exception: " + e.getMessage());
+    }
     bar.x = Integer.parseInt(lines.get(1));
     bar.y = Integer.parseInt(lines.get(2));
     bar.vx = Integer.parseInt(lines.get(4));
@@ -75,32 +84,35 @@ public void searchStages() {
     bar.collision_points = Integer.parseInt(lines.get(13));
     bar.collided_max = Integer.parseInt(lines.get(14));
 
-    stage = ImageIO.read(new File("stages/" + stages[i][0] + "-wall." + stages[i][1]));
+    try {
+      stage = ImageIO.read(new File("stages/" + stages[i][0] + "-wall." + stages[i][1]));
+      if (stages[i][2] != null) {
+        roof = ImageIO.read(new File("stages/" + stages[i][0] + "-roof." + stages[i][2]));
+      }
+      if (stages[i][3] != null) {
+        ground = ImageIO.read(new File("stages/" + stages[i][0] + "-ground." + stages[i][3]));
+
+      }
+    } catch (IOException e) {
+      System.err.println("Exception: " + e.getMessage());
+    }
+
     bimg = (BufferedImage) stage;
     w = bimg.getWidth();
     h = bimg.getHeight();
-
-    if (stages[i][2] != null) {
-      roof = ImageIO.read(new File("stages/" + stages[i][0] + "-roof." + stages[i][2]));
-    }
-    if (stages[i][3] != null) {
-      ground = ImageIO.read(new File("stages/" + stages[i][0] + "-ground." + stages[i][3]));
-
-    }
-
   }
 
   // stage drawing
-  public void drawBelow(Camera cam) {
+  public void drawBelow(Graphics gv, Camera cam, Game game) {
     Image img = ground != null ? ground : roof != null ? roof : stage;
-    ((Graphics2D) cam.gv).drawImage(img, cam.w / 2 - cam.x, cam.h / 2 - cam.y, cam);
+    ((Graphics2D) gv).drawImage(img, cam.w / 2 - cam.x, cam.h / 2 - cam.y, game);
   }
 
-  public void drawAbove(Camera cam) {
+  public void drawAbove(Graphics gv, Camera cam, Game game) {
     if (roof == null || ground == null) return;
-    ((Graphics2D) cam.gv).drawImage(roof, cam.w / 2 - cam.x, cam.h / 2 - cam.y, cam);
+    ((Graphics2D) gv).drawImage(roof, cam.w / 2 - cam.x, cam.h / 2 - cam.y, game);
   }
-  
+
 }
 
 

@@ -1,106 +1,87 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class Game {
+public class Game extends JApplet {
 
-  static int FPS = 25;
-  long time = 0;
-  boolean onStage, goalCheck;
+  // drawing related
+  public Graphics gv; // Graphics for buffering
+  private Image offImage; // Image for buffering
 
-  //Main main;
-  //Menu menu; //delete better because Menu.java and Game.java needs not to depends on
+  private boolean leave;
+
   Camera cam;
   KeyList keys;
   Stage stage;
   Bar bar;
 
-  //public static void main(String[] args) throws Exception {
-  public void myMain() throws Exception {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    JFrame f = new JFrame("Kuru");
-    Game game = new Game(null);
-    f.add(game.cam);
-    f.setBounds(0, 0, screenSize.width, screenSize.height);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setVisible(true);
-
-    game.run();
-  }
-
-  public Game(Main main) throws Exception {
-	//main = main  
-	// screen resolution
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+  private int FPS;
+  private JFrame frame;
+  public Game(JFrame frame, int FPS, int WIDTH, int HEIGHT, Stage stage) {
+    this.frame = frame;
+    this.FPS = FPS;
+    this.stage = stage; // now this game obj holds the same Stage reference as the menu obj
+    bar = new Bar(); 
+    keys = new KeyList(); // keys for the bar's movement
     cam = new Camera();
-    cam.resize(screenSize.width, screenSize.height);
-
-    // we won't draw the stage right now
-    stage = new Stage();
-    stage.searchStages(); // search for available stages in the stages directory
-
-    // Menu
-    menu = new Menu(main);
-    menu.setStageMax(stage.stages.length);
-    cam.addKeyListener(menu); 
-    cam.setFocusable(true); // keyboard focus
-
-    // objects for play
-    bar = new Bar(); // won't draw now, only in-play
-    keys = new KeyList(); // keys for movement
-
+    cam.resize(WIDTH, HEIGHT);
   }
 
-  public void update_menu() throws Exception {
-    cam.clear();
-    menu.draw(cam);
-    if (menu.playRequested) {
-      menu.playRequested = false;
-      play(menu.stageID);
+  public void myMain(int stageID) {
+    System.out.println("Play started on stage [" + stageID + "] " + stage.stages[stageID][0]);
+    frame.add(this);
+    frame.setVisible(true);
+    this.addKeyListener(keys); 
+    this.setFocusable(true); // keyboard focus
+    stage.load(stageID, bar);
+    leave = false;
+    while (!leave) {
+      play();
+      try {
+        Thread.sleep(1000 / FPS);
+      } catch (InterruptedException e) {
+        System.err.println("Exception: " + e.getMessage());
+      }
     }
+    this.removeKeyListener(keys); 
+    this.setFocusable(false); // keyboard focus
+    frame.setVisible(false);
+    frame.remove(this);
   }
 
-  public void play(int i) throws Exception {
-    cam.removeKeyListener(menu); 
-    cam.addKeyListener(keys); 
-    stage.load(i, bar);
-    onStage = true;
+  // Paint
+
+  // clear drawings
+  public void clear() {
+    // clears the entire screen
+    gv.clearRect(0, 0, cam.w, cam.h);
+  }
+  public void update(Graphics g) {
+    paint(g);
+  }
+  // buffer for flickering
+  public void updateBuffer() {
+    offImage = createImage(cam.w, cam.h);
+    gv = offImage.getGraphics();
+    ((Graphics2D) gv).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
   }
 
-  public void backToStageSelection() {
-
-
+  public void paint(Graphics graphics) {
+    graphics.drawImage(offImage, 0, 0, cam.w, cam.h, this);
   }
 
-  public void update_play() {
+  public void play() {
+    this.updateBuffer();
     bar.move(keys, stage);
     bar.collision(stage);
     if (bar.collided == bar.collided_max) bar.move(keys, stage);
     cam.move(bar, stage);
 
-    cam.clear();
-    stage.drawBelow(cam);
-    bar.draw(cam);
-    stage.drawAbove(cam);
+    this.clear();
+    stage.drawBelow(gv, cam, this);
+    bar.draw(gv, cam);
+    stage.drawAbove(gv, cam, this);
 
-    /*if (goalCheck == true) {
-    	main.setIsClear(true);
-    	main.setCurrentTime(time);
-    	main.setNext(main.SeqID.RESULT);
-    	main.myMain();
-    }*/
+    this.repaint();
   }
 
-  public void run() throws Exception {
-    cam.updateBuffer();
-    while (true) {
-      if (onStage) {
-        cam.updateBuffer();
-        update_play();
-      } else {
-        update_menu();
-      }
-      cam.repaint();
-      Thread.sleep(1000 / FPS);
-    }
-  }
 }

@@ -1,7 +1,11 @@
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 
-public class Game extends JApplet {
+import javax.swing.JFrame;
+
+public class Game extends Sequence {
 
   // drawing related
   public Graphics gv; // Graphics for buffering
@@ -15,22 +19,27 @@ public class Game extends JApplet {
   Bar bar;
 
   private int FPS;
+  private int stageID;
   private JFrame frame;
-  public Game(JFrame frame, int FPS, int WIDTH, int HEIGHT, Stage stage) {
-    this.frame = frame;
-    this.FPS = FPS;
+
+  public Game(int stageID,Stage stage) {
+    this.frame = super.f_frame;
+    this.FPS = Main.FPS;
     this.stage = stage; // now this game obj holds the same Stage reference as the menu obj
-    bar = new Bar(); 
+    this.stageID = stageID;
+    bar = new Bar();
     keys = new KeyList(); // keys for the bar's movement
     cam = new Camera();
-    cam.resize(WIDTH, HEIGHT);
+    cam.resize(Main.WIDTH, Main.HEIGHT);
   }
 
-  public void myMain(int stageID) {
+  public void myMain() {
     System.out.println("Play started on stage [" + stageID + "] " + stage.stages[stageID][0]);
-    frame.add(this);
-    frame.setVisible(true);
-    this.addKeyListener(keys); 
+    frame.setBounds((frame.getToolkit().getScreenSize().width/2)-Main.WIDTH/2, //????????????????????????????????????
+        (frame.getToolkit().getScreenSize().height/2)- Main.HEIGHT/2, Main.WIDTH, Main.HEIGHT);
+    frame.add(this);//???????????????????????????????
+    frame.setVisible(true);//??????????????????????
+    this.addKeyListener(keys);
     this.setFocusable(true); // keyboard focus
     stage.load(stageID, bar);
     leave = false;
@@ -42,10 +51,11 @@ public class Game extends JApplet {
         System.err.println("Exception: " + e.getMessage());
       }
     }
-    this.removeKeyListener(keys); 
+    this.removeKeyListener(keys);
     this.setFocusable(false); // keyboard focus
-    frame.setVisible(false);
-    frame.remove(this);
+    sequence(Main.SeqID.SEQ_RANKING);
+    /*frame.setVisible(false);
+      frame.remove(this);*/
   }
 
   // Paint

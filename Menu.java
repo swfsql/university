@@ -1,10 +1,15 @@
-import java.awt.event.*;
-import java.awt.*;
-import javax.imageio.*;
-import java.io.*;
-import javax.swing.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.File;
 
-public class Menu extends JApplet implements KeyListener {
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+
+public class Menu extends Sequence  implements KeyListener {
 
   private int stageID;
   private winID win;
@@ -38,9 +43,9 @@ public class Menu extends JApplet implements KeyListener {
 
   private int FPS;
   private JFrame frame;
-  public Menu(JFrame frame, int FPS) {
-    this.frame = frame; // only used in this.myMain
-    this.FPS = FPS; // only used in this.myMain
+  public Menu() {
+    this.frame = super.f_frame; // only used in this.myMain
+    this.FPS = Main.FPS; // only used in this.myMain
     this.stageID = 0;
     win = winID.MENU;
 
@@ -60,22 +65,25 @@ public class Menu extends JApplet implements KeyListener {
   }
 
   public void myMain() {
-    frame.add(this);
-    frame.setVisible(true);
-    this.addKeyListener(this); 
+    frame.setBounds((frame.getToolkit().getScreenSize().width/2)-Main.WIDTH/2, //????????????????????????????????????
+        (frame.getToolkit().getScreenSize().height/2)- Main.HEIGHT/2, Main.WIDTH, Main.HEIGHT);
+    frame.add(this);        //>?????????????????????????
+    frame.setVisible(true); //??????????????????????????
+    this.addKeyListener(this);
     this.setFocusable(true); // keyboard focus
     leave = false;
     while(!leave) {
-      try {      
+      try {
         Thread.sleep(1000 / FPS); // the player is running keyboard events while the code is blocked here.
       } catch (Exception e) {
         System.err.println("Exception: " + e.getMessage());
       }
     }
-    this.removeKeyListener(this); 
+    this.removeKeyListener(this);
     this.setFocusable(false); // keyboard focus
-    frame.setVisible(false);
-    frame.remove(this);
+    sequence(Main.SeqID.SEQ_GAME);
+    /* frame.setVisible(false);
+       frame.remove(this);*/
   }
 
   public int getStageID() {

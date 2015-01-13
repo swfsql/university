@@ -29,7 +29,7 @@ public class Stage {
     String[] files = new File("./stages").list();
     Arrays.sort(files, new AlphabeticComparator()); 
     java.util.List<String[]> list = new ArrayList<String[]>();
-    
+
     for (int i = 0; i < files.length; i++) {
       if (!files[i].matches("^.+\\.txt$")) continue;
       String name = files[i].replaceFirst("^(.+)\\.txt$", "$1");

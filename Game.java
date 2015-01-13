@@ -18,27 +18,26 @@ public class Game extends Sequence {
   Stage stage;
   Bar bar;
 
-  private int FPS;
   private int stageID;
-  private JFrame frame;
 
-  public Game(int stageID,Stage stage) {
-    this.frame = super.f_frame;
-    this.FPS = Main.FPS;
+  public Game(Stage stage) {
     this.stage = stage; // now this game obj holds the same Stage reference as the menu obj
-    this.stageID = stageID;
     bar = new Bar();
     keys = new KeyList(); // keys for the bar's movement
     cam = new Camera();
     cam.resize(Main.WIDTH, Main.HEIGHT);
   }
 
+  public void setStageID(int StageID) {
+    this.stageID = stageID;
+  }
+
   public void myMain() {
     System.out.println("Play started on stage [" + stageID + "] " + stage.stages[stageID][0]);
-    frame.setBounds((frame.getToolkit().getScreenSize().width/2)-Main.WIDTH/2, //????????????????????????????????????
-        (frame.getToolkit().getScreenSize().height/2)- Main.HEIGHT/2, Main.WIDTH, Main.HEIGHT);
-    frame.add(this);//???????????????????????????????
-    frame.setVisible(true);//??????????????????????
+    super.f_frame.setBounds((super.f_frame.getToolkit().getScreenSize().width/2)-Main.WIDTH/2, //????????????????????????????????????
+        (super.f_frame.getToolkit().getScreenSize().height/2)- Main.HEIGHT/2, Main.WIDTH, Main.HEIGHT);
+    super.f_frame.add(this);//???????????????????????????????
+    super.f_frame.setVisible(true);//??????????????????????
     this.addKeyListener(keys);
     this.setFocusable(true); // keyboard focus
     stage.load(stageID, bar);
@@ -46,7 +45,7 @@ public class Game extends Sequence {
     while (!leave) {
       play();
       try {
-        Thread.sleep(1000 / FPS);
+        Thread.sleep(1000 / Main.FPS);
       } catch (InterruptedException e) {
         System.err.println("Exception: " + e.getMessage());
       }
@@ -54,8 +53,8 @@ public class Game extends Sequence {
     this.removeKeyListener(keys);
     this.setFocusable(false); // keyboard focus
     sequence(Main.SeqID.SEQ_RANKING);
-    /*frame.setVisible(false);
-      frame.remove(this);*/
+    /*super.f_frame.setVisible(false);
+      super.f_frame.remove(this);*/
   }
 
   // Paint

@@ -60,7 +60,8 @@ public class Main {
 
     // just create objects
     menu = new Menu(); // search for available stages
-    game = new Game(f_stageID,menu.getStage()); // use the same stage list reference object
+    game = new Game(menu.getStage()); // use the same stage list reference object
+    game.setStageID(f_stageID);
 
     // calls inside unneeded {} blocks could be moved to the related object, but we would have to send a reference to "this" (Main object) to make the call from that object (such as menu or game). Instead, we have more code into this Main class but we have a simpler call relation between the classes.
 

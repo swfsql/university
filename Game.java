@@ -11,7 +11,8 @@ public class Game extends Sequence {
   private Graphics gv; // Graphics for buffering
   private Image offImage; // Image for buffering
 
-  private boolean leave;
+  private boolean leave,
+                  isClear;
 
   private Camera cam;
   private KeyList keys;
@@ -32,10 +33,19 @@ public class Game extends Sequence {
     this.stageID = stageID;
   }
 
+  public boolean isClear() {
+    return isClear;
+  }
+
+  public long getCurrentTime() {
+    return 0;
+  }
+
   public void myMain() {
     super.seqInit(keys);
     System.out.println("Play started on stage [" + stageID + "] " + stage.getStageName(stageID));
     stage.load(stageID, bar);
+    isClear = false;
     leave = false;
     while (!leave) {
       play();
@@ -70,7 +80,10 @@ public class Game extends Sequence {
   }
 
   private void play() {
-    if (bar.goalCheck(stage)) leave = true;
+    if (bar.goalCheck(stage)) {
+      isClear = true;
+      leave = true;
+    }
 
     this.updateBuffer();
     bar.move(keys, stage);

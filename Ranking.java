@@ -1,21 +1,33 @@
 import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class Ranking extends Sequence{
+public class Ranking extends Sequence implements ActionListener {
 
   JFrame frame = super.f_frame;
 
+  private boolean leave;
+
   public void myMain() {
     makeFrame();
-    //		tFrame.makeLabel();
+    makeLabel();
     pDrawButton();
-    //		tFrame.makeTextField();
+    makeTextField();
 
-
-
+    super.seqInit(null);
+    leave = false;
+    while(!leave) {
+      try {
+        Thread.sleep(1000 / Main.FPS);
+      } catch (InterruptedException e) {
+        System.err.println("Exception: " + e.getMessage());
+      }
+    }
+    super.seqEnd(null);
 
   }
 
@@ -46,6 +58,7 @@ public class Ranking extends Sequence{
 
   private void pDrawButton(){ //OKのボタン作成
     JButton buttonOK = new JButton("SPACE");
+    buttonOK.addActionListener(this);
     buttonOK.setBounds(360,492,80,30);
     //		buttonOK.setLocation(10, 20);
     //		buttonOK.setSize(300, 100);
@@ -67,5 +80,13 @@ public class Ranking extends Sequence{
     //		txt.setSize(100, 50);
     frame.add(txt);
   }
+
+  //----------------------------------------------▼ボタンが押された時の処理▼----------------------------------------------//
+
+  public void actionPerformed(ActionEvent e){ //OK **moonspeak**
+    leave = true;
+  }
+
+  //----------------------------------------------▲ボタンが押された時の処理▲----------------------------------------------//
 
 }

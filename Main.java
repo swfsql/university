@@ -3,34 +3,17 @@
 
 public class Main {
 
-  private boolean f_isClear; // TODO
-  private long f_currentTime; // TODO
-
-  final static int WIDTH = 1200; //
-  final static int HEIGHT = 800; //
+  final static int WIDTH = 1200;
+  final static int HEIGHT = 800; 
   final static int FPS = 25; // frames per second
 
+  private static SeqID f_sequence; 
   private static Sequence sequence;
+
   private static Menu menu;
   private static Game game;
   private static Result result;
   private static Ranking ranking;
-
-  private Main() { //
-    f_isClear = false;
-    f_currentTime = -1;
-    f_sequence = SeqID.SEQ_MENU;
-
-    // just create objects
-    Stage stage = new Stage(); // search for available stages
-    menu = new Menu(stage.getStagesLength()); 
-    game = new Game(stage);
-    game.setStageID(menu.getStageID());
-    result = new Result(menu.getStageID(),f_isClear,f_currentTime);
-    ranking = new Ranking();
-
-    sequence = menu;
-  }
 
   // calls for OnlyMain.java
   private static Main myMain  = new Main();
@@ -38,18 +21,35 @@ public class Main {
     return myMain;
   }
 
+  private Main() { //
+    Stage stage = new Stage(); // search for available stages
+    menu = new Menu(stage.getStagesLength()); 
+    game = new Game(stage);
+    game.setStageID(menu.getStageID());
+    result = new Result();
+    ranking = new Ranking();
+
+    f_sequence = SeqID.SEQ_MENU;
+    sequence = menu;
+
+    // test
+    //f_sequence = SeqID.SEQ_RANKING;
+    //sequence = ranking;
+  }
+
   enum SeqID { //SequenceID
     SEQ_MENU{
       void after() {
-        game.setStageID(menu.getStageID());
-        sequence = game;
         f_sequence = SeqID.SEQ_GAME;
+        sequence = game;
+        game.setStageID(menu.getStageID());
       }
     },
     SEQ_GAME{
       void after() {
         f_sequence = SeqID.SEQ_RESULT;
         sequence = result;
+        result.setValues(menu.getStageID(), game.isClear(), game.getCurrentTime());
       }
     },
     SEQ_RESULT{
@@ -68,24 +68,12 @@ public class Main {
     abstract void after();
   }
 
-  private static SeqID f_sequence; //
-
-
-  public void setIsClear(boolean tmpIsClear){
-    this.f_isClear = tmpIsClear;
-  }
-
-  public void setCurrentTime(long tmpCurrentTime){
-    this.f_currentTime = tmpCurrentTime;
-  }
-
-  // this myMain is executed only once
+  // this Main.myMain is executed only once
   void myMain() {
     while(true) {
       sequence.myMain();
       f_sequence.after();
     }
   }
-
 }
 

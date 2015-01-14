@@ -10,43 +10,40 @@ import java.awt.Container;
 
 public class Result extends Sequence implements ActionListener{
 
-  private JFrame f_frame;
-  private Container f_container;
-
   private int f_stageID;
   private boolean f_isClear;
+  private boolean leave;
   private long f_currentTime;
 
   //----------------------------------------------▼初期化関数▼----------------------------------------------//
 
-  Result(int stageID,boolean isClear,long currentTime){ //受け取ったMainをResultのフィールド変数のf_mainへ格納
+  Result(){ //受け取ったMainをResultのフィールド変数のf_mainへ格納
+    super.f_frame.getContentPane().setLayout(null);
+  }
+
+  //----------------------------------------------▲初期化関数▲----------------------------------------------//
+
+  public void setValues(int stageID,boolean isClear,long currentTime) {
     f_stageID = stageID;
     f_isClear = isClear;
     f_currentTime = currentTime;
-    f_frame = super.f_frame;
-    f_container = f_frame.getContentPane();
-    f_container.setLayout(null);
-    //pInitFrame();
   }
-
-  /*private void pInitFrame(){ //frameの初期設定
-    f_frame = new JFrame("RESULT");
-    f_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f_frame.setBounds((f_frame.getToolkit().getScreenSize().width/2)-400,
-    (f_frame.getToolkit().getScreenSize().height/2)-300, Main.WIDTH, Main.HEIGHT);
-    f_frame.setVisible(true);
-
-    f_container = f_frame.getContentPane();
-    f_container.setLayout(null);
-    }*/
-
-  //----------------------------------------------▲初期化関数▲----------------------------------------------//
 
   //----------------------------------------------▼メイン処理▼----------------------------------------------//
 
   public void myMain(){ //Mainから呼ばれるメソッド
     pDrawLabel(); //currentTime、stageIDのラベル表示
     pDrawButton(); //OKのボタン作成
+    super.seqInit(null);
+    leave = false;
+    while(!leave) {
+      try {
+        Thread.sleep(1000 / Main.FPS);
+      } catch (InterruptedException e) {
+        System.err.println("Exception: " + e.getMessage());
+      }
+    }
+    super.seqEnd(null);
   }
 
   private void pDrawLabel(){ //currentTime、stageIDのラベル表示
@@ -74,7 +71,7 @@ public class Result extends Sequence implements ActionListener{
     label.setHorizontalAlignment(JLabel.CENTER);
     label.setFont(font);
     label.setBounds(x,y,width,height);
-    f_container.add(label);
+    super.f_frame.getContentPane().add(label);
   }
 
   private String getCurrentTime(long time){ //currentタイムを 分:秒 に直す関数
@@ -91,7 +88,7 @@ public class Result extends Sequence implements ActionListener{
     JButton buttonOK = new JButton("SPACE");
     buttonOK.addActionListener(this);
     buttonOK.setBounds(360,492,80,30);
-    f_container.add(buttonOK);
+    super.f_frame.getContentPane().add(buttonOK);
   }
 
   //----------------------------------------------▲メイン処理▲----------------------------------------------//
@@ -99,7 +96,7 @@ public class Result extends Sequence implements ActionListener{
   //----------------------------------------------▼ボタンが押された時の処理▼----------------------------------------------//
 
   public void actionPerformed(ActionEvent e){ //OKボタンが押された時の処理、つまりRankingへのシーケンス処理
-    super.seqEnd(null);
+    leave = true;
   }
 
   //----------------------------------------------▲ボタンが押された時の処理▲----------------------------------------------//

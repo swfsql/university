@@ -14,7 +14,7 @@ To add a new stage, create the files below (bold ones are necessary) and re-exec
 
 In the **-wall** file, some colors have meanings:
 |Color|Meaning|
-|-|-|
+|---|---------|
 |Black|Wall|
 |Blue|Goal|
 

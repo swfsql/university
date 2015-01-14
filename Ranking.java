@@ -40,6 +40,8 @@ import javax.swing.JLabel;
 public class Ranking extends Sequence implements ActionListener{ //■extends Sequenceに変更(JFarmeは使えるよ)
 
   public Ranking(){ //■コンストラクタと値の代入方法を変更
+    myInit();
+    printWindow();   //  ☆printWindowメソッドの追加
   }
 
   // ArrayListの使い方：http://www.tohoho-web.com/java/collection.htm
@@ -53,13 +55,12 @@ public class Ranking extends Sequence implements ActionListener{ //■extends Se
   private boolean leave;
 
   public void myMain(){ //■Main関数から呼ばれるmyMain関数の追加（旧:test.java）
-    myInit();
     readRanking();
     setRanking(stageID, currentTime);
     writeRanking();
-    printWindow();   //  ☆printWindowメソッドの追加
     
     super.seqInit(null);
+    updateLabel();
     leave = false;
     while(!leave) {
       try {
@@ -214,25 +215,23 @@ public class Ranking extends Sequence implements ActionListener{ //■extends Se
     }
   }
 
+    //Labelの作成
+    private JLabel labelTitle   = new JLabel();
+    JLabel labelStage1          = new JLabel();
+    JLabel labelStage2          = new JLabel();
+    JLabel labelStage3          = new JLabel();
+    JLabel []labelTime; 
+
   // Labelの作成
   private void makeLabel(){
-
-    String noTime = " -- : -- ";
-    String stage1 = "EASY";
-    String stage2 = "NORMAL";
-    String stage3 = "HARD";
 
     Font fontLabel_32 = new Font("Arial",Font.PLAIN,32);
     Font fontLabel_100= new Font("Arial",Font.PLAIN,100);
 
-    //Labelの作成
-    JLabel labelTitle           = new JLabel("RANKING");
-    JLabel labelStage1          = new JLabel(stage1);
-    JLabel labelStage2          = new JLabel(stage2);
-    JLabel labelStage3          = new JLabel(stage3);
-
     addLabel(labelTitle, fontLabel_100, 0,35,Main.WIDTH,100);
+    labelTime = new JLabel[NUMBER_OF_STAGE];
 
+  // TODO fix label showing/hiding
     for (int i = 0; i < NUMBER_OF_STAGE; i++){
       int j;
       if (0 <= i && i <= 2){
@@ -245,10 +244,21 @@ public class Ranking extends Sequence implements ActionListener{ //■extends Se
         j = 230;
         addLabel(labelStage3, fontLabel_32, j,35,Main.WIDTH,300);
       }
-
-      JLabel labelTime = new JLabel(getIsExist(rankingData.get(i)) ? getCurrentTime(rankingData.get(i)) : noTime);
-      addLabel(labelTime, fontLabel_32, j, 80 + ((i % 3) * 40),Main.WIDTH,300);
+      labelTime[i] = new JLabel();
+      addLabel(labelTime[i], fontLabel_32, j, 80 + ((i % 3) * 40),Main.WIDTH,300);
     }
+  }
+
+  private void updateLabel() {
+    String noTime = " -- : -- ";
+    labelTitle.setText("RANKING");
+    labelStage1.setText("EASY");
+    labelStage2.setText("NORMAL");
+    labelStage3.setText("HARD");
+    for (int i = 0; i < NUMBER_OF_STAGE; i++){
+      labelTime[i].setText(getIsExist(rankingData.get(i)) ? getCurrentTime(rankingData.get(i)) : noTime);
+    }
+
   }
 
   // Labelをフレームにセットするメソッド 

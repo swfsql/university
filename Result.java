@@ -19,6 +19,8 @@ public class Result extends Sequence implements ActionListener{
 
   Result(){ //受け取ったMainをResultのフィールド変数のf_mainへ格納
     super.f_frame.getContentPane().setLayout(null);
+    pDrawLabel(); //currentTime、stageNameのラベル表示
+    pDrawButton(); //OKのボタン作成
   }
 
   //----------------------------------------------▲初期化関数▲----------------------------------------------//
@@ -32,9 +34,8 @@ public class Result extends Sequence implements ActionListener{
   //----------------------------------------------▼メイン処理▼----------------------------------------------//
 
   public void myMain(){ //Mainから呼ばれるメソッド
-    pDrawLabel(); //currentTime、stageNameのラベル表示
-    pDrawButton(); //OKのボタン作成
     super.seqInit(null);
+    pUpdateLabels();
     leave = false;
     while(!leave) {
       try {
@@ -46,25 +47,30 @@ public class Result extends Sequence implements ActionListener{
     super.seqEnd(null);
   }
 
+  //Labelの作成
+  private JLabel labelGameClearOrOver = new JLabel(),
+    labelCurrentTime = new JLabel(),
+    labelStage = new JLabel(),
+    labelTime = new JLabel();
+
   private void pDrawLabel(){ //currentTime、stageNameのラベル表示
-
-    String sGC = getCurrentTime(f_currentTime); //getCurrentTime:currentタイムを 分:秒 に直す関数  sGC = StringGameClear
-    String sGO = " -- : -- "; //sGO = StringGameOver ゲームオーバーの場合表示する
-    String stage = "STAGE " + f_stageName;
-
     Font fontLabel_32 = new Font("Arial",Font.PLAIN,32);
     Font fontLabel_100= new Font("Arial",Font.PLAIN,100);
-
-    //Labelの作成
-    JLabel labelGameClearOrOver = new JLabel(f_isClear ? "GAME CLEAR" : "GAME OVER");
-    JLabel labelCurrentTime 	= new JLabel(f_isClear ? sGC : sGO);
-    JLabel labelStage 			= new JLabel(stage);
-    JLabel labelTime			= new JLabel("TIME");
 
     addLabel(labelStage,		  	fontLabel_32,	0,35,Main.WIDTH,100);
     addLabel(labelGameClearOrOver,	fontLabel_100,	0,161,Main.WIDTH,100);
     addLabel(labelTime,				fontLabel_32,	0,317,Main.WIDTH,100);
     addLabel(labelCurrentTime,		fontLabel_32,	0,347,Main.WIDTH,100);
+  }
+
+  private void pUpdateLabels() {
+    String sGC = getCurrentTime(f_currentTime); //getCurrentTime:currentタイムを 分:秒 に直す関数  sGC = StringGameClear
+    String sGO = " -- : -- "; //sGO = StringGameOver ゲームオーバーの場合表示する
+    String stage = "STAGE " + f_stageName;
+    labelGameClearOrOver.setText(f_isClear ? "GAME CLEAR" : "GAME OVER");
+    labelCurrentTime.setText(f_isClear ? sGC : sGO);
+    labelStage.setText(stage);
+    labelTime.setText("TIME");
   }
 
   private void addLabel(JLabel label,Font font,int x,int y,int width,int height){

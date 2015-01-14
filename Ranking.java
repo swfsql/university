@@ -1,23 +1,64 @@
-import java.awt.TextField;
+import java.awt.Container;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class Ranking extends Sequence implements ActionListener {
+/**************************************************************
+ *
+ * @author TANABE
+ *
+ * 秋山へ
+ *
+ * 54,55,62,74,173以降,を変更しました。
+ * それに加え、public → private の変更と getTopRecord() メソッドの追加をしました。
+ *
+ * getTopRecord()は引数にstageIDを入れるとそのステージのtopの記録をreturnするメソッドです。 
+ * long ??? = Ranking.getTopRecord(stageID); ってやれば使えますが、使う側がRankingをnewしなきゃいけなくなっちゃう。。。
+ * rankingDataにstaticを付けるのはあまりやってほしくないです。（外部からのrankingの書き換えを防ぐため）
+ * 
+ * それと、実行毎に表示が変わってrankingが表示されたりされなかったりするのはなんでだろう。
+ * makeLabel()が原因だと思うんだけど書き方で、これがおかしいってところがあったら教えてほしい。
+ * 実行は別クラスでRankingのコンストラクタを作ってmyMain()を実行しています。
+ *　確認をお願いします。
+ *
+ ***************************************************************/
 
-  JFrame frame = super.f_frame;
+public class Ranking extends Sequence implements ActionListener{ //■extends Sequenceに変更(JFarmeは使えるよ)
 
+  public Ranking(){ //■コンストラクタと値の代入方法を変更
+  }
+
+  // ArrayListの使い方：http://www.tohoho-web.com/java/collection.htm
+  ArrayList<Long> rankingData = new ArrayList<Long>();
+  private long currentTime;
+  private int next;
+  public JButton button;
+  public int stageID;
+  final int NUMBER_OF_STAGE = 9;
+  private Container container;  //   ☆containerの追加
   private boolean leave;
 
-  public void myMain() {
-    makeFrame();
-    makeLabel();
-    pDrawButton();
-    makeTextField();
-
+  public void myMain(){ //■Main関数から呼ばれるmyMain関数の追加（旧:test.java）
+    myInit();
+    readRanking();
+    setRanking(stageID, currentTime);
+    writeRanking();
+    printWindow();   //  ☆printWindowメソッドの追加
+    
     super.seqInit(null);
     leave = false;
     while(!leave) {
@@ -28,65 +69,215 @@ public class Ranking extends Sequence implements ActionListener {
       }
     }
     super.seqEnd(null);
+  }
+
+  // ArrayListの初期化
+  // currentTimeにどのような値が入るかによって「10000L」を変更
+  private void myInit(){
+    for (int i = 0; i < NUMBER_OF_STAGE; i++){
+      rankingData.add(i,10000L);
+    }
+  }
+
+  public void setValues(int stageID, long currentTime) {
+    this.stageID = stageID;
+    this.currentTime = currentTime;
+  }
+
+  // 引数に指定されたステージの1位の記録を返すメソッド
+  public long getTopRecord(int stageID){
+    return rankingData.get(3 * (stageID - 1));
+  }
+
+  //rankingDataと引数を比較し、上位3位に入れば書き換え更新するメソッド
+  private void setRanking(int stageID, long currentTime){
+
+    for (int i = 0; i < 3; i++){
+      if(rankingData.get((stageID * 3) + i) >= currentTime){
+        switch(i){
+          case 0:
+            rankingData.set((stageID * 3) + 2, rankingData.get((stageID * 3) + 1));
+            rankingData.set((stageID * 3) + 1, rankingData.get(stageID * 3));
+            rankingData.set((stageID * 3) + i, currentTime);
+            break;
+          case 1:
+            rankingData.set((stageID * 3) + 2, rankingData.get((stageID * 3) + 1));
+            rankingData.set((stageID * 3) + i, currentTime);
+            break;
+          case 2:
+            rankingData.set((stageID * 3) + i, currentTime);
+            break;
+        }
+        break;
+      } else {
+      }
+    }
+  }
+
+  //rankingの値を受け取るメソッド
+  private ArrayList<Long> getRanking(){
+    return this.rankingData;
+  }
+
+  //failにrankingを格納するメソッド
+  private void writeRanking(){
+    try{
+      // ファイルのオープン
+      PrintWriter  pw = new PrintWriter(new BufferedWriter(
+            new OutputStreamWriter(new FileOutputStream(
+                new File("./RankingDB.csv"),false),"Shift_JIS")));
+      // データの追加
+      for (int i = 0; i < NUMBER_OF_STAGE - 1; i++){
+        pw.print(rankingData.get(i) + ",");
+      }
+      pw.println(rankingData.get(NUMBER_OF_STAGE - 1) + "");
+      pw.close();
+
+    } catch (FileNotFoundException e) {
+      // Fileオブジェクト生成時の例外補足
+      e.printStackTrace();
+    } catch (IOException e) {
+      // BufferedWriterオブジェクトのクローズ時の例外補足
+      e.printStackTrace();
+    }
 
   }
 
-  /*
-     TestFrame(String title){
-     JFrame frame = new JFrame("title");
+  //failからrankingを取り出し、rankingDataに格納するメソッド
+  private void readRanking(){
+    try {
+      // ファイルを読み込む
+      FileReader fr = new FileReader("./RankingDB.csv");
+      BufferedReader br = new BufferedReader(fr);
 
-     JLabel label = new JLabel();
-     JButton buttonOK = new JButton("SPACE");
-     frame.setBounds((frame.getToolkit().getScreenSize().width/2)-400,(frame.getToolkit().getScreenSize().height/2)-300, Main.WIDTH, Main.HEIGHT);
-     label.setText("ラベル");
-     frame.add(label);
-     buttonOK.setBounds(360,492,80,30);
-     frame.add(buttonOK);
-     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-     frame.setVisible(true);
-     }
+      // 読み込んだファイルを１行ずつ処理する
+      String line;
+      StringTokenizer token;
+      while ((line = br.readLine()) != null) {
+        // 区切り文字","で分割する
+        token = new StringTokenizer(line, ",");
 
-*/
-
-  private void makeFrame(){
-    //frame.setBounds(200,200,780, 580);
-    //		frame.setLocation(200, 200);
-    //		frame.setSize(780, 580);
-    //		frame.setBounds((frame.getToolkit().getScreenSize().width/2)-400,(frame.getToolkit().getScreenSize().height/2)-300, Main.WIDTH, Main.HEIGHT);
-    frame.setVisible(true);
+        // 分割した文字をrankingDataに格納する
+        int j = 0;
+        while (token.hasMoreTokens()){
+          rankingData.set(j, Long.parseLong(token.nextToken()));
+          j += 1;
+        }
+      }
+      br.close();
+    } catch (IOException ex) {
+      // 例外発生時処理
+      ex.printStackTrace();
+    }
   }
 
-  private void pDrawButton(){ //OKのボタン作成
+
+  //nextに値を格納するメソッド
+  public void setNext(int next){
+    this.next = next;
+  }
+
+  //nextの値を受け取るメソッド
+  public int getNext(){
+    return this.next;
+  }
+
+  // ----------------------------以下追加項目-----------------------------
+  // Resultを参考にして作ったので基本的な処理はResultと一緒（使ってるメソッドもだいたい一緒）
+
+  // ウィンドウを作成するメソッド
+  private void printWindow(){
+    initFrame();
+    makeLabel();
+    makeButtonOK();
+  }
+
+  // フレームの初期化
+  private void initFrame(){
+    container = super.f_frame.getContentPane();
+    container.setLayout(null);
+  }
+  //　OKのボタン作成
+  private void makeButtonOK(){
     JButton buttonOK = new JButton("SPACE");
     buttonOK.addActionListener(this);
     buttonOK.setBounds(360,492,80,30);
-    //		buttonOK.setLocation(10, 20);
-    //		buttonOK.setSize(300, 100);
-    frame.add(buttonOK);
+    container.add(buttonOK);
   }
 
+  // rankingDataに値が入っているかのチェック
+  private boolean getIsExist(long rankingData){
+    if (rankingData == 10000L){
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // Labelの作成
   private void makeLabel(){
-    JLabel label = new JLabel();
-    label.setText("ラベル");
-    frame.add(label);
 
+    String noTime = " -- : -- ";
+    String stage1 = "EASY";
+    String stage2 = "NORMAL";
+    String stage3 = "HARD";
+
+    Font fontLabel_32 = new Font("Arial",Font.PLAIN,32);
+    Font fontLabel_100= new Font("Arial",Font.PLAIN,100);
+
+    //Labelの作成
+    JLabel labelTitle           = new JLabel("RANKING");
+    JLabel labelStage1          = new JLabel(stage1);
+    JLabel labelStage2          = new JLabel(stage2);
+    JLabel labelStage3          = new JLabel(stage3);
+
+    addLabel(labelTitle, fontLabel_100, 0,35,Main.WIDTH,100);
+
+    for (int i = 0; i < NUMBER_OF_STAGE; i++){
+      int j;
+      if (0 <= i && i <= 2){
+        j = -230;
+        addLabel(labelStage1, fontLabel_32, j,35,Main.WIDTH,300);
+      } else if (3 <= i && i <= 5){
+        j = 0;
+        addLabel(labelStage2, fontLabel_32, j,35,Main.WIDTH,300);
+      } else {
+        j = 230;
+        addLabel(labelStage3, fontLabel_32, j,35,Main.WIDTH,300);
+      }
+
+      JLabel labelTime = new JLabel(getIsExist(rankingData.get(i)) ? getCurrentTime(rankingData.get(i)) : noTime);
+      addLabel(labelTime, fontLabel_32, j, 80 + ((i % 3) * 40),Main.WIDTH,300);
+    }
   }
 
-
-  private void makeTextField(){
-    TextField txt = new TextField("");
-    txt.setBounds(10, 20, 100, 30);
-    //		txt.setLocation(30, 40);
-    //		txt.setSize(100, 50);
-    frame.add(txt);
+  // Labelをフレームにセットするメソッド 
+  private void addLabel(JLabel label,Font font,int x,int y,int width,int height){
+    label.setHorizontalAlignment(JLabel.CENTER);
+    label.setFont(font);
+    label.setBounds(x,y,width,height);
+    container.add(label);
   }
 
-  //----------------------------------------------▼ボタンが押された時の処理▼----------------------------------------------//
+  // currentタイムを 分:秒 に直す関数
+  private String getCurrentTime(long time){
+    String strTime;
+    strTime = String.valueOf( String.format("%02d", time / 60000 )); //分
+    strTime += " ' ";
+    strTime +=  String.valueOf( String.format("%02d",(time % 60000) / 1000 )); //秒
+    strTime += " \" ";
+    strTime +=  String.valueOf( String.format("%02d",(time % 60000) % 1000 /10)); //小数点第２位まで表示（少数第3位は切り捨て）
+    return strTime;
+  }
 
-  public void actionPerformed(ActionEvent e){ //OK **moonspeak**
+  // OKボタンが押された時の処理、つまりRankingへのシーケンス処理
+  public void actionPerformed(ActionEvent e){
     leave = true;
   }
 
-  //----------------------------------------------▲ボタンが押された時の処理▲----------------------------------------------//
+
+
+  // -----------------------------以上追加項目--------------------------------------
+
 
 }

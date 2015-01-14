@@ -21,6 +21,9 @@ public class Game extends Sequence {
 
   private int stageID;
 
+  private long startTime,
+               eplapsedTime;
+
   Game(Stage stage) {
     this.stage = stage; // now this game obj holds the same Stage reference as the menu obj
     bar = new Bar();
@@ -33,12 +36,17 @@ public class Game extends Sequence {
     this.stageID = stageID;
   }
 
+  public String getStageName() {
+    return stage.getStageName(stageID);
+  }
+
   public boolean isClear() {
     return isClear;
   }
 
-  public long getCurrentTime() {
-    return 0;
+  public long getTime() {
+    if (!leave) eplapsedTime = System.currentTimeMillis() - startTime;
+    return eplapsedTime;
   }
 
   public void myMain() {
@@ -47,6 +55,7 @@ public class Game extends Sequence {
     stage.load(stageID, bar);
     isClear = false;
     leave = false;
+    startTime = System.currentTimeMillis();
     while (!leave) {
       play();
       try {
@@ -82,6 +91,7 @@ public class Game extends Sequence {
   private void play() {
     if (bar.goalCheck(stage)) {
       isClear = true;
+      getTime(); // to update the time
       leave = true;
     }
 

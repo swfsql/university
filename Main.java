@@ -49,7 +49,8 @@ public class Main {
       void after() {
         f_sequence = SeqID.SEQ_RESULT;
         sequence = result;
-        result.setValues(menu.getStageID(), game.isClear(), game.getCurrentTime());
+        result.setValues(game.getStageName(), game.isClear(), game.getTime());
+        ranking.setValues(menu.getStageID(), game.getTime());
       }
     },
     SEQ_RESULT{

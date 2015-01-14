@@ -10,7 +10,7 @@ import java.awt.Container;
 
 public class Result extends Sequence implements ActionListener{
 
-  private int f_stageID;
+  private String f_stageName;
   private boolean f_isClear;
   private boolean leave;
   private long f_currentTime;
@@ -23,8 +23,8 @@ public class Result extends Sequence implements ActionListener{
 
   //----------------------------------------------▲初期化関数▲----------------------------------------------//
 
-  public void setValues(int stageID,boolean isClear,long currentTime) {
-    f_stageID = stageID;
+  public void setValues(String stageName,boolean isClear,long currentTime) {
+    f_stageName = stageName;
     f_isClear = isClear;
     f_currentTime = currentTime;
   }
@@ -32,7 +32,7 @@ public class Result extends Sequence implements ActionListener{
   //----------------------------------------------▼メイン処理▼----------------------------------------------//
 
   public void myMain(){ //Mainから呼ばれるメソッド
-    pDrawLabel(); //currentTime、stageIDのラベル表示
+    pDrawLabel(); //currentTime、stageNameのラベル表示
     pDrawButton(); //OKのボタン作成
     super.seqInit(null);
     leave = false;
@@ -46,11 +46,11 @@ public class Result extends Sequence implements ActionListener{
     super.seqEnd(null);
   }
 
-  private void pDrawLabel(){ //currentTime、stageIDのラベル表示
+  private void pDrawLabel(){ //currentTime、stageNameのラベル表示
 
     String sGC = getCurrentTime(f_currentTime); //getCurrentTime:currentタイムを 分:秒 に直す関数  sGC = StringGameClear
     String sGO = " -- : -- "; //sGO = StringGameOver ゲームオーバーの場合表示する
-    String stage = "STAGE " + f_stageID;
+    String stage = "STAGE " + f_stageName;
 
     Font fontLabel_32 = new Font("Arial",Font.PLAIN,32);
     Font fontLabel_100= new Font("Arial",Font.PLAIN,100);

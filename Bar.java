@@ -65,6 +65,10 @@ public class Bar {
     }
   }
 
+  boolean  goalCheck(Stage stage) {
+    return stage.test_collision(x, y, 0xFF0000FF); // searches for blue
+  }
+
   void draw(Graphics gv, Camera cam) {
     // we rotate the coordinates points, then we draw the rectangle
     double rad = Math.toRadians(rot);

@@ -70,11 +70,13 @@ public class Game extends Sequence {
   }
 
   private void play() {
+    if (bar.goalCheck(stage)) leave = true;
+
     this.updateBuffer();
     bar.move(keys, stage);
     bar.collision(stage);
-    if (bar.collided == bar.collided_max) bar.move(keys, stage);
-    cam.move(bar, stage);
+    if (bar.collided == bar.collided_max) bar.move(keys, stage); // don't let the bar move into a wall when it first collides.
+    cam.move(bar, stage); // camera tries to follow the bar
 
     this.clear();
     stage.drawBelow(gv, cam, this);

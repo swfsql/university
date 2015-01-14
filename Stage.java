@@ -21,7 +21,10 @@ public class Stage {
   private String [][] stages;
 
   public boolean test_collision(int i, int j) {
-    return bimg.getRGB(i, j) != -1; 
+    return bimg.getRGB(i, j) == 0xFF000000; // wall collision
+  }
+  public boolean test_collision(int i, int j, int color) {
+    return bimg.getRGB(i, j) == color; 
   }
 
   // search for stages

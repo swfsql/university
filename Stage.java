@@ -18,14 +18,15 @@ public class Stage {
         ground,
         roof;
 
-  public String [][] stages;
+  private String [][] stages;
 
   public boolean test_collision(int i, int j) {
     return bimg.getRGB(i, j) != -1; 
   }
 
+  // search for stages
   @SuppressWarnings("unchecked")
-  public void searchStages() {
+  Stage() { 
     String[] files = new File("./stages").list();
     Arrays.sort(files, new AlphabeticComparator()); 
     java.util.List<String[]> list = new ArrayList<String[]>();
@@ -51,18 +52,12 @@ public class Stage {
     }
   }
 
-
-  public void temp() {
-    stages = new String [1][4];
-    stages[0][0] = "";
-    stages[0][1] = "png";
-    stages[0][2] = "png";
-    stages[0][3] = "png";
-
-  }
-
   public int getStagesLength() {
     return stages.length;
+  }
+
+  public String getStageName(int i) {
+    return stages[i][0];
   }
 
   public void load(int i, Bar bar) {

@@ -15,7 +15,7 @@ public class Bar {
       collided = 0; // counter
 
   // bar movement
-  public void move(KeyList keys, Stage stage) {
+  void move(KeyList keys, Stage stage) {
     if (collided == 0) { // movement when not collided
       vx_old = keys.right ? vx : keys.left ? -vx : 0;
       vy_old = keys.up ? vy : keys.down ? -vy : 0;
@@ -38,7 +38,7 @@ public class Bar {
 
   }
 
-  public void collision(Stage stage) {
+  void collision(Stage stage) {
     // if we are being pushed back from a collision, we don't need to check for more collisions
     if (collided > 0) {
       collided--;
@@ -65,7 +65,7 @@ public class Bar {
     }
   }
 
-  public void draw(Graphics gv, Camera cam) {
+  void draw(Graphics gv, Camera cam) {
     // we rotate the coordinates points, then we draw the rectangle
     double rad = Math.toRadians(rot);
     int pax = x + (int)(len * Math.cos(rad)),

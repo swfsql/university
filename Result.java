@@ -99,7 +99,7 @@ public class Result extends Sequence implements ActionListener{
   //----------------------------------------------▼ボタンが押された時の処理▼----------------------------------------------//
 
   public void actionPerformed(ActionEvent e){ //OKボタンが押された時の処理、つまりRankingへのシーケンス処理
-    sequence(Main.SeqID.SEQ_RANKING);
+    super.seqEnd(null);
   }
 
   //----------------------------------------------▲ボタンが押された時の処理▲----------------------------------------------//

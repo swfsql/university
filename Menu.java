@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 public class Menu extends Sequence  implements KeyListener {
 
-  private int stageID;
+  private int stageID, stageLength;
   private winID win;
 
   enum winID {
@@ -19,7 +19,7 @@ public class Menu extends Sequence  implements KeyListener {
     HOW_TO_PLAY,
     STAGE_SELECTION;
 
-    public int toInt() {
+    private int toInt() {
       switch (this) {
         case MENU:
           return MENU.ordinal();
@@ -36,16 +36,12 @@ public class Menu extends Sequence  implements KeyListener {
     }
   }
 
-  Stage stage;
   Image [] bgs;
 
   private boolean leave;
 
-  private int FPS;
-  private JFrame frame;
-  public Menu() {
-    this.frame = super.f_frame; // only used in this.myMain
-    this.FPS = Main.FPS; // only used in this.myMain
+  Menu(int stageLength) {
+    this.stageLength = stageLength;
     this.stageID = 0;
     win = winID.MENU;
 
@@ -58,39 +54,23 @@ public class Menu extends Sequence  implements KeyListener {
     } catch (Exception e) {
       System.err.println("Exception: " + e.getMessage());
     }
-
-    // red available stage files
-    stage = new Stage();
-    stage.searchStages(); // search for available stages in the stages directory
   }
 
   public void myMain() {
-    frame.setBounds((frame.getToolkit().getScreenSize().width/2)-Main.WIDTH/2, //????????????????????????????????????
-        (frame.getToolkit().getScreenSize().height/2)- Main.HEIGHT/2, Main.WIDTH, Main.HEIGHT);
-    frame.add(this);        //>?????????????????????????
-    frame.setVisible(true); //??????????????????????????
-    this.addKeyListener(this);
-    this.setFocusable(true); // keyboard focus
+    super.seqInit(this);
     leave = false;
     while(!leave) {
       try {
-        Thread.sleep(1000 / FPS); // the player is running keyboard events while the code is blocked here.
+        Thread.sleep(1000 / Main.FPS); // the player is running keyboard events while the code is blocked here.
       } catch (Exception e) {
         System.err.println("Exception: " + e.getMessage());
       }
     }
-    this.removeKeyListener(this);
-    this.setFocusable(false); // keyboard focus
-    sequence(Main.SeqID.SEQ_GAME);
-    /* frame.setVisible(false);
-       frame.remove(this);*/
+    super.seqEnd(this);
   }
 
   public int getStageID() {
     return stageID;
-  }
-  public Stage getStage() {
-    return stage;
   }
 
   public void paint(Graphics graphics) {
@@ -155,11 +135,12 @@ public class Menu extends Sequence  implements KeyListener {
             this.repaint();
             break;
           case 40: // down
-            stageID = stageID == stage.getStagesLength() - 1 ? 0 : stageID + 1;
+            stageID = stageID == stageLength - 1 ? 0 : stageID + 1;
+            System.out.println("Stage now is " + stageID);
             // TODO draw stage number or miniature
             break;
           case 38: // up
-            stageID = stageID == 0 ? stage.getStagesLength() - 1 : stageID - 1;
+            stageID = stageID == 0 ? stageLength - 1 : stageID - 1;
             // TODO draw stage number or miniature
             break;
           default:

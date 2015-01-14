@@ -8,19 +8,19 @@ import javax.swing.JFrame;
 public class Game extends Sequence {
 
   // drawing related
-  public Graphics gv; // Graphics for buffering
+  private Graphics gv; // Graphics for buffering
   private Image offImage; // Image for buffering
 
   private boolean leave;
 
-  Camera cam;
-  KeyList keys;
-  Stage stage;
-  Bar bar;
+  private Camera cam;
+  private KeyList keys;
+  private Stage stage;
+  private Bar bar;
 
   private int stageID;
 
-  public Game(Stage stage) {
+  Game(Stage stage) {
     this.stage = stage; // now this game obj holds the same Stage reference as the menu obj
     bar = new Bar();
     keys = new KeyList(); // keys for the bar's movement
@@ -28,18 +28,13 @@ public class Game extends Sequence {
     cam.resize(Main.WIDTH, Main.HEIGHT);
   }
 
-  public void setStageID(int StageID) {
+  public void setStageID(int stageID) {
     this.stageID = stageID;
   }
 
   public void myMain() {
-    System.out.println("Play started on stage [" + stageID + "] " + stage.stages[stageID][0]);
-    super.f_frame.setBounds((super.f_frame.getToolkit().getScreenSize().width/2)-Main.WIDTH/2, //????????????????????????????????????
-        (super.f_frame.getToolkit().getScreenSize().height/2)- Main.HEIGHT/2, Main.WIDTH, Main.HEIGHT);
-    super.f_frame.add(this);//???????????????????????????????
-    super.f_frame.setVisible(true);//??????????????????????
-    this.addKeyListener(keys);
-    this.setFocusable(true); // keyboard focus
+    super.seqInit(keys);
+    System.out.println("Play started on stage [" + stageID + "] " + stage.getStageName(stageID));
     stage.load(stageID, bar);
     leave = false;
     while (!leave) {
@@ -50,17 +45,13 @@ public class Game extends Sequence {
         System.err.println("Exception: " + e.getMessage());
       }
     }
-    this.removeKeyListener(keys);
-    this.setFocusable(false); // keyboard focus
-    sequence(Main.SeqID.SEQ_RANKING);
-    /*super.f_frame.setVisible(false);
-      super.f_frame.remove(this);*/
+    super.seqEnd(keys);
   }
 
   // Paint
 
   // clear drawings
-  public void clear() {
+  private void clear() {
     // clears the entire screen
     gv.clearRect(0, 0, cam.w, cam.h);
   }
@@ -68,7 +59,7 @@ public class Game extends Sequence {
     paint(g);
   }
   // buffer for flickering
-  public void updateBuffer() {
+  private void updateBuffer() {
     offImage = createImage(cam.w, cam.h);
     gv = offImage.getGraphics();
     ((Graphics2D) gv).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -78,7 +69,7 @@ public class Game extends Sequence {
     graphics.drawImage(offImage, 0, 0, cam.w, cam.h, this);
   }
 
-  public void play() {
+  private void play() {
     this.updateBuffer();
     bar.move(keys, stage);
     bar.collision(stage);

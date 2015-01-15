@@ -13,8 +13,9 @@ To add a new stage, create the files below (bold ones are necessary) and re-exec
 - stages/_name_-roof.txt
 
 In the **-wall** file, some colors have meanings:
-| Color | Meaning | ARGB |
-| --- | --- | --- |
-| Black | Wall | 0xFF000000 |
-| Blue | Goal | 0xFF0000FF |
 
+| Color        | Meaning  |      ARGB  |
+| ------------ |:--------:| ----------:|
+| Black        | Wall     |   0x000000 |
+| Blue         | Goal     |   0x0000FF |
+| Red          | Spring   |   0xFF0000 |

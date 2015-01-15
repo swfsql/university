@@ -4,7 +4,7 @@ public class Camera {
 			w = 0, h = 0; // screen width, height
 
 	// movement
-	float speed = 1; // 0 < speed <= 1 = no delay
+	float speed = (float) 0.2; // 0 < speed <= 1 = no delay
 
 	public void resize(int w, int h) {
 		this.w = w;

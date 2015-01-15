@@ -35,7 +35,7 @@ public abstract class Sequence extends JApplet {
 		}
 		f_frame.setVisible(false);
 		f_frame.remove(this);
-		System.out.println("Sequence End");
+		System.out.println("SeqEnd");
 	}
 
 	/*protected void sequence(Main.SeqID seqId){

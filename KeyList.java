@@ -5,6 +5,10 @@ public class KeyList implements KeyListener {
 
 	// TODO change to use a hashset instead of booleans
 	public boolean up, down, right, left;
+  
+  public void reset() {
+    up = down = right = left = false;
+  }
 
 	public void keyTyped(KeyEvent e) {
 

@@ -51,6 +51,7 @@ public class Game extends Sequence {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+    keys.reset();
 	}
 
 	public void setStageID(int stageID) {

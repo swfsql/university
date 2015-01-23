@@ -44,6 +44,8 @@ static struct keyWd KeyWdT[] = {	/* The table containing reserved words, symbols
 	{"then", Then},
 	{"while", While},
 	{"do", Do},
+	{"repeat", Repeat},
+	{"until", Until},
 	{"return", Ret},
 	{"function", Func},
 	{"var", Var},

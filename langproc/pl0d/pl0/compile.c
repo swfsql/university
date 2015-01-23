@@ -236,6 +236,14 @@ void statement()			/* It compiles a statement. */
 			genCodeV(jmp, backP2);		/* A jump to the beginning of the do-while-statement */
 			backPatch(backP);	/* It adjusts the target address of the conditional jump */
       return;
+    case Repeat:        /*A repeat-until-statement, based on the Write-statement */
+      token = nextToken();
+      backP = nextCode();  /* The target address of the jump at the end of the repeat-until-statment. */
+      statement();				/* A statement (the body of the repeat-until-statement) */
+      token = checkGet(token, Until);	/* It must be "until". */
+      condition();				/* A condiional expression */
+      genCodeV(jpc, backP);		/* A conditonal jump which jumps when the condition is false */
+      return;
 		default:			      /* It ignores tokens preceeding a starting token of statements */
 			errorDelete();				/* It ignores tokens. */
 			token = nextToken();

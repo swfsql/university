@@ -1,5 +1,8 @@
 hora.pdf
 
+
+*.o
+
 *~
 
 *.class

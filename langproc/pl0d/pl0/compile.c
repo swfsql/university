@@ -37,7 +37,7 @@ int compile()
 	i = errorN();				/* The number of error messages */
 	if (i!=0)
 	  printf("; %d errors\n", i);
-/*	listCode();	*/			/* It lists object codes if needed. */
+	listCode();				/* It lists object codes if needed. */
 	return i<MINERROR;		/* Is the number of error messages acceptable so as to execute the object code? */
 }
 

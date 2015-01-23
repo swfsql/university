@@ -226,6 +226,16 @@ void statement()			/* It compiles a statement. */
 			return;
 		case End: case Semicolon:			/* An empty statement */
 			return;
+    case Do:        /*A do-while-statement, based on the Write-statement */
+			token = nextToken();
+			backP2 = nextCode();  /* The target address of the jump at the end of the do-while-statment. */
+			statement();				/* A statement (the body of the do-while-statement) */
+			token = checkGet(token, While);	/* It must be "while". */
+			condition();				/* A condiional expression */
+			backP = genCodeV(jpc, 0);		/* A conditonal jump which jumps when the condition is false */
+			genCodeV(jmp, backP2);		/* A jump to the beginning of the do-while-statement */
+			backPatch(backP);	/* It adjusts the target address of the conditional jump */
+      return;
 		default:			      /* It ignores tokens preceeding a starting token of statements */
 			errorDelete();				/* It ignores tokens. */
 			token = nextToken();
@@ -240,6 +250,7 @@ int isStBeginKey(Token t)			/* Is a token t one of starting tokens of statements
 	case Id:
 	case If: case Begin: case Ret:
 	case While: case Write: case WriteLn:
+	case Do:
 		return 1;
 	default:
 		return 0;

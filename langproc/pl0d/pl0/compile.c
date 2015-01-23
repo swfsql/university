@@ -250,7 +250,7 @@ int isStBeginKey(Token t)			/* Is a token t one of starting tokens of statements
 	case Id:
 	case If: case Begin: case Ret:
 	case While: case Write: case WriteLn:
-	case Do:
+	case Do: case Repeat: case Until:
 		return 1;
 	default:
 		return 0;

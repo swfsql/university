@@ -177,7 +177,13 @@ void statement()			/* It compiles a statement. */
 			token = checkGet(token, Then);		/* It must be "then". */
 			backP = genCodeV(jpc, 0);			/* A conditional jump */
 			statement();					/* A statement just after "then" */
-			backPatch(backP);				/* It adjusts the target address of the conditional jump. */
+      backP2 = genCodeV(jmp, backP2);			/* A jump */
+      backPatch(backP);				/* It adjusts the target address of the conditional jump. */
+      if (token.kind == Else) {
+        token = nextToken();
+        statement();					/* A statement just after "then" */
+      } 
+			backPatch(backP2);				/* It adjusts the target address of the conditional jump. */
 			return;
 		case Ret:					/* A return statement */
 			token = nextToken();

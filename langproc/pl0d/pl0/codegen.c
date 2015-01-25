@@ -110,7 +110,9 @@ void updateRef(int i)		/* It updates the array ref. */
 	case lit: flag=1; break;
 	case opr: flag=3; break;
 	case lod: flag=2; break;
+	case ldr: flag=2; break;
 	case sto: flag=2; break;
+	case str: flag=2; break;
 	case cal: flag=5; break;
 	case ret: flag=2; break;
 	case ict: flag=1; break;
@@ -134,7 +136,9 @@ void printCode(int i)		/* It prints an instruction code in the address i. */
 	case lit: printf("lit"); flag=1; break;
 	case opr: printf("opr"); flag=3; break;
 	case lod: printf("lod"); flag=2; break;
+	case ldr: printf("ldr"); flag=2; break;
 	case sto: printf("sto"); flag=2; break;
+	case str: printf("str"); flag=2; break;
 	case cal: printf("cal"); flag=5; break;
 	case ret: printf("ret"); flag=2; break;
 	case ict: printf("ict"); flag=1; break;
@@ -194,7 +198,14 @@ void execute()			/* It executes generated codes */
 				break;
 		case lod: stack[top++] = stack[display[i.u.addr.level] + i.u.addr.addr]; 
 				 break;
+		case ldr: 
+         stack[top - 1] = stack[display[i.u.addr.level] + i.u.addr.addr - stack[top - 1] - 1]; 
+				 break;
 		case sto: stack[display[i.u.addr.level] + i.u.addr.addr] = stack[--top]; 
+				 break;
+		case str: 
+         stack[display[i.u.addr.level] + i.u.addr.addr - stack[top - 2] - 1] = stack[top - 1]; 
+          top -= 2;
 				 break;
 		case cal: lev = i.u.addr.level +1;	/* The level of the name of a callee is i.u.addr.level */
 		  /* The level of the body of the callee is i.u.addr.level+1. */

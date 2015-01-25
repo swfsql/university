@@ -20,6 +20,7 @@ typedef  enum  keys {			/*¡¡Names of reserved words and characters */
 	Plus, Minus,				/* Operators and delimiters */
 	Mult, Div,	
 	Lparen, Rparen,
+	Lbrackets, Rbrackets,
 	Equal, Lss, Gtr,
 	NotEq, LssEq, GtrEq, 
 	Comma, Period, Semicolon,

@@ -39,6 +39,7 @@ static char* kindName(KindT k)		/* It returns the string of a kind of names */
 	case parId: return "par";
 	case funcId: return "func";
 	case constId: return "const";
+	case arrId: return "array";
 	}
 }
 
@@ -121,6 +122,22 @@ int enterTconst(char *id, int v)		/* It records a constant and its value in the 
 	return tIndex;
 }
 
+static const *NULLCHAR = "\0";
+int enterTarr(char *id, int l)		/* It records a constant and its length in the name table. */
+{
+  for (int i = 0; i < l; i++) {
+	  enterT(NULLCHAR);
+	  nameTable[tIndex].kind = varId;
+	  nameTable[tIndex].u.raddr.level = level;
+	  nameTable[tIndex].u.raddr.addr = localAddr++;
+  }
+	enterT(id);
+	nameTable[tIndex].kind = arrId;
+	nameTable[tIndex].u.raddr.level = level;
+	nameTable[tIndex].u.raddr.addr = localAddr++;
+	return tIndex;
+}
+
 void endpar()					/* It is called when parameters end. */
 {
 	int i;
@@ -143,7 +160,7 @@ int searchT(char *id, KindT k)		/* It returns the index of an element whose name
 	strcpy(nameTable[0].name, id);			/* It puts a sentinel at the beginning of the name table. */
 	while( strcmp(id, nameTable[i].name) )
 		i--;
-	if ( i )							/* It finds the name. */
+	if ( i )  						/* It finds the name. */
 		return i;
 	else {							/* It fails to find the name. */
 		errorType("undef");

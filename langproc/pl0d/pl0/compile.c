@@ -100,9 +100,20 @@ void varDecl()				/* It compiles a variable declaration. */
 {
 	while(1){
 		if (token.kind==Id){
-			setIdKind(varId);		/* It sets the kind of the token for printing. */
-			enterTvar(token.u.id);		/* It records the name of a variable in the name table whose address will be determined by the name table. */
+      Token temp = token;
 			token = nextToken();
+      if (token.kind == Lbrackets) {
+			  token = nextToken();
+			  if (token.kind==Num) {
+			    enterTarr(temp.u.id, token.u.value);		/* It records the name of a variable in the name table whose address will be determined by the name table. */
+        } else {
+				  errorType("number");
+        }
+			  token = checkGet(nextToken(), Rbrackets);		/* The next token should be "]". */
+      }  else {
+			  setIdKind(varId);		/* It sets the kind of the token for printing. */
+			  enterTvar(temp.u.id);		/* It records the name of a variable in the name table whose address will be determined by the name table. */
+      }
 		}else
 			errorMissingId();
 		if (token.kind!=Comma){		/* If the next token is a commna, it will be followed by a variable declaration. */
@@ -164,12 +175,20 @@ void statement()			/* It compiles a statement. */
 		switch (token.kind) {
 		case Id:					/* An assignment statement */
 			tIndex = searchT(token.u.id, varId);	/* The index of a left-hand variable */
-			setIdKind(k=kindT(tIndex));		/* It sets the kind of the left-hand variable for printing. */
-			if (k != varId && k != parId) 		/* The left-hand variable must be a variable or a parameter. */
-				errorType("var/par");
-			token = checkGet(nextToken(), Assign);			/* It must be ":=". */
+      k = kindT(tIndex);
+      if (k == arrId) {
+        Token temp = token;
+        token = nextToken();
+			  token = checkGet(token, Lbrackets);		/* It must be "[". */
+        expression();					/* It compiles an expression. */
+			  token = checkGet(token, Rbrackets);		/* It must be "]". */
+      } else token = nextToken();
+			setIdKind(k);		/* It sets the kind of the left-hand variable for printing. */
+			if (k != varId && k != parId && k != arrId) 		/* The left-hand variable must be a variable or a parameter. */
+				errorType("var/par/arr");
+			token = checkGet(token, Assign);			/* It must be ":=". */
 			expression();					/* It compiles an expression. */
-			genCodeT(sto, tIndex);	  /* A code to store the right-hand value in the left-hand variable */
+			genCodeT((k == arrId) ? str : sto, tIndex);	  /* A code to store the right-hand value in the left-hand variable */
 			return;
 		case If:					/* An if-statement */
 			token = nextToken();
@@ -264,7 +283,7 @@ int isStBeginKey(Token t)			/* Is a token t one of starting tokens of statements
 	case Id:
 	case If: case Begin: case Ret:
 	case While: case Write: case WriteLn:
-	case Do: case Repeat: case Until:
+	case Do: case Repeat: 
 		return 1;
 	default:
 		return 0;
@@ -286,10 +305,7 @@ void expression()				/* It compiles an expression. */
 	while (k==Plus || k==Minus){
 		token = nextToken();
 		term();
-		if (k==Minus)
-			genCodeO(sub);
-		else
-			genCodeO(add);
+		genCodeO(k == Plus ? add : sub);
 		k = token.kind;
 	}
 }
@@ -349,6 +365,13 @@ void factor()					/* It compiles a fcator of an expression. */
 			}
 			genCodeT(cal, tIndex);				/* A code to call a function */
 			break;
+    case arrId:
+      token = nextToken();
+		  token = checkGet(token, Lbrackets);
+      expression();					
+      token = checkGet(token, Rbrackets);		
+      genCodeT(ldr, tIndex);
+    break;
 		}
 	}else if (token.kind==Num){			/* a constant */
 		genCodeV(lit, token.u.value);
@@ -357,7 +380,7 @@ void factor()					/* It compiles a fcator of an expression. */
 		token = nextToken();
 		expression();
 		token = checkGet(token, Rparen);
-	}
+	} 
 	switch (token.kind){					/* It declares an error if this factor is followed by a factor. */
 	case Id: case Num: case Lparen:
 		errorMissingOp();

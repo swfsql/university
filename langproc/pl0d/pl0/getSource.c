@@ -62,6 +62,8 @@ static struct keyWd KeyWdT[] = {	/* The table containing reserved words, symbols
 	{"/", Div},
 	{"(", Lparen},
 	{")", Rparen},
+	{"[", Lbrackets},
+	{"]", Rbrackets},
 	{"=", Equal},
 	{"<", Lss},
 	{">", Gtr},
@@ -103,6 +105,7 @@ static void initCharClassT()		/* It initializes the table containing kinds of ch
 	charClassT['+'] = Plus; charClassT['-'] = Minus;
 	charClassT['*'] = Mult; charClassT['/'] = Div;
 	charClassT['('] = Lparen; charClassT[')'] = Rparen;
+	charClassT['['] = Lbrackets; charClassT[']'] = Rbrackets;
 	charClassT['='] = Equal; charClassT['<'] = Lss;
 	charClassT['>'] = Gtr; charClassT[','] = Comma;
 	charClassT['.'] = Period; charClassT[';'] = Semicolon;
@@ -541,6 +544,8 @@ void printcToken()				/* It prints the current token. */
 			fprintf(fptex, "{\\it %s}", cToken.u.id); return;
 		case constId: 
 			fprintf(fptex, "{\\sf %s}", cToken.u.id); return;
+		case arrId: 
+			fprintf(fptex, "%s", cToken.u.id); return;
 		}
 	}else if (i==(int)Num) {		/*　Num　*/
 		fprintf(fptex, "%d", cToken.u.value);
@@ -560,6 +565,8 @@ void printcToken()				/* It prints the current token. */
 			fprintf(fptex, "(funcId, '%s') ", cToken.u.id); return;
 		case constId: 
 			fprintf(fptex, "(constId, '%s') ", cToken.u.id); return;
+		case arrId: 
+			fprintf(fptex, "(arrId, '%s') ", cToken.u.id); return;
 		}
 	}else if (i==(int)Num) {		/*　Num　*/
 		fprintf(fptex, "(number, '%d') ", cToken.u.value);

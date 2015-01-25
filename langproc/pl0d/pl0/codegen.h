@@ -2,7 +2,7 @@
    /******************** codegen.h ********************/
 
 typedef enum codes{			/* Constants for operation codes (opecodes) */
-	lit, opr, lod, sto, cal, ret, ict, jmp, jpc
+	lit, opr, lod, ldr, sto, str, cal, ret, ict, jmp, jpc
 }OpCode;
 
 typedef enum ops{			/* Constants for operators */

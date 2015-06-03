@@ -1,11 +1,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-char weekDayName[7][10] = {"Sunday", "Monday", "Tuesday", 
+const char weekDayName[7][10] = {"Sunday", "Monday", "Tuesday", 
       "Wednesday", "Thursday", "Friday", "Saturday"};
-char monthName[12][10] = {"January", "February", "March", "April", "May", 
+const char monthName[12][10] = {"January", "February", "March", "April", "May", 
       "June", "July", "August", "September", "October", "November", "December"};
-int endDays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const int endDays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 // based on Zeller's congruence. 
 // For the first day, months varying between [1,12], year having four digits. 

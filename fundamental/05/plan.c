@@ -22,9 +22,10 @@ void split(char *originalString, SCHEDULE *s) {
 int fileReader(char *fileName, SCHEDULE *scheduleArray, int *scheduleNum) {
   *scheduleNum = 0;
   FILE *fp;
-  char line[4096];
+  char line[4116];
   fp=fopen(fileName, "r");
   if(fp==NULL){
+    printf("Cannot open the file\n");
     return -1;
   }
   while(fgets(line, sizeof(line), fp)!=NULL){
@@ -36,9 +37,9 @@ int fileReader(char *fileName, SCHEDULE *scheduleArray, int *scheduleNum) {
 
 int fileWriter(char *fileName, SCHEDULE *scheduleArray, int scheduleNum) {
   FILE *fpw;
-  char line[4096];
   fpw=fopen(fileName, "w");
   if(fpw==NULL){
+    printf("Cannot open the file\n");
     return -1;
   }
   int lineNumber = 1;
@@ -47,6 +48,7 @@ int fileWriter(char *fileName, SCHEDULE *scheduleArray, int scheduleNum) {
     fprintf(fpw, "%d %d %d %s %s %s %s\n", s->year, s->month, s->day, s->time, s->title, s->place, s->comment);
   }
   fclose(fpw);
+  printf("Output complete\n");
   return 0;
 }
 

@@ -3,20 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-  const char options[] = "c:(calendar)\na:(add)\nl:(list)\nt:(today)\nq:(quit)\n";
-  const char errorWrongFormat[] = "error: wrong format.\n";
-  const int lineLength = 2048;
+  const char options[] = 
+    "c:(calendar)\na:(add)\nl:(list)\nt:(today)\nq:(quit)\n";
+  const char errorWrongFormat[] = 
+    "error: wrong format.\n";
+  const int lineLength = 4116;
 
 int valid(char *s) {
   int i = 0, spaces = 0;
-  // check if the string have at least 5 space characters, and if the string's buffer wasn't overflowed by gets function.
+  // Check if the string have at least 5 space characters, and if the string's buffer wasn't overflowed by gets function.
   for (; s[i] != '\0' && spaces < 5 && i < lineLength; spaces += s[i++] == ' ');
   return spaces == 5 && i < lineLength;
 }
 
 void menu() {
-  int n = 0;
+  int n = 0; // Number of schedules.
   SCHEDULE *scheduleArray = (SCHEDULE *) malloc(1000 * sizeof(SCHEDULE));
   char line[lineLength];
   time_t now; struct tm *now_tm;
@@ -27,7 +28,7 @@ void menu() {
     printf("schedule> ");
     fflush(stdin);
     gets(line);
-    if (line[1] != '\0') {
+    if (line[1] != '\0') { // Only accepts strictly valid inputs.
       printf(options);
       continue;
     }
@@ -50,10 +51,12 @@ void menu() {
         printAllSchedule(scheduleArray, n);
         break;
       case 't': // display today's schedules
-        printSchedule(scheduleArray, n, now_tm->tm_year + 1900, now_tm->tm_mon + 1, now_tm->tm_mday);
+        printSchedule(scheduleArray, n, now_tm->tm_year + 1900, 
+          now_tm->tm_mon + 1, now_tm->tm_mday);
         break;
       case 'q': // quit
         fileWriter("testSchedule.txt", scheduleArray, n);
+        free(scheduleArray);
         ret = 0;
         break;
       default:
@@ -61,7 +64,4 @@ void menu() {
         break;
     }
   }
-
-
 }
-

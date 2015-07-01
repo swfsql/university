@@ -33,28 +33,28 @@ void edge() {
         getLabel(x, y + 1, imgIn->width),
         getLabel(x, y, imgIn->width)
       };
-      imgOut->pixels[labels[4]].r = 255 - sqrt(pow(imgIn->pixels[labels[0]].r - imgIn->pixels[labels[1]].r, 2) + pow(imgIn->pixels[labels[2]].r - imgIn->pixels[labels[3]].r, 2));
-      imgOut->pixels[labels[4]].g = 255 - sqrt(pow(imgIn->pixels[labels[0]].g - imgIn->pixels[labels[1]].g, 2) + pow(imgIn->pixels[labels[2]].g - imgIn->pixels[labels[3]].g, 2));
-      imgOut->pixels[labels[4]].b = 255 - sqrt(pow(imgIn->pixels[labels[0]].b - imgIn->pixels[labels[1]].b, 2) + pow(imgIn->pixels[labels[2]].b - imgIn->pixels[labels[3]].b, 2));
+      imgOut->pixels[labels[4]].r = 0xFF - sqrt(pow(imgIn->pixels[labels[0]].r - imgIn->pixels[labels[1]].r, 2) + pow(imgIn->pixels[labels[2]].r - imgIn->pixels[labels[3]].r, 2));
+      imgOut->pixels[labels[4]].g = 0xFF - sqrt(pow(imgIn->pixels[labels[0]].g - imgIn->pixels[labels[1]].g, 2) + pow(imgIn->pixels[labels[2]].g - imgIn->pixels[labels[3]].g, 2));
+      imgOut->pixels[labels[4]].b = 0xFF - sqrt(pow(imgIn->pixels[labels[0]].b - imgIn->pixels[labels[1]].b, 2) + pow(imgIn->pixels[labels[2]].b - imgIn->pixels[labels[3]].b, 2));
     }
   }
   for (int y = 0; y < imgIn->height - 1; y++) {
     long int label = getLabel(0, y, imgIn->width);
-    imgOut->pixels[label].r = 0;
-    imgOut->pixels[label].g = 0;
-    imgOut->pixels[label].b = 0;
-    imgOut->pixels[label + imgIn->width - 1].r = 0;
-    imgOut->pixels[label + imgIn->width - 1].g = 0;
-    imgOut->pixels[label + imgIn->width - 1].b = 0;
+    imgOut->pixels[label].r = 0xFF;
+    imgOut->pixels[label].g = 0xFF;
+    imgOut->pixels[label].b = 0xFF;
+    imgOut->pixels[label + imgIn->width - 1].r = 0xFF;
+    imgOut->pixels[label + imgIn->width - 1].g = 0xFF;
+    imgOut->pixels[label + imgIn->width - 1].b = 0xFF;
   }
   for (int x = 0; x < imgIn->width - 1; x++) {
     long int label = getLabel(x, imgOut->height - 1, imgIn->width);
-    imgOut->pixels[x].r = 0;
-    imgOut->pixels[x].g = 0;
-    imgOut->pixels[x].b = 0;
-    imgOut->pixels[label].r = 0;
-    imgOut->pixels[label].g = 0;
-    imgOut->pixels[label].b = 0;
+    imgOut->pixels[x].r = 0xFF;
+    imgOut->pixels[x].g = 0xFF;
+    imgOut->pixels[x].b = 0xFF;
+    imgOut->pixels[label].r = 0xFF;
+    imgOut->pixels[label].g = 0xFF;
+    imgOut->pixels[label].b = 0xFF;
   }
 
 	printf("Save data as a file, photo-edge.bmp.\n");

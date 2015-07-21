@@ -5,9 +5,7 @@
 #include "import.h"
 #include "export.h"
 
-
 void thicken() {
-
   IMAGE *imgIn = (IMAGE *) malloc(sizeof(IMAGE));
 	FILE *fpIn = fopen("photo-edge.bmp", "r");
 	printf("Opening image file...\n");
@@ -27,20 +25,22 @@ void thicken() {
   for (int y = 1; y < imgIn->height - 1; y++) {
     for (int x = 1; x < imgIn->width - 1; x++) {
       long int labels[3] = {
-        getLabel(x, y, imgIn->width),
-        getLabel(x - 1, y, imgIn->width),
-        getLabel(x + 1, y, imgIn->width)
+        getLabel(x, y, imgIn->width), // pixel to be modified
+        getLabel(x - 1, y, imgIn->width), // left pixel label
+        getLabel(x + 1, y, imgIn->width) // right pixel label
       };
       PIXEL* p = &imgIn->pixels[labels[0]];
       int minR = p->r;
       int minG = p->g;
       int minB = p->b;
-      for (int i = 1; i < 3; i++) {
+      // set minR/G/B to the lowest (strongest) value between each 3 horizontally consecutive pixel
+      for (int i = 1; i < 3; i++) { 
         p = &imgIn->pixels[labels[i]];
         minR = p->r < minR ? p->r : minR;
         minG = p->g < minG ? p->g : minG;
         minB = p->b < minB ? p->b : minB;
       }
+      // set the middle pixel to those value. Don't change the value if its white (empty).
       p = &imgOut->pixels[labels[0]];
       p->r = p->r == 0xFF ? p->r : minR;
       p->g = p->g == 0xFF ? p->g : minG;
@@ -61,5 +61,3 @@ void thicken() {
   
 
 }
-
-

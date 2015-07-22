@@ -7,9 +7,7 @@
 #include <time.h> // for the time()
 #include <unistd.h> // for the sleep()
 
-
 int main(int argc, char** argv){
-
 	/* declaration of variables */
 	POSITION *player=(POSITION *)malloc(sizeof(POSITION));
 	POSITION *monster=(POSITION *)malloc(sizeof(POSITION));

@@ -4,32 +4,46 @@
 #include <math.h>
 #include "redraw2.h"
 
-int caughtByZombie(POSITION *player, POSITION *zombie, int zombieNum) {
-  for(int i = 0; i < zombieNum; i++) {
-    if (samePosition(player, &zombie[i])) {
-      return 1;
+int caughtByZombie(POSITION *player, POSITION *zombie, 
+    int zombieNum) {
+  // for each zombie..
+  for(int i = 0; i < zombieNum; i++) { 
+    if (samePosition(player, &zombie[i])) { 
+      // some zombie encountered with the player.
+      return 1; 
     }
   }
-  return 0;
+  return 0; // no encounters.
 }
 
 void initZombie(POSITION *zombie, int zombieNum) {
   for(int i = 0; i < zombieNum; i++) {
-    initPositionLocation(&zombie[i], rand() % 20 - 10 + COLS / 2, rand() % 20 - 10 + LINES / 2, "Z");
+    initPositionLocation(&zombie[i], 
+      rand() % 20 - 10 + COLS / 2, 
+      rand() % 20 - 10 + LINES / 2, "Z");
   }
 }
 
-POSITION distance(POSITION *a, POSITION *b, int speed) {
-  POSITION d = {a->x - b->x, a->y - b->y};
-  double sq = sqrt(d.x * d.x + d.y * d.y);
+// distances to be walked, from b towards a.
+POSITION distance(POSITION *a, POSITION *b, 
+    int speed) {
+  // difference in position.
+  POSITION d = {a->x - b->x, a->y - b->y}; 
+  // hypotenuse.
+  double sq = sqrt(d.x * d.x + d.y * d.y); 
   d.x = speed * d.x / sq;
   d.y = speed * d.y / sq;
   return d;
 } 
 
-void getZombieLocation(POSITION *zombie, int i, POSITION *player, POSITION *treasure, int *numTreasure) { 
-  POSITION d = distance(player, &zombie[i], rand() % 2 + 1);  
+void getZombieLocation(POSITION *zombie, int i, 
+    POSITION *player, POSITION *treasure, 
+    int *numTreasure) { 
+  POSITION d = distance(player, &zombie[i], 
+    rand() % 2 + 1);  
   getPositionLocation(&zombie[i], d.x, d.y);
+
+  // erase encountered treasures by zombies.
   if (samePosition(&zombie[i], treasure)) {
     *numTreasure = 0;
   }
@@ -62,6 +76,6 @@ void saveHighScore(int score) {
 }
 
 void highScoreDisp(int highScore) {
-  mvprintw(1, COLS / 2 + 2, "HI SCORE : %d", highScore); 
+  mvprintw(1, COLS / 2 + 2, "HI SCORE : %d", 
+    highScore); 
 }
-

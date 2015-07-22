@@ -2,7 +2,6 @@
 #include <time.h>
 #include <stdlib.h>
 
-
 struct position{
  int x, y;
 };
@@ -22,7 +21,6 @@ void redraw() {
   timeout(100); // delay in ms
   srand((unsigned)time(NULL));
 
-
   POSITION *monster = (POSITION*) malloc(sizeof(POSITION));
   monster->x = COLS / 2;
   monster->y = LINES / 2;
@@ -39,6 +37,3 @@ void redraw() {
 
   endwin(); // exit ncurses
 }
-
-
-

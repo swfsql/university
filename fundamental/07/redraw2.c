@@ -40,7 +40,6 @@ void initPlayerLocation(POSITION *player) {
   initPositionLocation(player, 5, 5, "@");
 }
 void initMonsterLocation(POSITION *monster) {
-  initPositionLocation(monster, COLS / 2, LINES / 2, "M");
 }
 void initTreasureLocation(POSITION *treasure, int *numTreasure) {
   *numTreasure = 0;
@@ -92,4 +91,6 @@ char gameOver() {
   sleep(2);
   return 'q';
 }
+
+
 

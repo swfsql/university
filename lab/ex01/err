@@ -1,0 +1,71 @@
+SaveFile.java:7: error: package net.htmlparser.jericho does not exist
+import net.htmlparser.jericho.*;
+^
+Main.java:7: error: package net.htmlparser.jericho does not exist
+import net.htmlparser.jericho.*;
+^
+PageDown.java:7: error: package net.htmlparser.jericho does not exist
+import net.htmlparser.jericho.*;
+^
+PageDown.java:49: error: cannot find symbol
+	void downElements (DownFactory downFactory, Source src, String html, String attr) throws Exception {
+	                                            ^
+  symbol:   class Source
+  location: class PageDown
+error: Class names, 'net,sources', are only accepted if annotation processing is explicitly requested
+PageDown.java:35: error: cannot find symbol
+    Source src = new Source(new File(pathf)); // jericho init
+    ^
+  symbol:   class Source
+  location: class PageDown
+PageDown.java:35: error: cannot find symbol
+    Source src = new Source(new File(pathf)); // jericho init
+                     ^
+  symbol:   class Source
+  location: class PageDown
+PageDown.java:41: error: cannot find symbol
+		downElements(downFactory, src, HTMLElementName.SCRIPT, "src");
+		                               ^
+  symbol:   variable HTMLElementName
+  location: class PageDown
+PageDown.java:42: error: cannot find symbol
+		downElements(downFactory, src, HTMLElementName.IMG, "src");
+		                               ^
+  symbol:   variable HTMLElementName
+  location: class PageDown
+PageDown.java:43: error: cannot find symbol
+		downElements(downFactory, src, HTMLElementName.LINK, "href");
+		                               ^
+  symbol:   variable HTMLElementName
+  location: class PageDown
+PageDown.java:45: error: cannot find symbol
+    List<Element> el = new Source(s).getAllElements(HTMLElementName.A);
+         ^
+  symbol:   class Element
+  location: class PageDown
+PageDown.java:45: error: cannot find symbol
+    List<Element> el = new Source(s).getAllElements(HTMLElementName.A);
+                                                    ^
+  symbol:   variable HTMLElementName
+  location: class PageDown
+PageDown.java:45: error: cannot find symbol
+    List<Element> el = new Source(s).getAllElements(HTMLElementName.A);
+                           ^
+  symbol:   class Source
+  location: class PageDown
+PageDown.java:46: error: cannot find symbol
+    for (Element e : el) new PageDown(e.getAttributeValue("href"), pre, depth, ls);
+         ^
+  symbol:   class Element
+  location: class PageDown
+PageDown.java:50: error: cannot find symbol
+    List<Element> el = src.getAllElements(html);
+         ^
+  symbol:   class Element
+  location: class PageDown
+PageDown.java:51: error: cannot find symbol
+    for (Element e : el) downFactory.create().download(ls, e.getAttributeValue(attr), null, false, httpReg, pre);
+         ^
+  symbol:   class Element
+  location: class PageDown
+16 errors

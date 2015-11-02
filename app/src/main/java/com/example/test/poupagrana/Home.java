@@ -1,5 +1,6 @@
 package com.example.test.poupagrana;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -12,13 +13,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
 
 public class Home extends AppCompatActivity {
 
 
     private DrawerLayout hDrawerLayout;
     private ActionBarDrawerToggle hActionBarDrawerToggle;
+    public final static String EXTRA_MESSAGE = "com." + R.string.sub_domain + "." + R.string.domain
+            + "." + R.string.app_name_sub;
 
+    private ListView list_active;
+    private ArrayAdapter list_active_adapter;
+    private ArrayList list_active_arrayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +60,11 @@ public class Home extends AppCompatActivity {
 
         hDrawerLayout.setDrawerListener(hActionBarDrawerToggle);
 
+        list_active = (ListView) findViewById(R.id.list_active);
+        ArrayAdapter list_active_adapter =  new ArrayAdapter(
+                this, android.R.layout.simple_expandable_list_item_1);
+        ArrayList list_active_arrayList = new ArrayList();
+        list_active.setAdapter(list_active_adapter);
     }
 
     @Override
@@ -86,5 +103,20 @@ public class Home extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void sendMessage(View view) {
+        EditText add_item = (EditText) findViewById(R.id.add_item);
+        String add_item_str = add_item.getText().toString();
+        //list_active_arrayList.add("HUEHUE");
+        //list_active_adapter.notifyDataSetChanged();
+
+        Intent intent = new Intent(this, List.class);
+        //EditText messageT = (EditText) findViewById(R.id.add_item);
+        //String message = messageT.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+
     }
 }

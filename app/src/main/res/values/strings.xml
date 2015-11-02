@@ -1,9 +1,20 @@
 <resources>
     <string name="app_name">PoupaGrana</string>
+    <string name="app_name_sub">poupagrana</string>
+    <string name="domain">test</string>
+    <string name="sub_domain">example</string>
+
     <string name="action_settings">Settings</string>
+
     <string name="drawer_openned">Opções</string>
-    <string name="drawer_closed">PoupaGrana</string>
-    <string name="add_item">+Adicionar item</string>
-    <string name="add_list">+Criar nova lista</string>
+
     <string name="title_home">PoupaGrana</string>
+        <string name="drawer_closed">PoupaGrana</string>
+        <string name="home_item_add">+Adicionar item</string>
+        <string name="home_list_active_info">Lista vazia</string>
+        <string name="home_list_add">+Criar nova lista</string>
+    <string name="title_activity_list">List</string>
+    <string name="title_activity_temp">TEMP</string>
+
+    <string name="title_list">Lista</string>
 </resources>

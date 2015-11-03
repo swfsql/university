@@ -10,10 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.KeyEvent;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,15 +23,18 @@ import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
 import java.util.ArrayList;
 
+import android.widget.AdapterView.*;
 
-public class Home extends AppCompatActivity {
+
+public class Home extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
 
     private DrawerLayout hDrawerLayout;
     private ActionBarDrawerToggle hActionBarDrawerToggle;
-    public final static String EXTRA_MESSAGE = "com." + R.string.sub_domain + "." + R.string.domain
-            + "." + R.string.app_name_sub;
+    //public final static String EXTRA_MESSAGE = "com." + R.string.sub_domain + "." + R.string.domain
+            //+ "." + R.string.app_name_sub;
 
+    // lista ativa
     private ListView list_active;
     private ArrayAdapter list_active_adapter;
     private ArrayList list_active_array;
@@ -41,11 +46,13 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        // drawer
         hDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.drawer_closed){
             @Override
@@ -62,9 +69,9 @@ public class Home extends AppCompatActivity {
                 getSupportActionBar().setTitle(R.string.drawer_closed);
             }
         };
-
         hDrawerLayout.setDrawerListener(hActionBarDrawerToggle);
 
+        // cria lista e sua array
         list_active = (ListView) findViewById(R.id.list_active);
         list_active_array = new ArrayList();
         list_active_adapter =  new ArrayAdapter(
@@ -74,6 +81,7 @@ public class Home extends AppCompatActivity {
         list_active.setAdapter(list_active_adapter);
 
 
+        // ao acabar de escrever no campo de texto, enviar pra lista ativa
         final EditText add_item = (EditText) findViewById(R.id.add_item);
         add_item.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -89,6 +97,21 @@ public class Home extends AppCompatActivity {
                 return handled;
             }
         });
+
+
+        // ao clicar em um dos itens da lista
+        list_active.setOnItemClickListener(this);
+
+        /*list_active.setOnItemClickListener(AdapterView.OnItemClickListener() {
+            public void onItemSelected(OnItemClickListener parentView, View childView,
+                                       int position, long id) {
+
+            }
+
+            public void onNothingSelected(AdapterView parentView) {
+
+            }
+        });*/
 
     }
 
@@ -139,5 +162,10 @@ public class Home extends AppCompatActivity {
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Log.d("omg android", i + ": " + list_active_array.get(i));
     }
 }

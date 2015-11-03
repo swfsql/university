@@ -34,7 +34,9 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:hint="@string/home_item_add"
-                android:textColor="@color/textColor"/>
+                android:textColor="@color/textColor"
+                android:inputType="text"
+                android:imeOptions="actionDone"/>
 
             <Button android:id="@+id/list_active_info"
                 android:layout_width="match_parent"

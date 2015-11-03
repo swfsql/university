@@ -13,10 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-
+import android.widget.TextView;
+import android.view.inputmethod.EditorInfo;
 import java.util.ArrayList;
 
 
@@ -31,6 +33,9 @@ public class Home extends AppCompatActivity {
     private ListView list_active;
     private ArrayAdapter list_active_adapter;
     private ArrayList list_active_array;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +72,24 @@ public class Home extends AppCompatActivity {
                 android.R.layout.simple_expandable_list_item_1,
                 list_active_array);
         list_active.setAdapter(list_active_adapter);
+
+
+        final EditText add_item = (EditText) findViewById(R.id.add_item);
+        add_item.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String add_item_str = add_item.getText().toString();
+                    list_active_array.add(add_item_str);
+                    list_active_adapter.notifyDataSetChanged();
+                    add_item.setText("");
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
     }
 
     @Override
@@ -109,16 +132,12 @@ public class Home extends AppCompatActivity {
 
 
     public void sendMessage(View view) {
-        EditText add_item = (EditText) findViewById(R.id.add_item);
-        String add_item_str = add_item.getText().toString();
-        list_active_array.add(add_item_str);
-        list_active_adapter.notifyDataSetChanged();
 
         Intent intent = new Intent(this, List.class);
         //EditText messageT = (EditText) findViewById(R.id.add_item);
         //String message = messageT.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
-        //startActivity(intent);
+        startActivity(intent);
 
     }
 }

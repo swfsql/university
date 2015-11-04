@@ -54,7 +54,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         // drawer
         hDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.drawer_closed){
+        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.home_drawer_closed){
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -66,7 +66,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 if (getSupportActionBar() == null) return;
-                getSupportActionBar().setTitle(R.string.drawer_closed);
+                getSupportActionBar().setTitle(R.string.home_drawer_closed);
             }
         };
         hDrawerLayout.setDrawerListener(hActionBarDrawerToggle);
@@ -98,8 +98,6 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             }
         });
 
-
-        // ao clicar em um dos itens da lista
         list_active.setOnItemClickListener(this);
 
         /*list_active.setOnItemClickListener(AdapterView.OnItemClickListener() {
@@ -146,7 +144,10 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.home_menu_save) {
+            return true;
+        }
+        if (id == R.id.home_menu_searchprices) {
             return true;
         }
 

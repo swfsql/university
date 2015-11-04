@@ -46,7 +46,10 @@ public class List extends AppCompatActivity {
         // automatically handles clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.home_menu_save) {
+            return true;
+        }
+        if (id == R.id.home_menu_searchprices) {
             return true;
         }
         return super.onOptionsItemSelected(item);

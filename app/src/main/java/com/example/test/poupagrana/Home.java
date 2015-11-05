@@ -115,16 +115,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
 
         // tmp value for sql insertion
-        int item_id = 1;
         String item_name = "nome do item";
-        String item_price = "199";
+        int item_price = 199;
         int item_supermarket = 1;
         SimpleDateFormat item_date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
         String item_update_date = item_date_format.format(new Date());
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID, item_id);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET, item_supermarket);

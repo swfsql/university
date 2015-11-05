@@ -33,7 +33,7 @@ public class ContractDB {
     private static final String DATE_TYPE = " DATE";
     private static final String NOT_NULL = " NOT NULL";
     private static final String PRIMARY_KEY = " PRIMARY KEY";
-    private static final String AUTO_INCREMENT = " AUTO_INCREMENT";
+    private static final String AUTO_INCREMENT = " AUTOINCREMENT";
     private static final String INDEX = " INDEX ";
     private static final String CONSTRAINT = " CONSTRAINT  ";
     private static final String FOREIGN_KEY = " FOREIGN KEY ";
@@ -43,23 +43,24 @@ public class ContractDB {
     private static final String NO_ACTION = " NO ACTION ";
     private static final String COMMA_SEP = ",";
 
-    static final String SQL_CREATE_ENTRIES =
+    static final String SQL_CREATE_ITEM_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ItemEntry.TABLE_NAME + " (" +
                     ItemEntry.COLUMN_NAME_ITEM_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
                     ItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
                     ItemEntry.COLUMN_NAME_PRICE + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     ItemEntry.COLUMN_NAME_SUPERMARKET + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
-                    ItemEntry.COLUMN_NAME_UPDATE_DATE + DATE_TYPE + NOT_NULL + COMMA_SEP +
-                    PRIMARY_KEY + "(" + ItemEntry.COLUMN_NAME_ITEM_ID + ")" + COMMA_SEP +
+                    ItemEntry.COLUMN_NAME_UPDATE_DATE + DATE_TYPE + NOT_NULL + //COMMA_SEP +
+                    /*PRIMARY_KEY + "(" + ItemEntry.COLUMN_NAME_ITEM_ID + ")" + COMMA_SEP +
                     INDEX + ItemEntry.COLUMN_NAME_SUPERMARKET + "x" + "(" + ItemEntry.COLUMN_NAME_SUPERMARKET + " ASC)" + COMMA_SEP +
                     CONSTRAINT + ItemEntry.COLUMN_NAME_SUPERMARKET +
                     FOREIGN_KEY + "(" + ItemEntry.COLUMN_NAME_SUPERMARKET + ")" +
                     REFERENCES + ItemEntry.TABLE_NAME + "." + SupermarketEntry.TABLE_NAME + " (" + SupermarketEntry.COLUMN_NAME_SUPERMARKET_ID + ")" +
                     ON_DELETE + NO_ACTION +
-                    ON_UPDATE + NO_ACTION +
-                    " )" +
+                    ON_UPDATE + NO_ACTION +*/
+                    " )";
 
-                    "CREATE TABLE IF NOT EXISTS " + SupermarketEntry.TABLE_NAME + " (" +
+    static final String SQL_CREATE_SUPERMARKET_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SupermarketEntry.TABLE_NAME + " (" +
                     SupermarketEntry.COLUMN_NAME_SUPERMARKET_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
                     SupermarketEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
                     SupermarketEntry.COLUMN_NAME_ADDRESS + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
@@ -67,7 +68,7 @@ public class ContractDB {
                     " )";
 
     static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + ItemEntry.TABLE_NAME + " " +
+                    "DROP TABLE IF EXISTS " + ItemEntry.TABLE_NAME + ";" +
                     "DROP TABLE IF EXISTS " + SupermarketEntry.TABLE_NAME;
 
 }

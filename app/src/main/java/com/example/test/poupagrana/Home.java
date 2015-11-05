@@ -21,10 +21,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.content.ContentValues;
 
 import android.widget.AdapterView.*;
@@ -104,28 +107,20 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         list_active.setOnItemClickListener(this);
 
-        /*list_active.setOnItemClickListener(AdapterView.OnItemClickListener() {
-            public void onItemSelected(OnItemClickListener parentView, View childView,
-                                       int position, long id) {
-
-            }
-
-            public void onNothingSelected(AdapterView parentView) {
-
-            }
-        });*/
 
         // DB
+
         FeedReaderDBHelper mDBHelper = new FeedReaderDBHelper(this);
         // Gets the data repository in write mode
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
 
         // tmp value for sql insertion
         int item_id = 1;
         String item_name = "nome do item";
         String item_price = "199";
         int item_supermarket = 1;
-        Date item_update_date = new Date();
+        SimpleDateFormat item_date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
+        String item_update_date = item_date_format.format(new Date());
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
@@ -133,15 +128,58 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET, item_supermarket);
-        //values.put(ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE, item_update_date);
+        values.put(ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE, item_update_date);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
-        newRowId = db.insert(
-                ContractDB.ItemEntry.TABLE_NAME,
-                null,
-                values);
+        newRowId = dbw.insert(ContractDB.ItemEntry.TABLE_NAME, null, values);
 
+        Log.d("DB", "DB recriado");
+
+        SQLiteDatabase dbr = mDBHelper.getReadableDatabase();
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID,
+                ContractDB.ItemEntry.COLUMN_NAME_NAME,
+                ContractDB.ItemEntry.COLUMN_NAME_PRICE,
+                ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET,
+                ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE
+        };
+
+        String selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + "=?";
+        String[] selectionArgs = new String[] {
+                String.valueOf(1)};
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                ContractDB.ItemEntry.COLUMN_NAME_NAME + " DESC";
+
+        Cursor c = dbr.query(
+                ContractDB.ItemEntry.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        Log.d("DB", "DB lido");
+
+        if (c != null)
+            c.moveToFirst();
+
+        Log.d("DB", c.getString(0));
+        Log.d("DB", c.getString(1));
+        Log.d("DB", c.getString(2));
+        Log.d("DB", c.getString(3));
+        Log.d("DB", c.getString(4));
+
+        c.close();
+        dbr.close();
+        dbw.close();
     }
 
     @Override

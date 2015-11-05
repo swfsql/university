@@ -1,9 +1,12 @@
 package com.example.test.poupagrana;
 
+import android.provider.BaseColumns;
+
 public class ContractDB {
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
-    public FeedReaderContract() {
+
+    public ContractDB() {
     }
 
     /* Inner class that defines the table contents */
@@ -40,7 +43,7 @@ public class ContractDB {
     private static final String NO_ACTION = " NO ACTION ";
     private static final String COMMA_SEP = ",";
 
-    private static final String SQL_CREATE_ENTRIES =
+    static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE IF NOT EXISTS " + ItemEntry.TABLE_NAME + " (" +
                     ItemEntry.COLUMN_NAME_ITEM_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
                     ItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
@@ -63,19 +66,8 @@ public class ContractDB {
                     PRIMARY_KEY + "(" + SupermarketEntry.COLUMN_NAME_SUPERMARKET_ID + ")" + COMMA_SEP +
                     " )";
 
-    private static final String SQL_DELETE_ENTRIES =
+    static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + ItemEntry.TABLE_NAME + " " +
                     "DROP TABLE IF EXISTS " + SupermarketEntry.TABLE_NAME;
 
-
-
-
-CREATE TABLE IF NOT EXISTS `mydb`.`item` (
-        PRIMARY KEY (`iditem`)  COMMENT '',
-        INDEX `id_supermercado_idx` (`id_supermercado` ASC)  COMMENT '',
-        CONSTRAINT `id_supermercado`
-        FOREIGN KEY (`id_supermercado`)
-        REFERENCES `mydb`.`supermercado` (`idsupermercado`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION)
-        ENGINE = InnoDB;
+}

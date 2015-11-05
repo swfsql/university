@@ -22,6 +22,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.view.inputmethod.EditorInfo;
 import java.util.ArrayList;
+import java.util.Date;
+
+import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues;
 
 import android.widget.AdapterView.*;
 
@@ -112,21 +116,30 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         });*/
 
         // DB
-        FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getContext());
+        FeedReaderDBHelper mDBHelper = new FeedReaderDBHelper(this);
         // Gets the data repository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        // tmp value for sql insertion
+        int item_id = 1;
+        String item_name = "nome do item";
+        String item_price = "199";
+        int item_supermarket = 1;
+        Date item_update_date = new Date();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(FeedEntry.COLUMN_NAME_ENTRY_ID, id);
-        values.put(FeedEntry.COLUMN_NAME_TITLE, title);
-        values.put(FeedEntry.COLUMN_NAME_CONTENT, content);
+        values.put(ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID, item_id);
+        values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
+        values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);
+        values.put(ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET, item_supermarket);
+        //values.put(ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE, item_update_date);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
         newRowId = db.insert(
-                FeedEntry.TABLE_NAME,
-                FeedEntry.COLUMN_NAME_NULLABLE,
+                ContractDB.ItemEntry.TABLE_NAME,
+                null,
                 values);
 
     }

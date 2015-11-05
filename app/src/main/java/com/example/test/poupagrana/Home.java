@@ -111,6 +111,24 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             }
         });*/
 
+        // DB
+        FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getContext());
+        // Gets the data repository in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(FeedEntry.COLUMN_NAME_ENTRY_ID, id);
+        values.put(FeedEntry.COLUMN_NAME_TITLE, title);
+        values.put(FeedEntry.COLUMN_NAME_CONTENT, content);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId;
+        newRowId = db.insert(
+                FeedEntry.TABLE_NAME,
+                FeedEntry.COLUMN_NAME_NULLABLE,
+                values);
+
     }
 
     @Override

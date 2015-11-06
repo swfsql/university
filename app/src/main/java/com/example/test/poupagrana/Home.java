@@ -197,6 +197,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         supplierItem.date_modified = date_format.format(new Date());;
 
         // TODO parei aqui
+        /*
+         links:
+         http://www.vogella.com/tutorials/AndroidSQLite/article.html
+         https://developer.android.com/intl/pt-br/training/basics/data-storage/databases.html
+         http://www.raywenderlich.com/78576/android-tutorial-for-beginners-part-2
+
+
+         */
         values = new ContentValues();
         values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);

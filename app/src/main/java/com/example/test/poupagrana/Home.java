@@ -32,6 +32,8 @@ import android.content.ContentValues;
 
 import android.widget.AdapterView.*;
 
+import static com.example.test.poupagrana.Home.DB.*;
+
 
 public class Home extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -46,7 +48,44 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     private ArrayAdapter list_active_adapter;
     private ArrayList list_active_array;
 
-
+    public abstract static class DB {
+        public static class Item {
+            public int id;
+            public String name;
+        }
+        public static class ItemInList {
+            public int item_id;
+            public int list_id;
+            public int quantity;
+            public int max_quantity;
+        }
+        public static class List {
+            public int id;
+            public String info;
+            public String date_created;
+            public String date_modified;
+            public int price;
+            public int achieved;
+        }
+        public static class ItemInSupplier {
+            public int item_id;
+            public int supplier_item_id;
+        }
+        public static class Supplier {
+            public int id;
+            public String name;
+            public String info;
+            public String address;
+        }
+        public static class SupplierItem {
+            public int id;
+            public int supplier_id;
+            public String name;
+            public String info;
+            public int price;
+            public String date_modified;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,28 +143,61 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 return handled;
             }
         });
-
         list_active.setOnItemClickListener(this);
 
 
         // DB
+        FeedReaderDBHelper mDBHelper;
+        SQLiteDatabase dbw;
+        ContentValues values;
 
         // BD Helper
-        FeedReaderDBHelper mDBHelper = new FeedReaderDBHelper(this);
+        mDBHelper = new FeedReaderDBHelper(this);
 
         // BD Write
-        SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
+        dbw = mDBHelper.getWritableDatabase();
         mDBHelper.drop(dbw);
         mDBHelper.onCreate(dbw);
 
-        //
-        String item_name = "nome do item";
-        int item_price = 199;
-        int item_supermarket = 1;
-        SimpleDateFormat item_date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
-        String item_update_date = item_date_format.format(new Date());
-        //
-        ContentValues values = new ContentValues();
+        // ler lista ativa
+
+
+        // tmp
+        SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
+        DB.Item item = new DB.Item();
+        DB.ItemInList itemInList = new DB.ItemInList();
+        DB.List list = new DB.List();
+        DB.ItemInSupplier itemInSupplier = new DB.ItemInSupplier();
+        DB.Supplier supplier = new DB.Supplier();
+        DB.SupplierItem supplierItem = new DB.SupplierItem();
+        //item = new DB.Item(){0, "banana"};
+        item.id = 0;
+        item.name = "banana";
+        itemInList.item_id = 0;
+        itemInList.list_id = 0;
+        itemInList.quantity = 0;
+        itemInList.max_quantity = 0;
+        list.id = 0;
+        list.info = "";
+        list.date_created = date_format.format(new Date());
+        list.date_modified = date_format.format(new Date());
+        list.price = 0;
+        list.achieved = 0;
+        itemInSupplier.item_id = 0;
+        itemInSupplier.supplier_item_id = 0;
+        supplier.id = 0;
+        supplier.name = "mercadoA";
+        supplier.info = "infoA";
+        supplier.address = "addrA";
+        supplierItem.id = 0;
+        supplierItem.supplier_id = 0;
+        supplierItem.name = "banana";
+        supplierItem.info = "";
+        supplierItem.price = 199;
+        supplierItem.date_modified = date_format.format(new Date());;
+
+        // TODO parei aqui
+        values = new ContentValues();
         values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET, item_supermarket);
@@ -263,17 +335,23 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         if (hActionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
 
-        int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
-        if (id == R.id.home_menu_save) {
-            return true;
-        }
-        if (id == R.id.home_menu_searchprices) {
-            return true;
-        }
+        switch (item.getItemId()) {
+            case R.id.home_menu_searchprices:
 
-        return super.onOptionsItemSelected(item);
+                return true;
+            case R.id.home_menu_save:
+
+                return true;
+            case R.id.home_menu_list_new:
+
+                return true;
+            case R.id.home_menu_list_active_remove:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 

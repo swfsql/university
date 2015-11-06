@@ -17,11 +17,14 @@ public class FeedReaderDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d("DB", "DB onCreate");
         db.execSQL(ContractDB.SQL_CREATE_ITEM_TABLE);
+        db.execSQL(ContractDB.SQL_CREATE_ITEM_IN_LIST_TABLE);
+        db.execSQL(ContractDB.SQL_CREATE_LIST_TABLE);
+        db.execSQL(ContractDB.SQL_CREATE_ITEM_IN_SUPPLIER_ITEM_TABLE);
+        db.execSQL(ContractDB.SQL_CREATE_SUPPLIER_TABLE);
+        db.execSQL(ContractDB.SQL_CREATE_SUPPLIER_ITEM_TABLE);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d("DB", "DB onUpgrade");
-        // This database is only a cache for online data, so its upgrade policy is
-        // to simply to discard the data and start over
         db.execSQL(ContractDB.SQL_DELETE_ENTRIES);
         onCreate(db);
     }

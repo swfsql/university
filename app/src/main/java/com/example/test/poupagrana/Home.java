@@ -110,34 +110,35 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         // DB
 
+        // BD Helper
         FeedReaderDBHelper mDBHelper = new FeedReaderDBHelper(this);
-        // Gets the data repository in write mode
-        SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
 
-        // tmp value for sql insertion
+        // BD Write
+        SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
+        mDBHelper.drop(dbw);
+        mDBHelper.onCreate(dbw);
+
+        //
         String item_name = "nome do item";
         int item_price = 199;
         int item_supermarket = 1;
         SimpleDateFormat item_date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
         String item_update_date = item_date_format.format(new Date());
-
-        // Create a new map of values, where column names are the keys
+        //
         ContentValues values = new ContentValues();
         values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET, item_supermarket);
         values.put(ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE, item_update_date);
-
         // Insert the new row, returning the primary key value of the new row
-        long newRowId;
-        newRowId = dbw.insert(ContractDB.ItemEntry.TABLE_NAME, null, values);
+        long primaryKeyReturned = dbw.insert(ContractDB.ItemEntry.TABLE_NAME, null, values);
+        dbw.close();
 
         Log.d("DB", "DB recriado");
 
+        // DB Read
         SQLiteDatabase dbr = mDBHelper.getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
+        //
         String[] projection = {
                 ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID,
                 ContractDB.ItemEntry.COLUMN_NAME_NAME,
@@ -145,15 +146,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET,
                 ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE
         };
-
+        //
         String selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + "=?";
         String[] selectionArgs = new String[] {
                 String.valueOf(1)};
-
-        // How you want the results sorted in the resulting Cursor
+        //
         String sortOrder =
                 ContractDB.ItemEntry.COLUMN_NAME_NAME + " DESC";
-
+        //
         Cursor c = dbr.query(
                 ContractDB.ItemEntry.TABLE_NAME,  // The table to query
                 projection,                               // The columns to return
@@ -164,21 +164,76 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 sortOrder                                 // The sort order
         );
 
-        Log.d("DB", "DB lido");
-
-        if (c != null)
+        // DB Read Cycle
+        if (c != null){
             c.moveToFirst();
-
+        } else {
+            Log.d("DB", "DB nao lido");
+        }
+        Log.d("DB", "DB lido");
         Log.d("DB", c.getString(0));
         Log.d("DB", c.getString(1));
         Log.d("DB", c.getString(2));
         Log.d("DB", c.getString(3));
         Log.d("DB", c.getString(4));
-
         c.close();
         dbr.close();
+
+
+        /*
+        // DB Delete
+        selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + " LIKE ?";
+        selectionArgs = new String[] { String.valueOf(1) };
+        //
+        dbw = mDBHelper.getWritableDatabase();
+        dbw.delete(ContractDB.ItemEntry.TABLE_NAME, selection, selectionArgs);
         dbw.close();
+
+        // DB Read
+        dbr = mDBHelper.getReadableDatabase();
+        //
+        projection = new String[]{
+                ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID,
+                ContractDB.ItemEntry.COLUMN_NAME_NAME,
+                ContractDB.ItemEntry.COLUMN_NAME_PRICE,
+                ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET,
+                ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE
+        };
+        //
+        selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + "=?";
+        selectionArgs = new String[] {
+                String.valueOf(1)};
+        //
+        sortOrder = ContractDB.ItemEntry.COLUMN_NAME_NAME + " DESC";
+        //
+        c = dbr.query(
+                ContractDB.ItemEntry.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        // DB Read Cycle
+        if (c != null){
+            c.moveToFirst();
+            Log.d("DB", "DB lido");
+            Log.d("DB", c.getString(0));
+            Log.d("DB", c.getString(1));
+            Log.d("DB", c.getString(2));
+            Log.d("DB", c.getString(3));
+            Log.d("DB", c.getString(4));
+            c.close();
+        } else {
+            Log.d("DB", "DB nao lido");
+        }
+        dbr.close();
+        */
+
     }
+
 
     @Override
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {

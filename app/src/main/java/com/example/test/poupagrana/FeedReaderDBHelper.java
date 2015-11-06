@@ -1,12 +1,10 @@
 package com.example.test.poupagrana;
+import android.util.Log;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * Created by thi on 11/4/15.
- */
 public class FeedReaderDBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
@@ -17,10 +15,11 @@ public class FeedReaderDBHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        Log.d("DB", "DB onCreate");
         db.execSQL(ContractDB.SQL_CREATE_ITEM_TABLE);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d("DB", "DB onUpgrade");
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(ContractDB.SQL_DELETE_ENTRIES);
@@ -28,5 +27,10 @@ public class FeedReaderDBHelper extends SQLiteOpenHelper {
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    public void drop(SQLiteDatabase db) {
+        Log.d("DB", "DB drop");
+        db.execSQL(ContractDB.SQL_DELETE_ENTRIES);
     }
 }

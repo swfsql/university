@@ -31,6 +31,7 @@ public class ContractDB {
         public static final String COLUMN_NAME_LIST_ID = "list_id";
         public static final String COLUMN_NAME_INFO = "info";
         public static final String COLUMN_NAME_DATE_CREATED = "date_created";
+        public static final String COLUMN_NAME_DATE_ACESSED = "date_acessed";
         public static final String COLUMN_NAME_DATE_MODIFIED = "date_modified";
         public static final String COLUMN_NAME_PRICE = "price";
         public static final String COLUMN_NAME_ACHIEVED = "achieved";
@@ -78,7 +79,7 @@ public class ContractDB {
     static final String SQL_CREATE_ITEM_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ItemEntry.TABLE_NAME + " (" +
                     ItemEntry.COLUMN_NAME_ITEM_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
-                    ItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
+                    ItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL +
                     //ItemEntry.COLUMN_NAME_PRICE + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     //ItemEntry.COLUMN_NAME_SUPERMARKET + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     //ItemEntry.COLUMN_NAME_UPDATE_DATE + DATE_TYPE + NOT_NULL + //COMMA_SEP +
@@ -96,29 +97,30 @@ public class ContractDB {
                     ItemEntry.COLUMN_NAME_ITEM_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     ListEntry.COLUMN_NAME_LIST_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     ItemInListEntry.COLUMN_NAME_QUANTITY + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
-                    ItemInListEntry.COLUMN_NAME_MAX_QUANTITY + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
+                    ItemInListEntry.COLUMN_NAME_MAX_QUANTITY + INTEGER_TYPE + NOT_NULL +
                     " )";
     static final String SQL_CREATE_LIST_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ListEntry.TABLE_NAME + " (" +
                     ListEntry.COLUMN_NAME_LIST_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
                     ListEntry.COLUMN_NAME_INFO + VARCHAR_TYPE + COMMA_SEP +
                     ListEntry.COLUMN_NAME_DATE_CREATED + DATE_TYPE + NOT_NULL + COMMA_SEP +
+                    ListEntry.COLUMN_NAME_DATE_ACESSED + DATE_TYPE + NOT_NULL + COMMA_SEP +
                     ListEntry.COLUMN_NAME_DATE_MODIFIED + DATE_TYPE + NOT_NULL + COMMA_SEP +
                     ListEntry.COLUMN_NAME_PRICE + INTEGER_TYPE + COMMA_SEP +
-                    ListEntry.COLUMN_NAME_ACHIEVED + BOOL_TYPE + COMMA_SEP +
+                    ListEntry.COLUMN_NAME_ACHIEVED + BOOL_TYPE +
                     " )";
     static final String SQL_CREATE_ITEM_IN_SUPPLIER_ITEM_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ItemInSupplierItemEntry.TABLE_NAME + " (" +
                     ItemEntry.COLUMN_NAME_ITEM_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
-                    ItemInSupplierItemEntry.COLUMN_NAME_SUPPLIER_ITEM_ID + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
+                    ItemInSupplierItemEntry.COLUMN_NAME_SUPPLIER_ITEM_ID + INTEGER_TYPE + NOT_NULL +
                     " )";
     static final String SQL_CREATE_SUPPLIER_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SupplierEntry.TABLE_NAME + " (" +
                     SupplierEntry.COLUMN_NAME_SUPPLIER_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
                     SupplierEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
                     SupplierEntry.COLUMN_NAME_INFO + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
-                    SupplierEntry.COLUMN_NAME_ADDRESS + VARCHAR_TYPE + NOT_NULL + COMMA_SEP +
-                    PRIMARY_KEY + "(" + SupplierEntry.COLUMN_NAME_SUPPLIER_ID + ")" + COMMA_SEP +
+                    SupplierEntry.COLUMN_NAME_ADDRESS + VARCHAR_TYPE + NOT_NULL +
+                    //PRIMARY_KEY + "(" + SupplierEntry.COLUMN_NAME_SUPPLIER_ID + ")" +
                     " )";
     static final String SQL_CREATE_SUPPLIER_ITEM_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SupplierItemEntry.TABLE_NAME + " (" +
@@ -127,7 +129,7 @@ public class ContractDB {
                     SupplierItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + COMMA_SEP +
                     SupplierItemEntry.COLUMN_NAME_INFO + VARCHAR_TYPE + COMMA_SEP +
                     SupplierItemEntry.COLUMN_NAME_PRICE + INTEGER_TYPE + COMMA_SEP +
-                    SupplierItemEntry.COLUMN_NAME_DATE_MODIFIED + DATE_TYPE + NOT_NULL + COMMA_SEP +
+                    SupplierItemEntry.COLUMN_NAME_DATE_MODIFIED + DATE_TYPE + NOT_NULL +
                     " )";
 
     static final String SQL_DELETE_ENTRIES =

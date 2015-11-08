@@ -1,38 +1,31 @@
 package com.example.test.poupagrana;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.view.inputmethod.EditorInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import android.database.sqlite.SQLiteDatabase;
-import android.database.Cursor;
-import android.content.ContentValues;
-
-import android.widget.AdapterView.*;
-
-import static com.example.test.poupagrana.Home.DB.*;
 
 
 public class Home extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -47,42 +40,50 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     private ListView list_active;
     private ArrayAdapter list_active_adapter;
     private ArrayList list_active_array;
+    DB.List list_active_ram = new DB.List();
 
-    public abstract static class DB {
+    // DB
+    FeedReaderDBHelper mDBHelper;
+
+
+    public static class DB {
         public static class Item {
-            public int id;
+            public long id;
             public String name;
         }
         public static class ItemInList {
-            public int item_id;
-            public int list_id;
+            public long item_id;
+            public long list_id;
             public int quantity;
             public int max_quantity;
         }
         public static class List {
-            public int id;
+            public long id;
             public String info;
             public String date_created;
+            public String date_acessed;
             public String date_modified;
             public int price;
             public int achieved;
+            public boolean created;
+            public boolean modified;
         }
         public static class ItemInSupplier {
-            public int item_id;
-            public int supplier_item_id;
+            public long item_id;
+            public long supplier_item_id;
         }
         public static class Supplier {
-            public int id;
+            public long id;
             public String name;
             public String info;
             public String address;
         }
         public static class SupplierItem {
-            public int id;
-            public int supplier_id;
+            public long id;
+            public long supplier_id;
             public String name;
             public String info;
-            public int price;
+            public long price;
             public String date_modified;
         }
     }
@@ -138,6 +139,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                     list_active_array.add(add_item_str);
                     list_active_adapter.notifyDataSetChanged();
                     add_item.setText("");
+                    list_active_ram.modified = true;
                     handled = true;
                 }
                 return handled;
@@ -147,9 +149,9 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
 
         // DB
-        FeedReaderDBHelper mDBHelper;
         SQLiteDatabase dbw;
-        ContentValues values;
+        SQLiteDatabase dbr;
+        Cursor c;
 
         // BD Helper
         mDBHelper = new FeedReaderDBHelper(this);
@@ -158,15 +160,12 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         dbw = mDBHelper.getWritableDatabase();
         mDBHelper.drop(dbw);
         mDBHelper.onCreate(dbw);
-
-        // ler lista ativa
-
+        dbw.close();
 
         // tmp
         SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
-        DB.Item item = new DB.Item();
+        /*DB.Item item = new DB.Item();
         DB.ItemInList itemInList = new DB.ItemInList();
-        DB.List list = new DB.List();
         DB.ItemInSupplier itemInSupplier = new DB.ItemInSupplier();
         DB.Supplier supplier = new DB.Supplier();
         DB.SupplierItem supplierItem = new DB.SupplierItem();
@@ -180,6 +179,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         list.id = 0;
         list.info = "";
         list.date_created = date_format.format(new Date());
+        list.date_acessed = date_format.format(new Date());
         list.date_modified = date_format.format(new Date());
         list.price = 0;
         list.achieved = 0;
@@ -195,70 +195,56 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         supplierItem.info = "";
         supplierItem.price = 199;
         supplierItem.date_modified = date_format.format(new Date());;
+        */
 
-        // TODO parei aqui
-        /*
-         links:
-         http://www.vogella.com/tutorials/AndroidSQLite/article.html
-         https://developer.android.com/intl/pt-br/training/basics/data-storage/databases.html
-         http://www.raywenderlich.com/78576/android-tutorial-for-beginners-part-2
-
-
-         */
-        values = new ContentValues();
-        values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, item_name);
-        values.put(ContractDB.ItemEntry.COLUMN_NAME_PRICE, item_price);
-        values.put(ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET, item_supermarket);
-        values.put(ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE, item_update_date);
-        // Insert the new row, returning the primary key value of the new row
-        long primaryKeyReturned = dbw.insert(ContractDB.ItemEntry.TABLE_NAME, null, values);
-        dbw.close();
-
-        Log.d("DB", "DB recriado");
-
-        // DB Read
-        SQLiteDatabase dbr = mDBHelper.getReadableDatabase();
+        // DB Read most reced acessed list
+        dbr = mDBHelper.getReadableDatabase();
         //
         String[] projection = {
-                ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID,
-                ContractDB.ItemEntry.COLUMN_NAME_NAME,
-                ContractDB.ItemEntry.COLUMN_NAME_PRICE,
-                ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET,
-                ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE
+                ContractDB.ListEntry.COLUMN_NAME_LIST_ID,
+                ContractDB.ListEntry.COLUMN_NAME_INFO,
+                ContractDB.ListEntry.COLUMN_NAME_DATE_CREATED,
+                ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED,
+                ContractDB.ListEntry.COLUMN_NAME_DATE_MODIFIED,
+                ContractDB.ListEntry.COLUMN_NAME_PRICE,
+                ContractDB.ListEntry.COLUMN_NAME_ACHIEVED,
         };
         //
-        String selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + "=?";
-        String[] selectionArgs = new String[] {
-                String.valueOf(1)};
+        String rawQuery = "SELECT * FROM " + ContractDB.ListEntry.TABLE_NAME +
+                " WHERE " + ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 1 " +
+                " ORDER BY " + ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC" +
+                " LIMIT 1";
         //
-        String sortOrder =
-                ContractDB.ItemEntry.COLUMN_NAME_NAME + " DESC";
-        //
-        Cursor c = dbr.query(
-                ContractDB.ItemEntry.TABLE_NAME,  // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                sortOrder                                 // The sort order
-        );
-
-        // DB Read Cycle
-        if (c != null){
-            c.moveToFirst();
+        c = dbr.rawQuery(rawQuery, null);
+        //dbw = mDBHelper.getWritableDatabase();
+        list_active_ram.modified = false;
+        list_active_ram.created = false;
+        if (c != null && c.getCount() == 1) {
+                Log.d("DB", "Lista ativa existente");
+                c.moveToFirst();
+                list_active_ram.id = Long.parseLong(c.getString(0), 10);
+                list_active_ram.info = c.getString(1);
+                list_active_ram.date_created = date_format.format(new Date()); c.getString(2);
+                list_active_ram.date_acessed = date_format.format(new Date());c.getString(3);
+                list_active_ram.date_modified = date_format.format(new Date());c.getString(0);
+                list_active_ram.price = Integer.parseInt(c.getString(5));
+                list_active_ram.achieved = Integer.parseInt(c.getString(6));
         } else {
-            Log.d("DB", "DB nao lido");
+            Log.d("DB", "Lista ativa inexistente");
+            list_active_ram.info = "Lista vazia";
+            list_active_ram.date_created = date_format.format(new Date());
+            list_active_ram.date_acessed = date_format.format(new Date());
+            list_active_ram.date_modified = date_format.format(new Date());
+            list_active_ram.price = 0;
+            list_active_ram.achieved = 0;
+            list_active_ram.created = true;
         }
-        Log.d("DB", "DB lido");
-        Log.d("DB", c.getString(0));
-        Log.d("DB", c.getString(1));
-        Log.d("DB", c.getString(2));
-        Log.d("DB", c.getString(3));
-        Log.d("DB", c.getString(4));
         c.close();
         dbr.close();
-
+        Log.d("List",  "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
+                list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
+                " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
+                " achieved: " + list_active_ram.achieved);
 
         /*
         // DB Delete
@@ -349,6 +335,22 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
                 return true;
             case R.id.home_menu_save:
+                ContentValues values;
+                if (list_active_ram.created && list_active_ram.modified) {
+                    Log.d("DB", "Lista criada");
+                    SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
+                    values = new ContentValues();
+                    values.put(ContractDB.ListEntry.COLUMN_NAME_INFO, list_active_ram.info);
+                    values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_CREATED, list_active_ram.date_created);
+                    values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_MODIFIED, list_active_ram.date_modified);
+                    values.put(ContractDB.ListEntry.COLUMN_NAME_PRICE, list_active_ram.price);
+                    values.put(ContractDB.ListEntry.COLUMN_NAME_ACHIEVED, list_active_ram.achieved);
+                    list_active_ram.id = dbw.insert(ContractDB.ListEntry.TABLE_NAME, null, values);
+                    dbw.close();
+                } else if (list_active_ram.modified) {
+                    Log.d("DB", "Lista modificada");
+
+                }
 
                 return true;
             case R.id.home_menu_list_new:

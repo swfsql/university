@@ -4,14 +4,19 @@
     <string name="domain">test</string>
     <string name="sub_domain">example</string>
 
+
     <string name="drawer_openned">Opções</string>
+    <string name="home_drawer_closed">PoupaGrana</string>
+    <string-array name="drawer_entries">
+        <item>Histórico</item>
+        <item>Ajuda</item>
+    </string-array>
 
     <string name="title_home">PoupaGrana</string>
         <string name="home_menu_save">Salvar</string>
         <string name="home_menu_searchprices">Precificar</string>
         <string name="home_menu_list_new">Nova lista</string>
         <string name="home_menu_list_active_remove">Remover</string>
-        <string name="home_drawer_closed">PoupaGrana</string>
         <string name="home_item_add">+Adicionar item</string>
         <string name="home_list_active_info">Lista vazia</string>
         <string name="home_list_add">+Criar nova lista</string>

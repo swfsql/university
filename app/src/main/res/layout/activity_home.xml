@@ -12,7 +12,8 @@
         android:id="@+id/toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:background="?attr/colorPrimary"
+        android:background="@color/bg2"
+        android:foreground="@color/fg1"
         android:minHeight="?android:attr/actionBarSize" />
 
 
@@ -27,14 +28,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:focusableInTouchMode="true"
             >
 
+            <!-- gravity=center API<17. textAlignment=center API>16-->
             <EditText android:id="@+id/add_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
+                android:gravity="center"
                 android:hint="@string/home_item_add"
-                android:textColor="@color/textColor"
+                android:textColorHint="@color/fg1"
+                android:background="@color/bg1"
+                android:textColor="@color/fg1"
                 android:inputType="text"
                 android:imeOptions="actionDone"/>
 
@@ -42,6 +47,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
+                android:background="@color/bg1"
+                android:foreground="@color/fg1"
                 android:text="@string/home_list_active_info" />
 
             <ListView
@@ -49,31 +56,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:background="@android:color/white"
-                android:foreground="@color/textColor" />
+                android:background="@color/bg1"
+                android:foreground="@color/fg1" />
 
             <Button android:id="@+id/add_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/home_list_add"
+                android:background="@color/bg1"
+                android:foreground="@color/fg1"
                 android:onClick="sendMessage"/>
-
-            <ListView
-                android:id="@+id/lists_active"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@android:color/white"
-                android:foreground="@color/textColor" />
         </LinearLayout>
 
+        <!-- android:entries="@array/drawer_entries"> -->
         <ListView
-            android:id="@+id/drawer"
+            android:id="@+id/drawer_list"
             android:layout_width="240dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/white"
-            android:foreground="@color/textColor" />
+            android:choiceMode="singleChoice"
+            android:background="@color/bg2"
+            android:foreground="@color/fg1" />
 
     </android.support.v4.widget.DrawerLayout>
 

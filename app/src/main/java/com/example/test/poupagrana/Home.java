@@ -33,6 +33,8 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
 
     private DrawerLayout hDrawerLayout;
+    private ListView drawer_list;
+    private String[] drawer_list_itens;
     private ActionBarDrawerToggle hActionBarDrawerToggle;
     //public final static String EXTRA_MESSAGE = "com." + R.string.sub_domain + "." + R.string.domain
             //+ "." + R.string.app_name_sub;
@@ -109,7 +111,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         // drawer
         hDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.home_drawer_closed) {
+        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout,  R.string.drawer_openned, R.string.home_drawer_closed) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -125,6 +127,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             }
         };
         hDrawerLayout.setDrawerListener(hActionBarDrawerToggle);
+
+        drawer_list = (ListView) findViewById(R.id.drawer_list);
+        drawer_list_itens = getResources().getStringArray(R.array.drawer_entries);
+        drawer_list.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, drawer_list_itens));
+        drawer_list.setOnItemClickListener(new DrawerItemClickListener());
+
+
 
         // cria lista e sua array
         list_active = (ListView) findViewById(R.id.list_active);
@@ -522,8 +532,16 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     }
 
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            Log.d("Drawer", position + ": " + drawer_list_itens[position]);
+            hDrawerLayout.closeDrawer(drawer_list);
+        }
+    }
+
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.d("omg android", i + ": " + list_active_array.get(i));
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Log.d("List", position + ": " + list_active_array.get(position));
     }
 }

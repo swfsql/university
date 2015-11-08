@@ -41,21 +41,22 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     private ArrayAdapter list_active_adapter;
     private ArrayList list_active_array;
     DB.List list_active_ram = new DB.List();
+    ArrayList<DB.Item> list_active_ram_itens;
+
+
+    private EditText add_item;
 
     // DB
     FeedReaderDBHelper mDBHelper;
 
-
     public static class DB {
         public static class Item {
-            public long id;
-            public String name;
-        }
-        public static class ItemInList {
             public long item_id;
             public long list_id;
             public int quantity;
             public int max_quantity;
+            public String name;
+            public boolean modified;
         }
         public static class List {
             public long id;
@@ -93,6 +94,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         // toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -101,7 +103,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         // drawer
         hDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.home_drawer_closed){
+        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.home_drawer_closed) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -121,7 +123,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         // cria lista e sua array
         list_active = (ListView) findViewById(R.id.list_active);
         list_active_array = new ArrayList();
-        list_active_adapter =  new ArrayAdapter(
+        list_active_adapter = new ArrayAdapter(
                 this,
                 android.R.layout.simple_expandable_list_item_1,
                 list_active_array);
@@ -129,17 +131,22 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
 
         // ao acabar de escrever no campo de texto, enviar pra lista ativa
-        final EditText add_item = (EditText) findViewById(R.id.add_item);
+        //final EditText add_item = (EditText) findViewById(R.id.add_item);
+        add_item = (EditText) findViewById(R.id.add_item);
         add_item.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    String add_item_str = add_item.getText().toString();
-                    list_active_array.add(add_item_str);
-                    list_active_adapter.notifyDataSetChanged();
+                    DB.Item item = new DB.Item();
+                    item.name = add_item.getText().toString();
+                    item.quantity = 0;
+                    item.max_quantity = 1;
+                    item.modified = true;
+                    item.list_id = list_active_ram.id;
+                    item.item_id = -1;
+                    addToList(item); // TODO test
                     add_item.setText("");
-                    list_active_ram.modified = true;
                     handled = true;
                 }
                 return handled;
@@ -151,7 +158,6 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         // DB
         SQLiteDatabase dbw;
         SQLiteDatabase dbr;
-        Cursor c;
 
         // BD Helper
         mDBHelper = new FeedReaderDBHelper(this);
@@ -215,20 +221,53 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 " ORDER BY " + ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC" +
                 " LIMIT 1";
         //
-        c = dbr.rawQuery(rawQuery, null);
+        Cursor cList, cItem;
+        cList = dbr.rawQuery(rawQuery, null);
         //dbw = mDBHelper.getWritableDatabase();
         list_active_ram.modified = false;
         list_active_ram.created = false;
-        if (c != null && c.getCount() == 1) {
-                Log.d("DB", "Lista ativa existente");
-                c.moveToFirst();
-                list_active_ram.id = Long.parseLong(c.getString(0), 10);
-                list_active_ram.info = c.getString(1);
-                list_active_ram.date_created = date_format.format(new Date()); c.getString(2);
-                list_active_ram.date_acessed = date_format.format(new Date());c.getString(3);
-                list_active_ram.date_modified = date_format.format(new Date());c.getString(0);
-                list_active_ram.price = Integer.parseInt(c.getString(5));
-                list_active_ram.achieved = Integer.parseInt(c.getString(6));
+        list_active_ram_itens = new ArrayList<DB.Item>();
+        if (cList != null && cList.getCount() == 1) {
+            Log.d("DB", "Lista ativa existente"); // TODO test
+            cList.moveToFirst();
+            list_active_ram.id = Long.parseLong(cList.getString(0), 10);
+            list_active_ram.info = cList.getString(1);
+            list_active_ram.date_created = date_format.format(new Date());
+            cList.getString(2); // TODO fix
+            list_active_ram.date_acessed = date_format.format(new Date());
+            cList.getString(3); // TODO fix
+            list_active_ram.date_modified = date_format.format(new Date());
+            cList.getString(0); // TODO fix
+            list_active_ram.price = Integer.parseInt(cList.getString(5));
+            list_active_ram.achieved = Integer.parseInt(cList.getString(6));
+            Log.d("DB", "lendo itens da lista");
+            rawQuery =
+                    "SELECT " + ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY + ", " +
+                            ContractDB.ItemInListEntry.COLUMN_NAME_MAX_QUANTITY + ", " +
+                            ContractDB.ItemEntry.COLUMN_NAME_NAME + ", " +
+                            ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID + ", " +
+                            ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID +
+                            " FROM " + ContractDB.ItemInListEntry.TABLE_NAME + " INNER JOIN " + ContractDB.ItemEntry.TABLE_NAME +
+                            " WHERE " + ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID + " = " + list_active_ram.id +
+                            " AND " + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID + " = " + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID;
+            cItem = dbr.rawQuery(rawQuery, null);
+            int i = -1;
+            if (cItem != null) { // TODO test
+                cItem.moveToFirst();
+                DB.Item item = new DB.Item();
+                do {
+                    item.quantity = Integer.parseInt(cItem.getString(0));
+                    item.max_quantity = Integer.parseInt(cItem.getString(1));
+                    item.name = cItem.getString(2);
+                    item.item_id = Integer.parseInt(cItem.getString(3));
+                    item.list_id = Integer.parseInt(cItem.getString(4));
+                    item.modified = false;
+                    list_active_ram_itens.add(item);
+                    // adiciona no campo
+                    addToList(item);
+                } while (cItem.moveToNext());
+            }
+            cItem.close();
         } else {
             Log.d("DB", "Lista ativa inexistente");
             list_active_ram.info = "Lista vazia";
@@ -239,23 +278,25 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             list_active_ram.achieved = 0;
             list_active_ram.created = true;
         }
-        c.close();
+        cList.close();
         dbr.close();
-        Log.d("List",  "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
+        Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
                 list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
                 " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
                 " achieved: " + list_active_ram.achieved);
 
-        /*
-        // DB Delete
+        { /* DB Delete
         selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + " LIKE ?";
         selectionArgs = new String[] { String.valueOf(1) };
         //
         dbw = mDBHelper.getWritableDatabase();
         dbw.delete(ContractDB.ItemEntry.TABLE_NAME, selection, selectionArgs);
-        dbw.close();
+        dbw.close();*/
+        }
 
-        // DB Read
+
+        { /* DB Read
+
         dbr = mDBHelper.getReadableDatabase();
         //
         projection = new String[]{
@@ -295,11 +336,15 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         } else {
             Log.d("DB", "DB nao lido");
         }
-        dbr.close();
-        */
-
+        dbr.close(); */
+        }
     }
 
+    void addToList(DB.Item item) { // TODO test
+        list_active_ram.modified = true;
+        list_active_array.add(item.name);
+        list_active_adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -334,7 +379,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             case R.id.home_menu_searchprices:
 
                 return true;
-            case R.id.home_menu_save:
+            case R.id.home_menu_save: // TODO
                 ContentValues values;
                 if (list_active_ram.created && list_active_ram.modified) {
                     Log.d("DB", "Lista criada");

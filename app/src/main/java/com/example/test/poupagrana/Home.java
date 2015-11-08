@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,7 +43,9 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     private ArrayList list_active_array;
     DB.List list_active_ram = new DB.List();
     ArrayList<DB.Item> list_active_ram_itens;
+    private Button list_active_info;
 
+    private SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
 
     private EditText add_item;
 
@@ -56,6 +59,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             public int quantity;
             public int max_quantity;
             public String name;
+            public boolean created;
             public boolean modified;
         }
         public static class List {
@@ -64,10 +68,12 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             public String date_created;
             public String date_acessed;
             public String date_modified;
-            public int price;
-            public int achieved;
+            public int price; //
+            public int achieved; //
             public boolean created;
             public boolean modified;
+            public int quantity;
+            public int max_quantity;
         }
         public static class ItemInSupplier {
             public long item_id;
@@ -133,20 +139,34 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         // ao acabar de escrever no campo de texto, enviar pra lista ativa
         //final EditText add_item = (EditText) findViewById(R.id.add_item);
         add_item = (EditText) findViewById(R.id.add_item);
+        list_active_info = (Button) findViewById(R.id.list_active_info);
         add_item.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    DB.Item item = new DB.Item();
+                    DB.Item item  = new DB.Item();
                     item.name = add_item.getText().toString();
+                    ;
                     item.quantity = 0;
                     item.max_quantity = 1;
                     item.modified = true;
+                    item.created = true;
                     item.list_id = list_active_ram.id;
                     item.item_id = -1;
-                    addToList(item); // TODO test
+                    list_active_ram.quantity += 0;
+                    list_active_ram.max_quantity += item.max_quantity;
                     add_item.setText("");
+                    for (DB.Item item2 : list_active_ram_itens) {
+                        if (item.name.equalsIgnoreCase(item2.name)) {
+                            item2.quantity += item.quantity;
+                            item2.max_quantity += item.max_quantity;
+                            item2.modified = true;
+                            list_active_adapter.notifyDataSetChanged();
+                            return true;
+                        }
+                    }
+                    addToList(item); // TODO test
                     handled = true;
                 }
                 return handled;
@@ -164,12 +184,11 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         // BD Write
         dbw = mDBHelper.getWritableDatabase();
-        mDBHelper.drop(dbw);
-        mDBHelper.onCreate(dbw);
+        //mDBHelper.drop(dbw);
+        //mDBHelper.onCreate(dbw);
         dbw.close();
 
         // tmp
-        SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
         /*DB.Item item = new DB.Item();
         DB.ItemInList itemInList = new DB.ItemInList();
         DB.ItemInSupplier itemInSupplier = new DB.ItemInSupplier();
@@ -217,7 +236,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         };
         //
         String rawQuery = "SELECT * FROM " + ContractDB.ListEntry.TABLE_NAME +
-                " WHERE " + ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 1 " +
+                " WHERE " + ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 0 " +
                 " ORDER BY " + ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC" +
                 " LIMIT 1";
         //
@@ -240,6 +259,10 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             cList.getString(0); // TODO fix
             list_active_ram.price = Integer.parseInt(cList.getString(5));
             list_active_ram.achieved = Integer.parseInt(cList.getString(6));
+            Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
+                    list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
+                    " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
+                    " achieved: " + list_active_ram.achieved);
             Log.d("DB", "lendo itens da lista");
             rawQuery =
                     "SELECT " + ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY + ", " +
@@ -248,13 +271,17 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                             ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID + ", " +
                             ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID +
                             " FROM " + ContractDB.ItemInListEntry.TABLE_NAME + " INNER JOIN " + ContractDB.ItemEntry.TABLE_NAME +
-                            " WHERE " + ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID + " = " + list_active_ram.id +
-                            " AND " + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID + " = " + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID;
+                            " WHERE " + ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID +
+                            " = " + list_active_ram.id +
+                            " AND " + ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID +
+                            " = " + ContractDB.ItemEntry.TABLE_NAME + "." + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID;
             cItem = dbr.rawQuery(rawQuery, null);
             int i = -1;
             if (cItem != null) { // TODO test
                 cItem.moveToFirst();
                 DB.Item item = new DB.Item();
+                list_active_ram.quantity = 0;
+                list_active_ram.max_quantity = 0;
                 do {
                     item.quantity = Integer.parseInt(cItem.getString(0));
                     item.max_quantity = Integer.parseInt(cItem.getString(1));
@@ -262,8 +289,11 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                     item.item_id = Integer.parseInt(cItem.getString(3));
                     item.list_id = Integer.parseInt(cItem.getString(4));
                     item.modified = false;
+                    item.created = false;
                     list_active_ram_itens.add(item);
                     // adiciona no campo
+                    list_active_ram.quantity +=item.quantity;
+                    list_active_ram.max_quantity +=item.max_quantity;
                     addToList(item);
                 } while (cItem.moveToNext());
             }
@@ -271,6 +301,8 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         } else {
             Log.d("DB", "Lista ativa inexistente");
             list_active_ram.info = "Lista vazia";
+            list_active_ram.quantity = 0;
+            list_active_ram.max_quantity = 0;
             list_active_ram.date_created = date_format.format(new Date());
             list_active_ram.date_acessed = date_format.format(new Date());
             list_active_ram.date_modified = date_format.format(new Date());
@@ -343,7 +375,10 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     void addToList(DB.Item item) { // TODO test
         list_active_ram.modified = true;
         list_active_array.add(item.name);
+        list_active_ram_itens.add(item); // TODO change
         list_active_adapter.notifyDataSetChanged();
+        list_active_info.setText(list_active_ram.quantity + " / " + list_active_ram.max_quantity +
+                " itens");
     }
 
     @Override
@@ -381,21 +416,88 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 return true;
             case R.id.home_menu_save: // TODO
                 ContentValues values;
-                if (list_active_ram.created && list_active_ram.modified) {
+                SQLiteDatabase dbw;
+                if (!list_active_ram.modified) return true;
+                if (list_active_ram.created) {
                     Log.d("DB", "Lista criada");
-                    SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
+                    list_active_ram.date_modified = date_format.format(new Date());
+                    dbw = mDBHelper.getWritableDatabase();
                     values = new ContentValues();
                     values.put(ContractDB.ListEntry.COLUMN_NAME_INFO, list_active_ram.info);
                     values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_CREATED, list_active_ram.date_created);
+                    values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED, list_active_ram.date_acessed);
                     values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_MODIFIED, list_active_ram.date_modified);
                     values.put(ContractDB.ListEntry.COLUMN_NAME_PRICE, list_active_ram.price);
                     values.put(ContractDB.ListEntry.COLUMN_NAME_ACHIEVED, list_active_ram.achieved);
                     list_active_ram.id = dbw.insert(ContractDB.ListEntry.TABLE_NAME, null, values);
                     dbw.close();
-                } else if (list_active_ram.modified) {
-                    Log.d("DB", "Lista modificada");
+                } else {
+                    Log.d("DB", "Lista atualizada");
 
                 }
+                // um item pode ser (1) inexistente, (2) existente para outra lista ou (3) existente pra mesmoa lista.
+                // > em (1) e (2) o item eh marcado como criado.
+                // >> em (1) o item de mesmo nome nao existe para outra lista.
+                // para salvar os itens, procuramos pelos ja existentes e os atualizamos, para entao criar os inexistentes
+
+
+                String rawQuery;
+                dbw = mDBHelper.getWritableDatabase();
+                for (DB.Item itemdb : list_active_ram_itens) {
+                    if (itemdb.created) {
+                        Log.d("DB", "salvando item:" + itemdb.name);
+
+                        // add or replace in Item table
+                        /*rawQuery = "INSERT OR REPLACE INTO " + ContractDB.ItemEntry.TABLE_NAME +
+                                " ( " + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + ",  " + ContractDB.ItemEntry.COLUMN_NAME_NAME + ")" +
+                                " VALUES " +
+                                "(" +
+                                "(SELECT " + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID +
+                                " FROM " + ContractDB.ItemEntry.TABLE_NAME  +
+                                " WHERE " + ContractDB.ItemEntry.COLUMN_NAME_NAME + " = " + itemdb.name + ")" +
+                                ", " + itemdb.name + ")";*/
+                        /*rawQuery = "INSERT OR IGNORE INTO " + ContractDB.ItemEntry.TABLE_NAME + " ( " + ContractDB.ItemEntry.COLUMN_NAME_NAME + ")" +
+                                " VALUES " + "(" + "" + itemdb.name + "" + ")";
+                        dbw.execSQL(rawQuery);*/
+
+                        values = new ContentValues();
+                        values.put(ContractDB.ItemEntry.COLUMN_NAME_NAME, itemdb.name);
+                        itemdb.item_id = dbw.insertWithOnConflict(ContractDB.ItemEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+
+                        // criar tudo // TODO na hora de criar tem que ver se relamente eh criado, ou se ja existe na lista
+                        // add in ItenInList table
+                        /*Log.d("DB", "salvando relacao item lista");
+                        rawQuery = "INSERT INTO " + ContractDB.ItemInListEntry.TABLE_NAME + " ( " +
+                                ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID + ", " +
+                                ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID + ", " +
+                                ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY + ", " +
+                                ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_MAX_QUANTITY  + ")" +
+                                " VALUES " + "(" +
+                                    "(SELECT " + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID +
+                                    " FROM " + ContractDB.ItemEntry.TABLE_NAME  +
+                                    " WHERE " + ContractDB.ItemEntry.COLUMN_NAME_NAME + " = " + itemdb.name + "), " +
+                                list_active_ram.id + ", " +
+                                itemdb.quantity + ", " +
+                                itemdb.max_quantity + ")";
+                        dbw.execSQL(rawQuery);*/
+
+                        values = new ContentValues();
+                        values.put(ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID, itemdb.item_id);
+                        values.put(ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID, list_active_ram.id);
+                        values.put(ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY, itemdb.quantity);
+                        values.put(ContractDB.ItemInListEntry.COLUMN_NAME_MAX_QUANTITY, itemdb.max_quantity);
+                        itemdb.item_id = dbw.insert(ContractDB.ItemInListEntry.TABLE_NAME, null, values);
+
+                    } else {
+                        // atualizar tabela itemInList
+                        Log.d("DB", "atualizando item:" + itemdb.name);
+
+                    }
+
+                }
+                dbw.close();
+
+
 
                 return true;
             case R.id.home_menu_list_new:

@@ -67,6 +67,7 @@ public class ContractDB {
     private static final String NOT_NULL = " NOT NULL";
     private static final String PRIMARY_KEY = " PRIMARY KEY";
     private static final String AUTO_INCREMENT = " AUTOINCREMENT";
+    private static final String UNIQUE = " UNIQUE";
     private static final String INDEX = " INDEX ";
     private static final String CONSTRAINT = " CONSTRAINT  ";
     private static final String FOREIGN_KEY = " FOREIGN KEY ";
@@ -79,7 +80,7 @@ public class ContractDB {
     static final String SQL_CREATE_ITEM_TABLE =
             "CREATE TABLE IF NOT EXISTS " + ItemEntry.TABLE_NAME + " (" +
                     ItemEntry.COLUMN_NAME_ITEM_ID + INTEGER_TYPE + PRIMARY_KEY + AUTO_INCREMENT + NOT_NULL + COMMA_SEP +
-                    ItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + NOT_NULL +
+                    ItemEntry.COLUMN_NAME_NAME + VARCHAR_TYPE + UNIQUE + NOT_NULL +
                     //ItemEntry.COLUMN_NAME_PRICE + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     //ItemEntry.COLUMN_NAME_SUPERMARKET + INTEGER_TYPE + NOT_NULL + COMMA_SEP +
                     //ItemEntry.COLUMN_NAME_UPDATE_DATE + DATE_TYPE + NOT_NULL + //COMMA_SEP +

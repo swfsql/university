@@ -49,6 +49,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     private SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
 
+
     private EditText add_item;
 
     // DB
@@ -157,7 +158,6 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     DB.Item item  = new DB.Item();
                     item.name = add_item.getText().toString();
-                    ;
                     item.quantity = 0;
                     item.max_quantity = 1;
                     item.modified = true;

@@ -31,6 +31,13 @@
             android:focusableInTouchMode="true"
             >
 
+            <!-- dummy pra nao dar focus pro texto no inicio -->
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0px"
+                android:layout_height="0px"/>
+
             <!-- gravity=center API<17. textAlignment=center API>16-->
             <EditText android:id="@+id/add_item"
                 android:layout_width="match_parent"
@@ -41,7 +48,9 @@
                 android:background="@color/bg1"
                 android:textColor="@color/fg1"
                 android:inputType="text"
-                android:imeOptions="actionDone"/>
+                android:imeOptions="actionDone"
+                android:nextFocusUp="@+id/drawer_layout"
+                android:nextFocusLeft="@+id/drawer_layout"/>
 
             <Button android:id="@+id/list_active_info"
                 android:layout_width="match_parent"

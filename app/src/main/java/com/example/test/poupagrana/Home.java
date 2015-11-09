@@ -176,8 +176,8 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         TypedArray expandableListViewStyle = this.getTheme().obtainStyledAttributes(new int[]{android.R.attr.expandableListViewStyle});
         TypedArray groupIndicator = this.getTheme().obtainStyledAttributes(expandableListViewStyle.getResourceId(0,0),new int[]{android.R.attr.groupIndicator});
         Drawable canExpand = groupIndicator.getDrawable(0);
-        expandableListViewStyle.recycle();
-        groupIndicator.recycle();
+        //expandableListViewStyle.recycle();
+        //groupIndicator.recycle();
         //list_active.setGroupIndicator(null);
         //list_active.setGroupIndicator(canExpand);
 
@@ -294,9 +294,9 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             list_active_ram.price = Integer.parseInt(cList.getString(5));
             list_active_ram.achieved = Integer.parseInt(cList.getString(6));
             if(list_active_ram.price == 0) {
-                list_active.setGroupIndicator(null);
+                //list_active.setGroupIndicator(null);
             } else {
-                list_active.setGroupIndicator(canExpand);
+                //list_active.setGroupIndicator(canExpand);
             }
             Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
                     list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
@@ -349,6 +349,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             list_active_ram.price = 0;
             list_active_ram.achieved = 0;
             list_active_ram.created = true;
+            //list_active.setGroupIndicator(null);
             Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
                     list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
                     " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
@@ -471,6 +472,8 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             list_active_info.setText(list_active_ram.quantity + " / " + list_active_ram.max_quantity +
                     " itens");
 
+
+            ((BaseExpandableListAdapter) list_active.getExpandableListAdapter()).notifyDataSetChanged();
 
             //list_active.setGroupIndicator(canExpand);
         } else {
@@ -688,7 +691,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             } while (c.moveToNext());
             for (Long selected : selected_suppliers) {
                 Log.d("$", "suppliers: " + suppliers.toString() + ", selected: " + selected);
-                suppliers.get(selected).enabled = true;
+                suppliers.get(selected + 1).enabled = true;
             }
             c.close();
         }
@@ -698,7 +701,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         java.util.List<java.util.List<Map<String, String>>> newChildData = new ArrayList<java.util.List<Map<String, String>>>();
         for (Long selected_supplier : selected_suppliers) {
             curGroupMap = new HashMap<String, String>();
-            curGroupMap.put(ITEM, suppliers.get(selected_supplier).name);
+            curGroupMap.put(ITEM, suppliers.get(selected_supplier + 1).name);
             newGroupData.add(curGroupMap);
             children = new ArrayList<Map<String, String>>();
             newChildData.add(children);
@@ -750,6 +753,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         }
 
 
+        //list_active.setGroupIndicator(canExpand);
         ((BaseExpandableListAdapter) list_active.getExpandableListAdapter()).notifyDataSetChanged();
 
         // add pais e filhos

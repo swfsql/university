@@ -5,8 +5,14 @@
     <color name="textColorPrimary">#586e75</color>
     <color name="textColorSecondary">#657b83</color>
     <color name="textColor">#586e75</color>
-    <color name="bg1">#fdf6e3</color>
-    <color name="bg2">#eee8d5</color>
-    <color name="fg1">#586e75</color>
-    <color name="fg2">#657b83</color>
+
+    <color name="bg3">#fdf6e3</color>
+    <color name="bg4">#eee8d5</color>
+    <color name="fg3">#586e75</color>
+    <color name="fg4">#657b83</color>
+
+    <color name="bg1">#e9f7ff</color>
+    <color name="bg2">#64a8cf</color>
+    <color name="fg1">#2d050d</color>
+    <color name="fg2">#5b061b</color>
 </resources>

@@ -60,7 +60,7 @@
                 android:foreground="@color/fg1"
                 android:text="@string/home_list_active_info" />
 
-            <ListView
+            <ExpandableListView
                 android:id="@+id/list_active"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

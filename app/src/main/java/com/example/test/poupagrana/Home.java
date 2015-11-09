@@ -3,8 +3,10 @@ package com.example.test.poupagrana;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.widget.DrawerLayout;
@@ -19,14 +21,19 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Home extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -40,7 +47,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             //+ "." + R.string.app_name_sub;
 
     // lista ativa
-    private ListView list_active;
+    private ExpandableListView list_active;
     private ArrayAdapter list_active_adapter;
     private ArrayList list_active_array;
     DB.List list_active_ram = new DB.List();
@@ -98,19 +105,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-
-        // toolbar
+    private void onCreateToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+    }
 
-        // drawer
+    private void onCreateDrawer(){
         hDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout,  R.string.drawer_openned, R.string.home_drawer_closed) {
             @Override
@@ -135,16 +137,58 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 R.layout.drawer_list_item, drawer_list_itens));
         drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
+    }
 
-
+    Drawable canExpand;
+    private void onCreateList(){
         // cria lista e sua array
-        list_active = (ListView) findViewById(R.id.list_active);
-        list_active_array = new ArrayList();
+        list_active = (ExpandableListView) findViewById(R.id.list_active);
+        /*list_active_array = new ArrayList();
         list_active_adapter = new ArrayAdapter(
                 this,
                 android.R.layout.simple_expandable_list_item_1,
                 list_active_array);
         list_active.setAdapter(list_active_adapter);
+        */
+
+        //
+
+        groupData = new ArrayList<Map<String, String>>();
+        childData = new ArrayList<java.util.List<Map<String, String>>>();
+        SimpleExpandableListAdapter expListAdapter =
+                new SimpleExpandableListAdapter(
+                        this,
+                        groupData,              // Creating group List.
+                        android.R.layout.simple_expandable_list_item_2,
+                        new String[] { ITEM  },  // the key of group item.
+                        new int[] { android.R.id.text1 },    // ID of each group item.-Data under the key goes into this TextView.
+                        childData,              // childData describes second-level entries.
+                        android.R.layout.simple_expandable_list_item_2,
+                        new String[] { ITEM },      // Keys in childData maps to display.
+                        new int[] { android.R.id.text1}     // Data under the keys above go into these TextViews.
+                );
+        list_active.setAdapter(expListAdapter);
+        TypedArray expandableListViewStyle = this.getTheme().obtainStyledAttributes(new int[]{android.R.attr.expandableListViewStyle});
+        TypedArray groupIndicator = this.getTheme().obtainStyledAttributes(expandableListViewStyle.getResourceId(0,0),new int[]{android.R.attr.groupIndicator});
+        Drawable canExpand = groupIndicator.getDrawable(0);
+        expandableListViewStyle.recycle();
+        groupIndicator.recycle();
+        //list_active.setGroupIndicator(null);
+        //list_active.setGroupIndicator(canExpand);
+
+
+    }
+
+    private final String ITEM = "ITEM";
+    private java.util.List<Map<String, String>> groupData;
+    private java.util.List<java.util.List<Map<String, String>>> childData;
+    private java.util.List<Map<String, String>> children;
+
+
+    private void onCreateEditText(){
+
+
+        //
 
 
         // ao acabar de escrever no campo de texto, enviar pra lista ativa
@@ -156,7 +200,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    DB.Item item  = new DB.Item();
+                    DB.Item item = new DB.Item();
                     item.name = add_item.getText().toString();
                     item.quantity = 0;
                     item.max_quantity = 1;
@@ -184,19 +228,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         });
         list_active.setOnItemClickListener(this);
 
+    }
 
-        // DB
+
+
+    private void onCreateDB(){
         SQLiteDatabase dbw;
         SQLiteDatabase dbr;
-
-        // BD Helper
         mDBHelper = new FeedReaderDBHelper(this);
-
-        // BD Write
-        dbw = mDBHelper.getWritableDatabase();
-        //mDBHelper.drop(dbw);
-        //mDBHelper.onCreate(dbw);
-        dbw.close();
 
         // tmp
         /*DB.Item item = new DB.Item();
@@ -204,20 +243,6 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         DB.ItemInSupplier itemInSupplier = new DB.ItemInSupplier();
         DB.Supplier supplier = new DB.Supplier();
         DB.SupplierItem supplierItem = new DB.SupplierItem();
-        //item = new DB.Item(){0, "banana"};
-        item.id = 0;
-        item.name = "banana";
-        itemInList.item_id = 0;
-        itemInList.list_id = 0;
-        itemInList.quantity = 0;
-        itemInList.max_quantity = 0;
-        list.id = 0;
-        list.info = "";
-        list.date_created = date_format.format(new Date());
-        list.date_acessed = date_format.format(new Date());
-        list.date_modified = date_format.format(new Date());
-        list.price = 0;
-        list.achieved = 0;
         itemInSupplier.item_id = 0;
         itemInSupplier.supplier_item_id = 0;
         supplier.id = 0;
@@ -232,26 +257,20 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         supplierItem.date_modified = date_format.format(new Date());;
         */
 
-        // DB Read most reced acessed list
+        // DB Read most recent accessed list
         dbr = mDBHelper.getReadableDatabase();
-        //
-        String[] projection = {
-                ContractDB.ListEntry.COLUMN_NAME_LIST_ID,
-                ContractDB.ListEntry.COLUMN_NAME_INFO,
-                ContractDB.ListEntry.COLUMN_NAME_DATE_CREATED,
-                ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED,
-                ContractDB.ListEntry.COLUMN_NAME_DATE_MODIFIED,
-                ContractDB.ListEntry.COLUMN_NAME_PRICE,
-                ContractDB.ListEntry.COLUMN_NAME_ACHIEVED,
-        };
-        //
-        String rawQuery = "SELECT * FROM " + ContractDB.ListEntry.TABLE_NAME +
+        String rawQuery;/* = "SELECT * FROM " + ContractDB.ListEntry.TABLE_NAME +
                 " WHERE " + ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 0 " +
                 " ORDER BY " + ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC" +
-                " LIMIT 1";
+                " LIMIT 1";*/
         //
         Cursor cList, cItem;
-        cList = dbr.rawQuery(rawQuery, null);
+        cList = dbr.query(ContractDB.ListEntry.TABLE_NAME,
+                new String[] { "*" },
+                ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 0", null, null, null,
+                ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC",
+                "1");
+        //cList = dbr.rawQuery(rawQuery, null);
         //dbw = mDBHelper.getWritableDatabase();
         list_active_ram.modified = false;
         list_active_ram.created = false;
@@ -269,10 +288,16 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             cList.getString(0); // TODO fix
             list_active_ram.price = Integer.parseInt(cList.getString(5));
             list_active_ram.achieved = Integer.parseInt(cList.getString(6));
+            if(list_active_ram.price == 0) {
+                list_active.setGroupIndicator(null);
+            } else {
+                list_active.setGroupIndicator(canExpand);
+            }
             Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
                     list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
                     " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
                     " achieved: " + list_active_ram.achieved);
+
             Log.d("DB", "lendo itens da lista");
             rawQuery =
                     "SELECT " + ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY + ", " +
@@ -304,8 +329,9 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                     // adiciona no campo
                     list_active_ram.quantity +=item.quantity;
                     list_active_ram.max_quantity +=item.max_quantity;
-                    addToList(item);
+                    addToList(item); // TODO erro
                 } while (cItem.moveToNext());
+                ((BaseExpandableListAdapter) list_active.getExpandableListAdapter()).notifyDataSetChanged();
             }
             cItem.close();
         } else {
@@ -319,13 +345,13 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             list_active_ram.price = 0;
             list_active_ram.achieved = 0;
             list_active_ram.created = true;
+            Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
+                    list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
+                    " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
+                    " achieved: " + list_active_ram.achieved);
         }
         cList.close();
         dbr.close();
-        Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
-                list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
-                " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
-                " achieved: " + list_active_ram.achieved);
 
         { /* DB Delete
         selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + " LIKE ?";
@@ -380,15 +406,60 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         }
         dbr.close(); */
         }
+
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+
+        onCreateToolbar();
+        onCreateDrawer();
+        onCreateList();
+        onCreateEditText();
+        onCreateDB();
     }
 
     void addToList(DB.Item item) { // TODO test
         list_active_ram.modified = true;
-        list_active_array.add(item.name);
+
+        if(list_active_ram.price == 0) {
+
+            Map<String, String> curGroupMap = new HashMap<String, String>();
+            curGroupMap.put(ITEM, item.name);
+            groupData.add(curGroupMap);
+            children = new ArrayList<Map<String, String>>();
+            childData.add(children);
+            list_active_info.setText(list_active_ram.quantity + " / " + list_active_ram.max_quantity +
+                    " itens");
+
+
+            //list_active.setGroupIndicator(canExpand);
+        } else {
+            /*for (int i = 0; i < 5; i++) { // TODO https://stackoverflow.com/questions/9824074/android-expandablelistview-looking-for-a-tutorial
+            // TODO 
+                Map<String, String> curGroupMap = new HashMap<String, String>();
+                groupData.add(curGroupMap);
+                curGroupMap.put(ITEM, "parent " + i);
+
+                if (i != 1)
+                    for (int j = 0; j < 3; j++) {
+                        Map<String, String> curChildMap = new HashMap<String, String>();
+                        children.add(curChildMap);
+                        curChildMap.put(ITEM, "Child " + j);
+                    }
+                childData.add(children);
+            }*/
+
+        }
+
+        /*list_active_array.add(item.name);
         list_active_ram_itens.add(item); // TODO change
         list_active_adapter.notifyDataSetChanged();
         list_active_info.setText(list_active_ram.quantity + " / " + list_active_ram.max_quantity +
-                " itens");
+                " itens");*/
     }
 
     @Override
@@ -542,6 +613,6 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Log.d("List", position + ": " + list_active_array.get(position));
+        //Log.d("List", position + ": " + list_active_array.get(position));
     }
 }

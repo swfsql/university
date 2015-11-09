@@ -4,6 +4,9 @@
     <string name="domain">test</string>
     <string name="sub_domain">example</string>
 
+    <string name="expandable_parent">expParent</string>
+    <string name="expandable_child">expChild</string>
+
 
     <string name="drawer_openned">Opções</string>
     <string name="home_drawer_closed">PoupaGrana</string>

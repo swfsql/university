@@ -31,12 +31,11 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 
 public class Home extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -47,25 +46,33 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     private String[] drawer_list_itens;
     private ActionBarDrawerToggle hActionBarDrawerToggle;
     //public final static String EXTRA_MESSAGE = "com." + R.string.sub_domain + "." + R.string.domain
-            //+ "." + R.string.app_name_sub;
+    //+ "." + R.string.app_name_sub;
 
     // lista ativa
-    private ExpandableListView list_active;
-    private ArrayAdapter list_active_adapter;
-    private ArrayList list_active_array;
-    DB.List list_active_ram = new DB.List();
-    ArrayList<DB.Item> list_active_ram_itens;
-    private Button list_active_info;
+    private ExpandableListView expandableListView;
+    private ArrayAdapter expandableListView_arrayAdapter;
+    private ArrayList expandableListView_arrayList;
+    private DB.List DB_List = new DB.List();
+    private ArrayList<DB.Item> DB_Items;
+    private Button button;
 
-    private SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
+    private static final SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy HH:MM:SS");
 
 
-    private EditText add_item;
+    private EditText editText;
 
     // DB
-    FeedReaderDBHelper mDBHelper;
+    FeedReaderDBHelper dbHelper;
 
     public static class DB {
+        public static class SupplierItem {
+            public long id;
+            public long supplier_id;
+            public String name;
+            public String info;
+            public long price;
+            public String date_modified;
+        }
         public static class Item {
             public long item_id;
             public long list_id;
@@ -74,8 +81,53 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             public String name;
             public boolean created;
             public boolean modified;
-            public ArrayList<SupplierItem> supplierItem;
+            public ArrayList<SupplierItem> supplierItems;
+
+            public boolean getSupplierItems(SQLiteDatabase dbr, Map<Long, Long> suppliersPrice) {
+                Cursor c = dbr.query(
+                        ContractDB.SupplierItemEntry.TABLE_NAME,
+                        new String[]{"*"},
+                        ContractDB.SupplierItemEntry.COLUMN_NAME_NAME + " = ?",
+                        new String[]{this.name}, null, null,
+                        ContractDB.SupplierItemEntry.COLUMN_NAME_PRICE + " ASC",
+                        "5");
+
+                this.supplierItems = new ArrayList<SupplierItem>();
+                SupplierItem supplierItem = new SupplierItem();
+
+                if (c != null) {
+                    c.moveToFirst();
+                    do {
+                        supplierItem = new SupplierItem();
+                        supplierItem.id = Long.parseLong(c.getString(0));
+                        supplierItem.supplier_id = Long.parseLong(c.getString(1));
+                        supplierItem.name = c.getString(2);
+                        supplierItem.info = c.getString(3);
+                        supplierItem.price = Long.parseLong(c.getString(4));
+                        supplierItem.date_modified = date_format.format(new Date());
+                        c.getString(5); // TODO
+                        this.supplierItems.add(supplierItem);
+                        if (suppliersPrice.get(supplierItem.supplier_id) == null) {
+                            suppliersPrice.put(supplierItem.supplier_id, supplierItem.price);
+                        } else {
+                            suppliersPrice.put(supplierItem.supplier_id, (suppliersPrice.get(supplierItem.supplier_id) + supplierItem.price));
+                        }
+                    } while (c.moveToNext());
+
+                    c.close();
+                    java.util.Collections.sort(this.supplierItems, new java.util.Comparator<DB.SupplierItem>() {
+                        @Override
+                        public int compare(DB.SupplierItem a, DB.SupplierItem b) {
+                            return (int) (a.price - b.price);
+                        }
+                    });
+                } else {
+                    return false;
+                }
+                return true;
+            }
         }
+
         public static class List {
             public long id;
             public String info;
@@ -89,25 +141,21 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             public int quantity;
             public int max_quantity;
         }
+
         public static class ItemInSupplier {
             public long item_id;
             public long supplier_item_id;
         }
+
         public static class Supplier {
             public long id;
             public String name;
             public String info;
             public String address;
+            public int price;
             public boolean enabled;
         }
-        public static class SupplierItem {
-            public long id;
-            public long supplier_id;
-            public String name;
-            public String info;
-            public long price;
-            public String date_modified;
-        }
+
     }
 
     private void onCreateToolbar() {
@@ -117,9 +165,9 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    private void onCreateDrawer(){
+    private void onCreateDrawer() {
         hDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout,  R.string.drawer_openned, R.string.home_drawer_closed) {
+        hActionBarDrawerToggle = new ActionBarDrawerToggle(this, hDrawerLayout, R.string.drawer_openned, R.string.home_drawer_closed) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -144,167 +192,129 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     }
 
-    Drawable canExpand;
-    private void onCreateList(){
+    Drawable expandableList_expandSymbol;
+
+    private void onCreateExpandableList() {
         // cria lista e sua array
-        list_active = (ExpandableListView) findViewById(R.id.list_active);
-        /*list_active_array = new ArrayList();
-        list_active_adapter = new ArrayAdapter(
-                this,
-                android.R.layout.simple_expandable_list_item_1,
-                list_active_array);
-        list_active.setAdapter(list_active_adapter);
-        */
+        expandableListView = (ExpandableListView) findViewById(R.id.list_active);
 
-        //
-
-        groupData = new ArrayList<Map<String, String>>();
-        childData = new ArrayList<java.util.List<Map<String, String>>>();
+        expandableList_parents = new ArrayList<Map<String, String>>();
+        expandableList_childsList = new ArrayList<java.util.List<Map<String, String>>>();
         SimpleExpandableListAdapter expListAdapter =
                 new SimpleExpandableListAdapter(
                         this,
-                        groupData,              // Creating group List.
+                        expandableList_parents,              // Creating group List.
                         android.R.layout.simple_expandable_list_item_2,
-                        new String[] { ITEM  },  // the key of group item.
-                        new int[] { android.R.id.text1 },    // ID of each group item.-Data under the key goes into this TextView.
-                        childData,              // childData describes second-level entries.
+                        new String[]{ITEM},  // the key of group item.
+                        new int[]{android.R.id.text1},    // ID of each group item.-Data under the key goes into this TextView.
+                        expandableList_childsList,              // expandableList_childsList describes second-level entries.
                         android.R.layout.simple_expandable_list_item_2,
-                        new String[] { ITEM },      // Keys in childData maps to display.
-                        new int[] { android.R.id.text1}     // Data under the keys above go into these TextViews.
+                        new String[]{ITEM},      // Keys in expandableList_childsList maps to display.
+                        new int[]{android.R.id.text1}     // Data under the keys above go into these TextViews.
                 );
-        list_active.setAdapter(expListAdapter);
+        expandableListView.setAdapter(expListAdapter);
         TypedArray expandableListViewStyle = this.getTheme().obtainStyledAttributes(new int[]{android.R.attr.expandableListViewStyle});
-        TypedArray groupIndicator = this.getTheme().obtainStyledAttributes(expandableListViewStyle.getResourceId(0,0),new int[]{android.R.attr.groupIndicator});
-        Drawable canExpand = groupIndicator.getDrawable(0);
-        //expandableListViewStyle.recycle();
-        //groupIndicator.recycle();
-        //list_active.setGroupIndicator(null);
-        //list_active.setGroupIndicator(canExpand);
-
-
+        TypedArray groupIndicator = this.getTheme().obtainStyledAttributes(expandableListViewStyle.getResourceId(0, 0), new int[]{android.R.attr.groupIndicator});
+        expandableList_expandSymbol = groupIndicator.getDrawable(0);
+        expandableListViewStyle.recycle();
+        groupIndicator.recycle();
+        expandableListView.setGroupIndicator(null);
+        //expandableListView.setGroupIndicator(expandableList_expandSymbol);
     }
 
     private final String ITEM = "ITEM";
-    private java.util.List<Map<String, String>> groupData;
-    private java.util.List<java.util.List<Map<String, String>>> childData;
-    private java.util.List<Map<String, String>> children;
+    private java.util.List<Map<String, String>> expandableList_parents;
+    private Map<String, String> expandableList_parent;
+    private java.util.List<java.util.List<Map<String, String>>> expandableList_childsList;
+    private java.util.List<Map<String, String>> expandableList_childs;
+    private Map<String, String> expandableList_child;
 
-
-    private void onCreateEditText(){
-
-
-        //
-
+    private void onCreateEditText() {
 
         // ao acabar de escrever no campo de texto, enviar pra lista ativa
-        //final EditText add_item = (EditText) findViewById(R.id.add_item);
-        add_item = (EditText) findViewById(R.id.add_item);
-        list_active_info = (Button) findViewById(R.id.list_active_info);
-        add_item.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        //final EditText editText = (EditText) findViewById(R.id.editText);
+        editText = (EditText) findViewById(R.id.add_item);
+        button = (Button) findViewById(R.id.list_active_info);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     DB.Item item = new DB.Item();
-                    item.name = add_item.getText().toString();
+                    item.name = editText.getText().toString();
                     item.quantity = 0;
                     item.max_quantity = 1;
                     item.modified = true;
                     item.created = true;
-                    item.list_id = list_active_ram.id;
+                    item.list_id = DB_List.id;
                     item.item_id = -1;
-                    list_active_ram.quantity += 0;
-                    list_active_ram.max_quantity += item.max_quantity;
-                    add_item.setText("");
-                    for (DB.Item item2 : list_active_ram_itens) {
+                    DB_List.quantity += 0;
+                    DB_List.max_quantity += item.max_quantity;
+                    editText.setText("");
+                    for (DB.Item item2 : DB_Items) {
                         if (item.name.equalsIgnoreCase(item2.name)) {
                             item2.quantity += item.quantity;
                             item2.max_quantity += item.max_quantity;
                             item2.modified = true;
-                            list_active_adapter.notifyDataSetChanged();
+                            expandableListView_arrayAdapter.notifyDataSetChanged();
                             return true;
                         }
                     }
-                    addToList(item); // TODO test
+                    expandableList_addItem(item); // TODO test
                     handled = true;
                 }
                 return handled;
             }
         });
-        list_active.setOnItemClickListener(this);
+        expandableListView.setOnItemClickListener(this);
 
     }
 
 
-
-    private void onCreateDB(){
+    private void onCreateDB() {
         SQLiteDatabase dbw;
         SQLiteDatabase dbr;
-        mDBHelper = new FeedReaderDBHelper(this);
-
-        // tmp
-        /*DB.Item item = new DB.Item();
-        DB.ItemInList itemInList = new DB.ItemInList();
-        DB.ItemInSupplier itemInSupplier = new DB.ItemInSupplier();
-        DB.Supplier supplier = new DB.Supplier();
-        DB.SupplierItem supplierItem = new DB.SupplierItem();
-        itemInSupplier.item_id = 0;
-        itemInSupplier.supplier_item_id = 0;
-        supplier.id = 0;
-        supplier.name = "mercadoA";
-        supplier.info = "infoA";
-        supplier.address = "addrA";
-        supplierItem.id = 0;
-        supplierItem.supplier_id = 0;
-        supplierItem.name = "banana";
-        supplierItem.info = "";
-        supplierItem.price = 199;
-        supplierItem.date_modified = date_format.format(new Date());;
-        */
+        dbHelper = new FeedReaderDBHelper(this);
 
         // DB Read most recent accessed list
-        dbr = mDBHelper.getReadableDatabase();
-        String rawQuery;/* = "SELECT * FROM " + ContractDB.ListEntry.TABLE_NAME +
-                " WHERE " + ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 0 " +
-                " ORDER BY " + ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC" +
-                " LIMIT 1";*/
-        //
+        dbr = dbHelper.getReadableDatabase();
+        String query;
         Cursor cList, cItem;
         cList = dbr.query(ContractDB.ListEntry.TABLE_NAME,
-                new String[] { "*" },
+                new String[]{"*"},
                 ContractDB.ListEntry.COLUMN_NAME_ACHIEVED + " = 0", null, null, null,
                 ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED + " DESC",
                 "1");
-        //cList = dbr.rawQuery(rawQuery, null);
-        //dbw = mDBHelper.getWritableDatabase();
-        list_active_ram.modified = false;
-        list_active_ram.created = false;
-        list_active_ram_itens = new ArrayList<DB.Item>();
+
+        //dbw = dbHelper.getWritableDatabase();
+        DB_List.modified = false;
+        DB_List.created = false;
+        DB_Items = new ArrayList<DB.Item>();
         if (cList != null && cList.getCount() == 1) {
             Log.d("DB", "Lista ativa existente"); // TODO test
             cList.moveToFirst();
-            list_active_ram.id = Long.parseLong(cList.getString(0), 10);
-            list_active_ram.info = cList.getString(1);
-            list_active_ram.date_created = date_format.format(new Date());
+            DB_List.id = Long.parseLong(cList.getString(0), 10);
+            DB_List.info = cList.getString(1);
+            DB_List.date_created = date_format.format(new Date());
             cList.getString(2); // TODO fix
-            list_active_ram.date_acessed = date_format.format(new Date());
+            DB_List.date_acessed = date_format.format(new Date());
             cList.getString(3); // TODO fix
-            list_active_ram.date_modified = date_format.format(new Date());
+            DB_List.date_modified = date_format.format(new Date());
             cList.getString(0); // TODO fix
-            list_active_ram.price = Integer.parseInt(cList.getString(5));
-            list_active_ram.achieved = Integer.parseInt(cList.getString(6));
-            if(list_active_ram.price == 0) {
-                //list_active.setGroupIndicator(null);
+            DB_List.price = Integer.parseInt(cList.getString(5));
+            DB_List.achieved = Integer.parseInt(cList.getString(6));
+            if (DB_List.price == 0) {
+                //expandableListView.setGroupIndicator(null);
             } else {
-                //list_active.setGroupIndicator(canExpand);
+                expandableListView.setGroupIndicator(expandableList_expandSymbol);
             }
-            Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
-                    list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
-                    " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
-                    " achieved: " + list_active_ram.achieved);
+            Log.d("List", "id: " + DB_List.id + " info: " + DB_List.info + " date_created: " +
+                    DB_List.date_created + "date_acessed: " + DB_List.date_acessed +
+                    " date_modified: " + DB_List.date_modified + " price: " + DB_List.price +
+                    " achieved: " + DB_List.achieved);
 
             Log.d("DB", "lendo itens da lista");
-            rawQuery =
+            query =
                     "SELECT " + ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY + ", " +
                             ContractDB.ItemInListEntry.COLUMN_NAME_MAX_QUANTITY + ", " +
                             ContractDB.ItemEntry.COLUMN_NAME_NAME + ", " +
@@ -312,16 +322,16 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                             ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID +
                             " FROM " + ContractDB.ItemInListEntry.TABLE_NAME + " INNER JOIN " + ContractDB.ItemEntry.TABLE_NAME +
                             " WHERE " + ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID +
-                            " = " + list_active_ram.id +
+                            " = " + DB_List.id +
                             " AND " + ContractDB.ItemInListEntry.TABLE_NAME + "." + ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID +
                             " = " + ContractDB.ItemEntry.TABLE_NAME + "." + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID;
-            cItem = dbr.rawQuery(rawQuery, null);
+            cItem = dbr.rawQuery(query, null);
             int i = -1;
             if (cItem != null) { // TODO test
                 cItem.moveToFirst();
                 DB.Item item = new DB.Item();
-                list_active_ram.quantity = 0;
-                list_active_ram.max_quantity = 0;
+                DB_List.quantity = 0;
+                DB_List.max_quantity = 0;
                 do {
                     item.quantity = Integer.parseInt(cItem.getString(0));
                     item.max_quantity = Integer.parseInt(cItem.getString(1));
@@ -331,29 +341,24 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                     item.modified = false;
                     item.created = false;
                     // adiciona no campo
-                    list_active_ram.quantity +=item.quantity;
-                    list_active_ram.max_quantity +=item.max_quantity;
-                    addToList(item); // TODO erro
+                    DB_List.quantity += item.quantity;
+                    DB_List.max_quantity += item.max_quantity;
+                    expandableList_addItem(item); // TODO erro
                 } while (cItem.moveToNext());
-                ((BaseExpandableListAdapter) list_active.getExpandableListAdapter()).notifyDataSetChanged();
+                ((BaseExpandableListAdapter) expandableListView.getExpandableListAdapter()).notifyDataSetChanged();
             }
             cItem.close();
         } else {
             Log.d("DB", "Lista ativa inexistente");
-            list_active_ram.info = "Lista vazia";
-            list_active_ram.quantity = 0;
-            list_active_ram.max_quantity = 0;
-            list_active_ram.date_created = date_format.format(new Date());
-            list_active_ram.date_acessed = date_format.format(new Date());
-            list_active_ram.date_modified = date_format.format(new Date());
-            list_active_ram.price = 0;
-            list_active_ram.achieved = 0;
-            list_active_ram.created = true;
-            //list_active.setGroupIndicator(null);
-            Log.d("List", "id: " + list_active_ram.id + " info: " + list_active_ram.info + " date_created: " +
-                    list_active_ram.date_created + "date_acessed: " + list_active_ram.date_acessed +
-                    " date_modified: " + list_active_ram.date_modified + " price: " + list_active_ram.price +
-                    " achieved: " + list_active_ram.achieved);
+            DB_List.info = "Lista vazia";
+            DB_List.quantity = 0;
+            DB_List.max_quantity = 0;
+            DB_List.date_created = date_format.format(new Date());
+            DB_List.date_acessed = date_format.format(new Date());
+            DB_List.date_modified = date_format.format(new Date());
+            DB_List.price = 0;
+            DB_List.achieved = 0;
+            DB_List.created = true;
         }
         cList.close();
         dbr.close();
@@ -362,55 +367,11 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + " LIKE ?";
         selectionArgs = new String[] { String.valueOf(1) };
         //
-        dbw = mDBHelper.getWritableDatabase();
+        dbw = dbHelper.getWritableDatabase();
         dbw.delete(ContractDB.ItemEntry.TABLE_NAME, selection, selectionArgs);
         dbw.close();*/
         }
 
-
-        { /* DB Read
-
-        dbr = mDBHelper.getReadableDatabase();
-        //
-        projection = new String[]{
-                ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID,
-                ContractDB.ItemEntry.COLUMN_NAME_NAME,
-                ContractDB.ItemEntry.COLUMN_NAME_PRICE,
-                ContractDB.ItemEntry.COLUMN_NAME_SUPERMARKET,
-                ContractDB.ItemEntry.COLUMN_NAME_UPDATE_DATE
-        };
-        //
-        selection = ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID + "=?";
-        selectionArgs = new String[] {
-                String.valueOf(1)};
-        //
-        sortOrder = ContractDB.ItemEntry.COLUMN_NAME_NAME + " DESC";
-        //
-        c = dbr.query(
-                ContractDB.ItemEntry.TABLE_NAME,  // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                sortOrder                                 // The sort order
-        );
-
-        // DB Read Cycle
-        if (c != null){
-            c.moveToFirst();
-            Log.d("DB", "DB lido");
-            Log.d("DB", c.getString(0));
-            Log.d("DB", c.getString(1));
-            Log.d("DB", c.getString(2));
-            Log.d("DB", c.getString(3));
-            Log.d("DB", c.getString(4));
-            c.close();
-        } else {
-            Log.d("DB", "DB nao lido");
-        }
-        dbr.close(); */
-        }
 
     }
 
@@ -419,10 +380,10 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         // popula Supplier e Supplier_Item
         ContentValues v;
-        SQLiteDatabase dbw = mDBHelper.getWritableDatabase();
+        SQLiteDatabase dbw = dbHelper.getWritableDatabase();
 
-        String[]suppliers = {"Bretas", "Pague Pouco", "Nova Europa", "JL"};
-        for(String supplier : suppliers) {
+        String[] suppliers = {"Bretas", "Pague Pouco", "Nova Europa", "JL"};
+        for (String supplier : suppliers) {
             v = new ContentValues();
             v.put(ContractDB.SupplierEntry.COLUMN_NAME_NAME, supplier);
             v.put(ContractDB.SupplierEntry.COLUMN_NAME_INFO, supplier + "_info");
@@ -431,10 +392,10 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         }
 
 
-        String[]produducts = {"Maca", "Banana", "Arroz", "Feijao", "Frango", "Refrigerante", "Leite", "Pao", "Presunto", "Mussarela", "Manteiga", "Cerveija", "Ovo", "Pizza"};
+        String[] produducts = {"Maca", "Banana", "Arroz", "Feijao", "Frango", "Refrigerante", "Leite", "Pao", "Presunto", "Mussarela", "Manteiga", "Cerveija", "Ovo", "Pizza"};
         Random rand = new Random();
-        for(String product : produducts) {
-            for (int j = 0; j < suppliers.length ;j++){
+        for (String product : produducts) {
+            for (int j = 0; j < suppliers.length; j++) {
                 v = new ContentValues();
                 v.put(ContractDB.SupplierItemEntry.COLUMN_NAME_SUPPLIER_ID, j);
                 v.put(ContractDB.SupplierItemEntry.COLUMN_NAME_NAME, product);
@@ -453,51 +414,51 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
         onCreateToolbar();
         onCreateDrawer();
-        onCreateList();
+        onCreateExpandableList();
         onCreateEditText();
         onCreateDB();
         onCreateServer();
     }
 
-    void addToList(DB.Item item) { // TODO test
-        list_active_ram.modified = true;
-        list_active_ram_itens.add(item);
-        if(list_active_ram.price == 0) {
+    void expandableList_addItem(DB.Item item) { // TODO test
+        DB_List.modified = true;
+        DB_Items.add(item);
+        if (DB_List.price == 0) {
 
             Map<String, String> curGroupMap = new HashMap<String, String>();
             curGroupMap.put(ITEM, item.name);
-            groupData.add(curGroupMap);
-            children = new ArrayList<Map<String, String>>();
-            childData.add(children);
-            list_active_info.setText(list_active_ram.quantity + " / " + list_active_ram.max_quantity +
+            expandableList_parents.add(curGroupMap);
+            expandableList_childs = new ArrayList<Map<String, String>>();
+            expandableList_childsList.add(expandableList_childs);
+            button.setText(DB_List.quantity + " / " + DB_List.max_quantity +
                     " itens");
 
 
-            ((BaseExpandableListAdapter) list_active.getExpandableListAdapter()).notifyDataSetChanged();
+            ((BaseExpandableListAdapter) expandableListView.getExpandableListAdapter()).notifyDataSetChanged();
 
-            //list_active.setGroupIndicator(canExpand);
+            //expandableListView.setGroupIndicator(expandableList_expandSymbol);
         } else {
             /*for (int i = 0; i < 5; i++) { // TODO https://stackoverflow.com/questions/9824074/android-expandablelistview-looking-for-a-tutorial
             // TODO
                 Map<String, String> curGroupMap = new HashMap<String, String>();
-                groupData.add(curGroupMap);
+                expandableList_parents.add(curGroupMap);
                 curGroupMap.put(ITEM, "parent " + i);
 
                 if (i != 1)
                     for (int j = 0; j < 3; j++) {
                         Map<String, String> curChildMap = new HashMap<String, String>();
-                        children.add(curChildMap);
+                        expandableList_childs.add(curChildMap);
                         curChildMap.put(ITEM, "Child " + j);
                     }
-                childData.add(children);
+                expandableList_childsList.add(expandableList_childs);
             }*/
 
         }
 
-        /*list_active_array.add(item.name);
-        list_active_ram_itens.add(item); // TODO change
-        list_active_adapter.notifyDataSetChanged();
-        list_active_info.setText(list_active_ram.quantity + " / " + list_active_ram.max_quantity +
+        /*expandableListView_arrayList.add(item.name);
+        DB_Items.add(item); // TODO change
+        expandableListView_arrayAdapter.notifyDataSetChanged();
+        button.setText(DB_List.quantity + " / " + DB_List.max_quantity +
                 " itens");*/
     }
 
@@ -523,19 +484,19 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     private boolean menuSave() {
         ContentValues values;
         SQLiteDatabase dbw;
-        if (!list_active_ram.modified) return true;
-        if (list_active_ram.created) {
+        if (!DB_List.modified) return true;
+        if (DB_List.created) {
             Log.d("DB", "Lista criada");
-            list_active_ram.date_modified = date_format.format(new Date());
-            dbw = mDBHelper.getWritableDatabase();
+            DB_List.date_modified = date_format.format(new Date());
+            dbw = dbHelper.getWritableDatabase();
             values = new ContentValues();
-            values.put(ContractDB.ListEntry.COLUMN_NAME_INFO, list_active_ram.info);
-            values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_CREATED, list_active_ram.date_created);
-            values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED, list_active_ram.date_acessed);
-            values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_MODIFIED, list_active_ram.date_modified);
-            values.put(ContractDB.ListEntry.COLUMN_NAME_PRICE, list_active_ram.price);
-            values.put(ContractDB.ListEntry.COLUMN_NAME_ACHIEVED, list_active_ram.achieved);
-            list_active_ram.id = dbw.insert(ContractDB.ListEntry.TABLE_NAME, null, values);
+            values.put(ContractDB.ListEntry.COLUMN_NAME_INFO, DB_List.info);
+            values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_CREATED, DB_List.date_created);
+            values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_ACESSED, DB_List.date_acessed);
+            values.put(ContractDB.ListEntry.COLUMN_NAME_DATE_MODIFIED, DB_List.date_modified);
+            values.put(ContractDB.ListEntry.COLUMN_NAME_PRICE, DB_List.price);
+            values.put(ContractDB.ListEntry.COLUMN_NAME_ACHIEVED, DB_List.achieved);
+            DB_List.id = dbw.insert(ContractDB.ListEntry.TABLE_NAME, null, values);
             dbw.close();
         } else {
             Log.d("DB", "Lista atualizada");
@@ -548,8 +509,8 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
 
         String rawQuery;
-        dbw = mDBHelper.getWritableDatabase();
-        for (DB.Item item : list_active_ram_itens) {
+        dbw = dbHelper.getWritableDatabase();
+        for (DB.Item item : DB_Items) {
             if (item.created) {
                 Log.d("DB", "salvando item:" + item.name);
 
@@ -582,14 +543,14 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                                     "(SELECT " + ContractDB.ItemEntry.COLUMN_NAME_ITEM_ID +
                                     " FROM " + ContractDB.ItemEntry.TABLE_NAME  +
                                     " WHERE " + ContractDB.ItemEntry.COLUMN_NAME_NAME + " = " + itemdb.name + "), " +
-                                list_active_ram.id + ", " +
+                                DB_List.id + ", " +
                                 itemdb.quantity + ", " +
                                 itemdb.max_quantity + ")";
                         dbw.execSQL(rawQuery);*/
 
                 values = new ContentValues();
                 values.put(ContractDB.ItemInListEntry.COLUMN_NAME_ITEM_ID, item.item_id);
-                values.put(ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID, list_active_ram.id);
+                values.put(ContractDB.ItemInListEntry.COLUMN_NAME_LIST_ID, DB_List.id);
                 values.put(ContractDB.ItemInListEntry.COLUMN_NAME_QUANTITY, item.quantity);
                 values.put(ContractDB.ItemInListEntry.COLUMN_NAME_MAX_QUANTITY, item.max_quantity);
                 item.item_id = dbw.insert(ContractDB.ItemInListEntry.TABLE_NAME, null, values);
@@ -604,79 +565,69 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
         dbw.close();
 
 
+        return true;
+    }
 
+
+    private boolean unpricedList() {
 
         return true;
+    }
+
+    private boolean pricedList() {
+
+        return true;
+    }
+
+
+    class ValueComparator implements java.util.Comparator {
+        Map<Long, Long> base;
+
+        public ValueComparator(Map base) {
+            this.base = base;
+        }
+
+        @Override
+        public int compare(Object a, Object b) {
+            if (base.get((Long) a) >= base.get((Long) b)) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
     }
 
     private boolean menuSearchPrice() {
         menuSave();
 
-        SQLiteDatabase dbr = mDBHelper.getReadableDatabase();
-        DB.SupplierItem supplierItem;
-        Map<Long, Long> suppliers_price = new HashMap<>();
-
-        int supplierNum;
-            for (DB.Item item : list_active_ram_itens) {
-                Cursor c = dbr.query(ContractDB.SupplierItemEntry.TABLE_NAME,
-                        new String[]{"*"},
-                        ContractDB.SupplierItemEntry.COLUMN_NAME_NAME + " = ?", new String[]{item.name},
-                        null, null, ContractDB.SupplierItemEntry.COLUMN_NAME_PRICE + " ASC", "5");
-
-                item.supplierItem = new ArrayList<DB.SupplierItem>();
-
-                if (c != null) {
-                    c.moveToFirst();
-                    do {
-                        supplierItem = new DB.SupplierItem();
-                        supplierItem.id = Long.parseLong(c.getString(0));
-                        supplierItem.supplier_id = Long.parseLong(c.getString(1));
-                        supplierItem.name = c.getString(2);
-                        supplierItem.info = c.getString(3);
-                        supplierItem.price = Long.parseLong(c.getString(4));
-                        supplierItem.date_modified = date_format.format(new Date());
-                        c.getString(5); // TODO
-                        item.supplierItem.add(supplierItem);
-                        if (suppliers_price.get(supplierItem.supplier_id) == null){
-                            suppliers_price.put(supplierItem.supplier_id, supplierItem.price);
-                        } else {
-                            suppliers_price.put(supplierItem.supplier_id, (suppliers_price.get(supplierItem.supplier_id) + supplierItem.price));
-                        }
-                    } while (c.moveToNext());
-
-                    c.close();
-                }
-                Collections.sort(item.supplierItem, new Comparator<DB.SupplierItem>() {
-                    @Override
-                    public int compare(DB.SupplierItem a, DB.SupplierItem b)
-                    {
-                        return (int) (a.price - b.price);
-                    }
-                });
-            }
-
-
+        SQLiteDatabase dbr = dbHelper.getReadableDatabase();
+        Map<Long, Long> suppliersPrice = new HashMap<>();
+        boolean noSupplier = false;
+        for (DB.Item item : DB_Items) {
+            if (!item.getSupplierItems(dbr, suppliersPrice))
+                noSupplier = true;
+        }
         dbr.close();
 
-
-        // considerar somente o mercado que tem o menor preço
-        Map.Entry<Long, Long> min = null;
-        for (Map.Entry<Long, Long> entry : suppliers_price.entrySet()) {
-            if (min == null || min.getValue() > entry.getValue()) {
-                min = entry;
-            }
-        }
-
+        // sort suppliers by total price
+        ValueComparator bvc = new ValueComparator(suppliersPrice);
+        TreeMap<Long, Long> suppliersPriceSorted = new TreeMap(bvc);
+        suppliersPriceSorted.putAll(suppliersPrice);
         ArrayList<Long> selected_suppliers = new ArrayList<Long>();
-        selected_suppliers.add(min.getKey()); // apenas um mercado foi escolhido
+        for (Map.Entry<Long, Long> entry : suppliersPriceSorted.entrySet()) {
+            selected_suppliers.add(entry.getKey());
+        }
         Log.d("$", "selected suppliers: " + selected_suppliers.toString());
 
         Map<Long, DB.Supplier> suppliers = new HashMap<Long, DB.Supplier>();
-        dbr = mDBHelper.getReadableDatabase();
+
+        // read suppliers
+        dbr = dbHelper.getReadableDatabase();
         Cursor c = dbr.query(ContractDB.SupplierEntry.TABLE_NAME,
                 new String[]{"*"},
                 null, null,
-                null, null, null, null);
+                null, null, null,
+                null); // LIMIT
         if (c != null) {
             c.moveToFirst();
             DB.Supplier supplier;
@@ -687,6 +638,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
                 supplier.info = c.getString(2);
                 supplier.address = c.getString(3);
                 supplier.enabled = false;
+                supplier.price = 0;
                 suppliers.put(supplier.id, supplier);
             } while (c.moveToNext());
             for (Long selected : selected_suppliers) {
@@ -696,82 +648,53 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
             c.close();
         }
 
-        java.util.List<Map<String,String>> newGroupData = new ArrayList<Map<String,String>>();
+        //
+        this.expandableList_parents.clear();
         Map<String, String> curGroupMap;
-        java.util.List<java.util.List<Map<String, String>>> newChildData = new ArrayList<java.util.List<Map<String, String>>>();
+        this.expandableList_childsList.clear();
         for (Long selected_supplier : selected_suppliers) {
             curGroupMap = new HashMap<String, String>();
             curGroupMap.put(ITEM, suppliers.get(selected_supplier + 1).name);
-            newGroupData.add(curGroupMap);
-            children = new ArrayList<Map<String, String>>();
-            newChildData.add(children);
+            expandableList_parents.add(curGroupMap);
+            expandableList_childs = new ArrayList<Map<String, String>>();
+            expandableList_childsList.add(expandableList_childs);
         }
-        curGroupMap = new HashMap<String, String>();
-        curGroupMap.put(ITEM, "Sem mercado");
-        newGroupData.add(curGroupMap);
-        children = new ArrayList<Map<String, String>>();
-        newChildData.add(children);
+        if (noSupplier) {
+            curGroupMap = new HashMap<String, String>();
+            curGroupMap.put(ITEM, "Sem mercado");
+            expandableList_parents.add(curGroupMap);
+            expandableList_childs = new ArrayList<Map<String, String>>();
+            expandableList_childsList.add(expandableList_childs);
+        }
 
-        for (DB.Item item : list_active_ram_itens) {
+        DB.SupplierItem supplierItem;
+        for (DB.Item item : DB_Items) {
             int i, j;
             Log.d("$", "Item: " + item.name);
-            for (i = 0; i < selected_suppliers.size(); i++){
-                for(j = 0; j < item.supplierItem.size(); j++) {
-                    Log.d("$", "i:" + i + ", j:"+ j);
-                    supplierItem = item.supplierItem.get(j);
+            for (i = 0; i < selected_suppliers.size(); i++) {
+                for (j = 0; j < item.supplierItems.size(); j++) {
+                    Log.d("$", "i:" + i + ", j:" + j);
+                    supplierItem = item.supplierItems.get(j);
                     if (supplierItem.supplier_id == selected_suppliers.get(i)) {
                         Log.d("$", "BATEU");
                         Map<String, String> curChildMap = new HashMap<String, String>();
                         curChildMap.put(ITEM, item.quantity + "/" + item.max_quantity + "\t\t" + item.name + "\t\t$" + supplierItem.price);
-                        newChildData.get(i).add(curChildMap);
+                        expandableList_childsList.get(i).add(curChildMap);
+                        suppliers.get(supplierItem.supplier_id).price += supplierItem.price;
                         break;
                     }
                 }
-                if (j != item.supplierItem.size()) break;
+                if (j != item.supplierItems.size()) break;
             }
             if (i == selected_suppliers.size()) {
                 Map<String, String> curChildMap = new HashMap<String, String>();
                 curChildMap.put(ITEM, item.quantity + "/" + item.max_quantity + "\t" + item.name);
-                newChildData.get(i).add(curChildMap);
+                expandableList_childsList.get(i).add(curChildMap);
             }
         }
 
-
-        groupData.clear();
-        /*for (Map<String,String> gd : groupData){
-            groupData.remove(gd);
-        }*/
-        childData.clear();
-        /*for (java.util.List<Map<String, String>> cd : childData){
-            childData.remove(cd);
-        }*/
-        for (Map<String,String> gd : newGroupData){
-            groupData.add(gd);
-        }
-        for (java.util.List<Map<String, String>> cd : newChildData) {
-            childData.add(cd);
-        }
-
-
-        //list_active.setGroupIndicator(canExpand);
-        ((BaseExpandableListAdapter) list_active.getExpandableListAdapter()).notifyDataSetChanged();
-
-        // add pais e filhos
-            /*for (int i = 0; i < 5; i++) { // TODO https://stackoverflow.com/questions/9824074/android-expandablelistview-looking-for-a-tutorial
-            // TODO
-                Map<String, String> curGroupMap = new HashMap<String, String>();
-                groupData.add(curGroupMap);
-                curGroupMap.put(ITEM, "parent " + i);
-
-                if (i != 1)
-                    for (int j = 0; j < 3; j++) {
-                        Map<String, String> curChildMap = new HashMap<String, String>();
-                        children.add(curChildMap);
-                        curChildMap.put(ITEM, "Child " + j);
-                    }
-                childData.add(children);
-            }*/
-
+        expandableListView.setGroupIndicator(expandableList_expandSymbol);
+        ((BaseExpandableListAdapter) expandableListView.getExpandableListAdapter()).notifyDataSetChanged();
 
         return true;
     }
@@ -806,7 +729,7 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
     public void sendMessage(View view) {
 
         Intent intent = new Intent(this, List.class);
-        //EditText messageT = (EditText) findViewById(R.id.add_item);
+        //EditText messageT = (EditText) findViewById(R.id.editText);
         //String message = messageT.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
@@ -823,6 +746,6 @@ public class Home extends AppCompatActivity implements AdapterView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        //Log.d("List", position + ": " + list_active_array.get(position));
+        //Log.d("List", position + ": " + expandableListView_arrayList.get(position));
     }
 }

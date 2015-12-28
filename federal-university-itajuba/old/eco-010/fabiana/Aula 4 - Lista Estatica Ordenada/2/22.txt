@@ -1,0 +1,35 @@
+a)
+
+ i) dados e informações..
+  o TAD precisará do index (int único), nome (string) e o 
+  endereço ( struct com CEP (string), pais (int ou string), cidade (int ou string), bairro (int ou string), rua (int ou string) )
+
+ ii) operações..
+  segue as operações com: 
+   
+   int a: a, !a, ++a, a++, --a, a--, a==b (b é int), a!=b, a>b, a<b, a>=b, a<=b, a<<b, a>>b, 
+   a+b, a-b, a/b, a*b, a%b, b+a, b-a, b*a, b%a, a=b, a+=b, a-=b, a*=b, a/=b (b!=0), a%=b (b!=0), a||b, a&&b, a|b, a&b
+   
+   string a: a, a = s (s é string), utilizar as funções de string.., com a[b] (b>=0) ou *(a+b), pode-se acessar um char, e usar operações de char.
+   
+   char a: a, !a, a=b, a==b, a!=b, a>b, a<b, a>=b, a<=b
+
+   struct a: a=b (b da mesma struct de a), a.v (v é uma propriedade dentro da struct).
+
+
+b)
+
+ i) representação..
+  ..
+
+	 endereço         pessoa A
+	 ______ 	 ___________ 
+	| cep  |	|   index   |
+	| país |	|   nome    |
+	| ...  |	| endereço  |
+	|______|	|___________|
+  
+
+ ii) código..
+  struct Endereco {char cep[20]; char pais[30]; char cidade[30]; char bairro[30]; char rua[30];};
+  struct Pessoa {int index; char nome[40]; Endereco endereco;}; 

@@ -1,0 +1,107 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+funcionamento das structs e funções no hashmap..
+
+o programa tem 3 (+1) structs, sendo 2 métodos na primeira, 9 na segunda e 9 na terceira.
+
+struct No:
+2 construtores  tratam de inicializar os atributos do No: ra (chave), n (nome) e next (ponteiro para No, para fazer lista encadeada).
+
+
+struct Hashmap:
+construtor inicializa: L (tamanho do hash), o hash (array de listas encadeadas), hash[i] (cada lista é iniciada com um No ocullto), l (número de elemetos, 0). 
+método size retorna o número de cadastros.
+método isEmpty confere se há ao menos um cadastro.
+sempre que formos procurar/adicionar/remover um cadastro, passaremos pela fórmula do hash, que é K%L (RA % tamanhoDoHash). Daí caímos em uma lista encadeada, e procuramos linearmente pelo cadastro.
+sempre que formos adicionar/remover um cadastro, administramos a variável l (número de elementos).
+método get retorna um cadastro de acordo com seu RA. retorna NULL se o RA não existe. Senão, retorna o endereço do cadastro.
+método get2 faz o mesmo, mas retorna um ponteiro para esse ponteiro do cadastro, que é o mesmo atributo 'next' do cadastro antecessor.
+metodo put adicionará um No no hash. Se já existe o cadastro, ele será substituído, e o antigo será retornado. Senão, NULL é retornado.
+metodo remove remove um cadastro de acordo com a chave da lista, e o retorna. Se não existe, retorna NULL.
+método clear remove todos os cadastros, e zera o l (número de cadastros).
+método rmr (remove recursivo) deleta todos os cadastros a partir do cadastro indicado, no formato de lista encadeada.
+
+
+struct Iterator:
+construtor inicializa: o hm (hashmap referente), e então invoca o refresh.
+método refresh, recebendo hm, o contabiliza, e chama refresh overload.
+método refresh, sem hm, cria iter (um vetor (de ponteiros) de cadastros, com tamanho de acordo). Então busca, em cada lista linear no hash, os cadastros, trazendo-os à iter. iter é ordenado por sort (built-in), que faz uso de um método da struct Comparador, que define a comparação por RA. Então o vetor k (de RA) é gerado a partir de iter. 
+método getr (get recursivo) adiciona cadastros encadeamente linear, recursivamete.
+método iterador retorna k (vetor com chaves ordenadas), gerado no refresh, a partir do iter.
+método keys retorna iter (vetor com cadastros ordenados pelas chaves), gerado no refreh.
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+testes:
+Realizados por implementação no main, utilizando funções.
+Primeiro indicamos a inicialização do hash. 
+Sempre verificamos a quantidade de cadastros.
+
+Adiciona aluno 2a, que depois é sustituído, aluno 2b.
+Adiciona aluno 9, que faz parte do encadeamento do aluno 2b.
+Aluno 2b é substituído por 2c, pra ver se o encadeamento sai correto.
+
+Verifica-se a existência de alunos inexistentes, aluno 15.
+Remove um aluno existente, 2c. Então verifica a existência dele.
+Depois verifica a existência do aluno 16, confirmando o encadeamento dele.
+Tenta remover um aluno inexistente, 3.
+
+Então partimos para o teste do iterador. Primeiro limpamos o hash. Então adicionamos 16 alunos, do 1 ao 16.
+Então criamos um iterador, e geramos o iter (vetor de ponteiros de cadastros) e o k (vator de chaves), mostrando-os, des-respectivamente.
+Então removemos alguns cadastros e revemos o iterador. Então limpamos e hash e revemos o iterador, vazio.
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+Conclusão:
+
+Um bom exercício para implementar. 
+Sistemas geográficos/escolares poderiam usá-los facilmente. Como os cadastros são maiores, veríamos uma grande performace no acesso aos dados, pois a árvore binária/hash são mais eficientes do que uma lista encadeada, por exemplo. 
+Mas não vemos essa performasse com pequenos cadastros, talvez veríamos em algumas simulações gráficas com partículas.
+
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

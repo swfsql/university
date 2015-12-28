@@ -1,0 +1,135 @@
+a) // verificar se a lista está em ordem crescente ou em ordem decrescente..
+seListaOrdenada(.. lista[], int tamanho)
+{
+   int chave = lista[0].chave;
+   int chave2 = lista[1].chave;
+   int i = 1;
+   bool crescente = chave < chave2;
+   while (++i < tamanho)
+   {
+      chave2 = lista[i].chave
+      if(bool != chave < chave2)
+         return false; // lista não está ordenada (crescente ou decrescente)
+      chave = chave2;
+   }
+   return true; // lista está ordenada (crescente ou decrescente)
+}
+
+
+b) // copoiar todos os elementos de l2 em l1
+copiar(.. l1[], .. l2[], int tamanho)
+{
+   int i = -1;
+   while (++i < tamanho)
+     l1[i].chave = l2[i].chave;
+}
+
+c) // copiar elementos não repetidos de l2 em l1
+copiar(.. l1[], .. l2[], int tamanho)
+{
+   int i1 = 0;
+   int i2 = -1;
+   while (++i2 < tamanho)
+     if(l1[i1].chave != l2[i2].chave)
+       l1[i1++].chave = l2[i2].chave;
+}
+
+d) // copiar todos os elementos de l2 em l1 em ordem inversa
+copiar(.. l1[], .. l2[], int tamanho)
+{
+   int i1 = -1;
+   int i2 = tamanho-1;
+   while (++i1 < tamanho)
+     l1[i1].chave = l2[i2 - i1].chave;
+}
+
+
+e) // copiar em L1 as listas L2 e L3, intercaladas.
+copiar(.. l1[], .. l2[], .. l3[], int tamanho)
+{
+   int i1 = -1;
+   int i2 = 0;
+   int i3 = 0;
+   int valor2 = l2[0].chave;
+   int valor3 = l3[0].chave;
+   tamanho <<= 1;
+
+   while (++i1 < tamanho)
+   {
+     if(valor2 < valor3)
+     {
+       l1[i].chave = valor2;
+       valor2 = l2[++i2].chave;
+     }  
+     else
+     {
+       l1[i].chave = valor3;
+       valor3 = l3[++i3].chave;
+     }
+   }
+}
+
+
+f) // guardar em L2, uma struct que contenha uma struct e o número de repetições
+struct B
+{
+   A elem;
+   int count;
+};
+
+int calcular(A l1[], B l2[], int tamanho)
+{
+   int i = -1;
+   int i2 = 0;
+   int valor = l1[0].chave;
+   int valor2 = l1[0].chave;
+   l2[0].elem = l1[0];
+   l2[0].count = 1;
+
+   while (++i < tamanho)
+   {
+     valor = l1[i].chave;
+     if (valor == valor2)
+     {
+        ++l2[i2].count;
+        continue;
+     }
+
+     valor2 = valor;
+     ++i2;
+     l2[i2].elem = l1[i];
+     l2[i2].count = 1;
+    }
+   return i2;
+}
+
+
+g) // mostrar o número que menos é repetido, e mostrar o número que mais é repetido, mostrando o número de repetição.
+
+// incluindo o programa anterior.. (da questão f)
+
+int main()
+{
+  //{...}
+  int tamanho2 = calcular(l1, l2, tamanho);
+  B menor, maior, b;
+  menor.elem = maior.elem = l2[0].elem;
+  menor.count = maior.count = l2[0].count;
+  int i = -1;
+  while(++i < tamanho2)
+  {
+     b = l2[i];
+     if(b.count < menor.count)
+     {
+        menor = b;
+     } else if (b.count > maior.count)
+     {
+        maior = b;
+     }
+  }
+
+  cout << "o que mais teve repeticao eh o " << maior.elem.chave << ", com " << maior.count << "repeticoes.";
+  cout << "o que menos teve repeticao eh o " << menor.elem.chave << ", com " << menor.count << "repeticoes.";
+}
+
+

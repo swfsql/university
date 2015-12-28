@@ -1,0 +1,473 @@
+#include <iostream.h>
+#include <conio.h>
+#include <stdio.h>
+#include <ctype.h>
+struct no {
+  int num;
+  int bal;
+  no *dir, *esq;
+};
+
+int altura (no* raiz){
+  int alt_esq, alt_dir;
+  if(raiz==NULL)
+  return 0;
+  else
+  {
+   alt_esq=altura (raiz->esq);
+   alt_dir=altura (raiz->dir);
+   if(alt_esq>alt_dir)
+   return (1+alt_esq);
+   else
+   return (1+alt_dir);
+
+  }
+
+}
+
+int calcula (no *raiz){
+   if(raiz==NULL)
+   return 0;
+   else
+   return (altura(raiz->esq)-altura(raiz->dir));
+
+}
+void seta (no *raiz){
+
+ if (raiz!=NULL)
+       {
+	 raiz->bal=(altura(raiz->esq)-altura(raiz->dir));
+	 seta(raiz->esq);
+	 seta(raiz->dir);
+
+       }
+
+
+}
+
+no* rotacao_direita(no *n3){
+
+  no *n2=n3->esq;
+  if(n2->dir)
+  n3->esq=n2->dir;
+  else
+  n3->esq=NULL;
+
+  n2->dir=n3;
+  return n2;
+
+}
+no* rotacao_esquerda(no *n1) {
+
+ no *n2=n1->dir;
+ if(n2->esq)
+ n1->dir=n2->esq;
+ else
+ n1->dir=NULL;
+ n2->esq=n1;
+ return n2;
+
+}
+no* rotacao_dupla_direita(no *n3)
+{
+
+  no *n1=n3->esq;
+  no *n2=n1->dir;
+  if(n2->esq)
+  n1->dir=n2->esq;
+  else
+  n1->dir=NULL;
+
+  if(n2->dir)
+  n3->esq=n2->dir;
+  else
+  n3->esq=NULL;
+
+  n2->esq=n1;
+  n2->dir=n3;
+
+  return n2;
+
+}
+no* rotacao_dupla_esquerda(no *n1)
+{
+
+  no *n3=n1->dir;
+  no *n2=n3->esq;
+  if(n2->esq)
+  n1->dir=n2->esq;
+  else
+  n1->dir=NULL;
+
+  if(n2->dir)
+  n3->esq=n2->dir;
+  else
+  n3->esq=NULL;
+
+  n2->esq=n1;
+  n2->dir=n3;
+
+  return n2;
+
+
+}
+no* corrige (no *raiz)
+{
+   if(raiz!=NULL)
+   {
+     raiz->bal=calcula(raiz);
+     if(raiz->bal==2)
+     {
+	raiz->esq->bal=calcula(raiz->esq);
+	if(raiz->esq->bal>0){
+	raiz=rotacao_direita(raiz);
+	}
+	else{
+	raiz=rotacao_dupla_direita(raiz);
+	  }
+     }
+    else if (raiz->bal==-2)
+    {
+       raiz->dir->bal=calcula(raiz->dir);
+       if(raiz->dir->bal<0)
+       raiz=rotacao_esquerda(raiz);
+       else
+
+       raiz=rotacao_dupla_esquerda(raiz);
+
+
+    }
+     raiz->esq=corrige(raiz->esq);
+     raiz->dir=corrige(raiz->dir);
+   }
+ return raiz;
+}
+
+
+no* inserir (no *raiz, no *novo)
+{
+       if (raiz==NULL)
+       {
+       raiz=novo;
+       raiz->bal=0;
+       raiz->esq=NULL;
+       raiz->dir=NULL;
+       }
+       else
+       {
+	 if(novo->num>=raiz->num)
+	 {
+	   if (raiz->dir==NULL)
+	   raiz->dir=novo;
+	   else
+	   inserir (raiz->dir, novo);
+	 }
+	  else
+	  {
+	    if (raiz->esq==NULL)
+	   raiz->esq=novo;
+	   else
+	   inserir (raiz->esq, novo);
+	  }
+
+       }
+       return raiz;
+}
+
+
+no* consulta (no *raiz, int n)
+ {
+
+   if(raiz==NULL){
+   return NULL;
+     }
+       else
+	  {
+	   if(raiz->num==n)
+	   {
+	   cout<<"\nEncontrado: "<<raiz->num;
+	   return raiz;
+	   }
+	   else
+	   if(n>raiz->num)
+	   consulta (raiz->dir,n);
+	   else
+	   consulta (raiz->esq,n);
+
+	   }
+
+
+  return raiz;
+ }
+void emOrdem(no *raiz){
+
+   if(raiz!=NULL)
+     {
+     emOrdem(raiz->esq);
+     cout<<raiz->num<<"; ";
+     emOrdem(raiz->dir);
+
+   }
+
+}
+void mostrarArvore(no *raiz, int col, int lin, int desl){
+
+   if(raiz==NULL)
+   return;
+   gotoxy(col, lin);
+   cout<<"("<<raiz->num<<")";
+
+
+     if(raiz->esq!=NULL)
+     mostrarArvore(raiz->esq, col-desl, lin+2, desl/2+1);
+
+     if(raiz->dir!=NULL)
+     mostrarArvore(raiz->dir,col+desl, lin+2, desl/2+1);
+
+
+
+
+}
+no* remover (no *raiz, int n)
+{
+//  no *retorno;
+  if(raiz==NULL) {
+	  return NULL;
+	  }
+	  else
+		  {
+		   if(raiz->num==n){
+		   return raiz;
+
+		   }
+		   else if(n>=raiz->num)
+		   remover (raiz->dir, n);
+
+
+			   else
+			   remover (raiz->esq, n);
+		   }
+
+}
+no* esquerda(no *aux)
+{
+  // no *retorno;
+   if(aux->esq!=NULL)
+   esquerda (aux->esq);
+
+   else{
+    return aux;;
+
+    }
+}
+no* funAnterior(no *raiz, int n)
+{
+		 if(n>raiz->num)
+		  {
+		  if(raiz->dir->num==n)
+		  return raiz;
+		  else
+		 funAnterior(raiz->dir, n);
+		  }
+		  else
+		  {
+			 if (raiz->esq->num==n)
+			 return raiz;
+
+			 else
+			 funAnterior (raiz->esq, n);
+		  }
+
+}
+
+void preOrdem(no *raiz)
+{
+
+  if(raiz!=NULL){
+  cout<<raiz->num<<"; ";
+  preOrdem(raiz->esq);
+  preOrdem(raiz->dir);
+ }
+}
+void posOrdem(no *raiz)
+{
+  if(raiz!=NULL){
+  preOrdem(raiz->esq);
+
+  preOrdem(raiz->dir);
+  cout<<raiz->num<<"; ";
+  }
+}
+
+void main ()
+{
+	no *raiz, *aux;
+	int n,op, achou=0;
+	raiz=NULL;
+	do{
+	clrscr();
+	cout<<"\n 1-Inserir"
+	    <<"\n 2-Mostrar"
+	    <<"\n 3-Mostrar em Ordem"
+	    <<"\n 4-Mostrar em Pre-Ordem"
+	    <<"\n 5-Mostrar em Pos-Ordem"
+	    <<"\n 6-Remover"
+	    <<"\n 7-Mostrar Arvore"
+	    <<"\n 8-Sair\n";
+
+	cin>>op;
+		 if(op<1 || op>8)
+		 cout<<"\n Opcao Invalida";
+	 if(op==1)
+	  {//inserir
+   no *novo;
+   novo= new (no);
+   cout<<"\n Digite o novo numero: ";
+   cin>>novo->num;
+   novo->dir=NULL;
+   novo->esq=NULL;
+	       raiz=inserir(raiz, novo);
+	       raiz=corrige(raiz);
+	      // seta (raiz);
+	       clrscr();
+	       mostrarArvore(raiz, 32, 4, 15);
+	  }
+	  if(op==2)
+	  {   //consultar
+		cout<<"\ nDigite o numero para a consulta: ";
+		cin>>n;
+		aux=raiz;
+		aux=consulta(raiz, n);
+
+
+	  }
+
+	 if(op==3)
+	 {
+
+	   emOrdem(raiz);
+
+	 }
+	 if(op==4)
+	 {
+	  preOrdem(raiz);
+	 }
+	 if(op==5)
+	 {
+	  posOrdem(raiz);
+	 }
+	 if(op==6)
+	 {
+	    cout<<"\n Digite o numero para a remo‡Æo: " ;
+	    cin>>n;
+	    aux=remover (raiz, n);
+	  if(aux==NULL)
+	  cout<<"\nArvore Vazia!";
+	  else
+	  {
+	  if(aux==raiz)
+	       {
+		if(aux->dir==NULL && aux->esq==NULL)
+		 raiz=NULL;
+		else if(aux->dir!=NULL && aux->esq==NULL)
+		raiz=aux->dir;
+		else if(aux->dir==NULL && aux->esq!=NULL)
+		raiz=aux->esq;
+		else
+		{
+		  no *aux2;
+		  aux2=aux->esq;
+		  raiz = aux->dir;
+		  no *aux3;
+		  aux3=raiz;
+
+		  aux3=esquerda(raiz);
+
+		   aux3->esq=aux2;
+		 }
+		 cout<<"\nNumero Excluido!!!";
+		 raiz=corrige(raiz);
+	       //	seta(raiz);
+		 clrscr();
+		 mostrarArvore(raiz, 32, 4, 15);
+
+		}
+	 else
+		 {
+		//excluido um n¢ nao raiz
+		no *anterior;
+
+		anterior=funAnterior(raiz, n);
+
+
+		//excluido uma folha
+		if(aux->dir==NULL && aux->esq==NULL)
+		{
+		  if(n>anterior->num)
+		  anterior->dir=NULL;
+		  else
+		  anterior->esq=NULL;
+	       }
+		//excluindo n¢ com filho para a direita
+	     if(aux->dir!=NULL && aux->esq==NULL)
+		 {
+			if(n>anterior->num)
+			anterior->dir=aux->dir;
+			else
+			anterior->esq=aux->dir;
+		 }
+
+		//excluindo n¢ c/ filho para a esquerda
+												if(aux->dir==NULL && aux->esq!=NULL)
+		{
+		  if(n>anterior->num)
+		  anterior->dir = aux->esq;
+		  else
+		  anterior->esq=aux->esq;
+		}
+	       //excluindo n¢ com filhos p/ os dois lados
+		if(aux->dir!=NULL && aux->esq!=NULL)
+		{
+		  no *aux2, *aux3;
+		  aux2=aux->esq;
+		  if(n>anterior->num)
+		  {
+			anterior->dir = aux->dir;
+			aux3=aux->dir;
+
+			  aux3=esquerda(aux3);
+			 aux3->esq=aux2;
+		   }
+		     else
+		     {
+			 anterior->esq=aux->dir;
+			 aux3=aux->dir;
+
+			 aux3=esquerda(aux3);
+
+			 aux3->esq=aux2;
+		     }
+		 }
+		 delete (aux);
+		cout<<"\nNumero Excluido!!!";
+		raiz=corrige(raiz);
+	       //	seta(raiz);
+
+		 clrscr();
+		 mostrarArvore(raiz, 32, 4, 15);
+	      }
+	    }
+  }
+  if(op==7)
+	 {
+	 clrscr();
+	 //col=32, lin=4, desl=15;
+
+	 mostrarArvore(raiz, 32,4,15);
+
+	 }
+	  getch();
+
+	}while(op!=8) ;
+
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="@color/bg2"
+        android:foreground="@color/fg1"
+        android:minHeight="?android:attr/actionBarSize" />
+
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:focusableInTouchMode="true"
+            >
+
+            <!-- dummy pra nao dar focus pro texto no inicio -->
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0px"
+                android:layout_height="0px"/>
+
+            <!-- gravity=center API<17. textAlignment=center API>16-->
+            <EditText android:id="@+id/add_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="@string/home_item_add"
+                android:textColorHint="@color/fg1"
+                android:background="@color/bg1"
+                android:textColor="@color/fg1"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:nextFocusUp="@+id/drawer_layout"
+                android:nextFocusLeft="@+id/drawer_layout"/>
+
+            <Button android:id="@+id/list_active_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:background="@color/bg1"
+                android:foreground="@color/fg1"
+                android:text="@string/home_list_active_info" />
+
+            <ExpandableListView
+                android:id="@+id/list_active"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:background="@color/bg1"
+                android:foreground="@color/fg1" />
+
+            <!--
+            <Button android:id="@+id/add_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/home_list_add"
+                android:background="@color/bg1"
+                android:foreground="@color/fg1"
+                android:onClick="sendMessage"/>
+                -->
+        </LinearLayout>
+
+        <!-- android:entries="@array/drawer_entries"> -->
+        <ListView
+            android:id="@+id/drawer_list"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:choiceMode="singleChoice"
+            android:background="@color/bg2"
+            android:foreground="@color/fg1" />
+
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>

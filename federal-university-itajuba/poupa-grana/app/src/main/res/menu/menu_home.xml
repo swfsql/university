@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".Home">
+    <item
+        android:id="@+id/home_menu_searchprices"
+        android:title="@string/home_menu_searchprices"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/home_menu_save"
+        android:title="@string/home_menu_save"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/home_menu_list_new"
+        android:title="@string/home_menu_list_new"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/home_menu_list_active_remove"
+        android:title="@string/home_menu_list_active_remove"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+    
+    
+    
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=RSS">
+
+    
+    
+      <link rel="stylesheet" type="text/css" href="Programmin%20Language%20Processor_PL_0%27%20virtual%20machine%20assembly%20language%20programming%20-%20Tetsuya%20SUZUKI%27s%20Wiki_files/default.css">
+    
+    
+    
+      <style type="text/css">
+      <!--
+      /* エラーメッセージ */
+.error {
+  color       : #FF0000;
+  font-weight : bold;
+}
+
+/* 存在しないWikiページ */
+span.nopage {
+  background-color : #FFFF88;
+}
+
+/* Wikiページへのアンカ */
+a.wikipage:link {
+  text-decoration : underline;
+}
+
+a.wikipage:visited {
+  text-decoration : underline;
+}
+
+a.wikipage:hover {
+  background-color: #DDDDDD;
+  text-decoration : underline;
+}
+
+/* parteditプラグイン */
+div.partedit {
+  text-align : right;
+  font-size  : 80%;
+}
+
+/* calendarプラグイン */
+td.today {
+  background-color : #FF8888;
+}
+
+td.have {
+  font-weight : bold;
+}
+
+.calendar td {
+  text-align : right;
+}
+      -->
+      </style>
+    
+    
+    <title>Programming Language Processor/Extension of the PL/0' compiler - Tetsuya SUZUKI's Wiki</title>
+  </head>
+  <body>
+  
+  
+  
+  <!--========================================================================-->
+<!-- ヘッダ（メニューを表示） -->
+<!--========================================================================-->
+<div class="adminmenu">
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?page=FrontPage">トップ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=DIFF&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler" rel="nofollow">差分</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=LIST">一覧</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=SOURCE&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler" rel="nofollow">ソース</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=SEARCH" rel="nofollow">検索</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?page=Help">ヘルプ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=PDF&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler" rel="nofollow">PDF</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=RSS" rel="nofollow">RSS</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=LOGIN">ログイン</a>
+    </span>
+  
+</div>
+
+  
+  <h1><a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=SEARCH&amp;word=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler">Programming Language Processor/Extension of the PL/0' compiler</a></h1>
+  
+  
+    
+  
+  
+  <div class="day">
+    <div class="body">
+      <div class="section">
+        <p>This page will be translated to English.</p>
+<h2><a name="p0">PL/0'コンパイラの拡張例</a></h2><p>レポート課題３ではPL/0'コンパイラの拡張が求められている。そこで参考までに、if文と似たunless文をPL/0'に導入する手順を説明する。</p>
+<p>説明の順序は以下の通りである。</p>
+<ul>
+<li> PL/0'言語に導入する構文、意味、生成するコード</li>
+<li> テストプログラム</li>
+<li> PL/0'コンパイラへの変更箇所</li>
+<li> コンパイラの動作確認</li>
+<li> デバッグのヒント</li>
+</ul>
+<p>説明通りにPL/0'コンパイラに手を加え、コンパイラの拡張方法を確認しなさい。</p>
+<h3><a name="p1">unless文と生成するコード</a></h3><h4><a name="p2">unless文の文法と意味</a></h4><p>PL/0'に次のようなunless文を導入する。ただし&lt;statement&gt;と&lt;condition&gt;は非終端記号、unlessとthenは終端記号である。</p>
+<pre>&lt;statement&gt; -&gt; unless &lt;condition&gt; then &lt;statement&gt; 
+</pre>
+<p>構文図式の場合、次の図をstatementの図に加える。</p>
+<div><img src="Programmin%20Language%20Processor_PL_0%27%20virtual%20machine%20assembly%20language%20programming%20-%20Tetsuya%20SUZUKI%27s%20Wiki_files/wiki.bin"></div>
+<p>unless文の意味は次の通りである。</p>
+<ul>
+<li> &lt;condition&gt;が偽なら, then直後の&lt;statement&gt;を実行する。</li>
+</ul>
+<h4><a name="p3">生成するコード</a></h4><p>unless文に対応するPL/0'仮想マシンの命令列は次のようになる。</p>
+<pre>      &lt;condition&gt;のコード   ; 条件の真偽を計算する。
+      jpc,label1             ; 条件が偽ならばlabel1へジャンプ
+      jmp,label2
+label1:
+      &lt;statement&gt;のコード   ; &lt;statement&gt;を実行する。
+label2:
+</pre>
+<h3><a name="p4">テストプログラム</a></h3><p>unless文の動作を確認するための小さなプログラム unless.pl0 （下記内容）を用意する。</p>
+<pre>var n;
+begin
+  n := 0;
+  unless n = 0 then write 0;
+  unless n = 1 then write 1;
+  writeln
+end.
+</pre>
+<p>これを実行すると「1」だけが表示されるはずである。</p>
+<h3><a name="p5">コンパイラの変更</a></h3><h4><a name="p6">キーワードの登録</a></h4><p>unless文を導入するために、キーワードunlessを新たに登録する。</p>
+<p>getSource.hを以下のように変更する。</p>
+<pre>typedef  enum  keys {			/*　キーや文字の種類（名前）　*/
+	Begin, End,				/*　予約語の名前　*/
+	If, Then,
+	Unless,                         /* 追加行 */
+          .
+          .
+          .
+	end_of_KeyWd,				/*　予約語の名前はここまで　*/
+</pre>
+<p>変更のポイント</p>
+<ul>
+<li>列挙定数Unlessを列挙定数end_of_KeyWdよりも前に追加する。</li>
+</ul>
+<p>getSource.cを以下のように変更する。</p>
+<pre>static struct keyWd KeyWdT[] = {	/*　予約語や記号と名前(KeyId)の表　*/
+	{"begin", Begin},
+	{"end", End},
+	{"if", If},
+	{"then", Then},
+	{"unless", Unless},             /* 追加行 */
+          .
+          .
+          .
+	{"$dummy1",end_of_KeyWd},
+</pre>
+<p>変更のポイント</p>
+<ul>
+<li>文字列"unless"と列挙定数Unlessとの組を、{"$dummy1",end_of_KeyWd}よりも前に追加する。</li>
+</ul>
+<h4><a name="p7">構文解析とコード生成</a></h4><p>compile.cのstatement関数内を以下のように変更し、unless文の構文解析に対応する。</p>
+<pre>		switch (token.kind) {
+                         .
+                         .
+                         .
+               case Unless:					/*　unless文のコンパイル　*/
+                       token = nextToken();
+                       condition();					/*　条件式のコンパイル　*/
+                       token = checkGet(token, Then);		/*　"then"のはず　*/
+                       statement();					/*　文のコンパイル　*/
+                       return;
+</pre>
+<p>さらにコード生成部分を加えて、最終的に次のようにする。</p>
+<pre>		switch (token.kind) {
+                         .
+                         .
+                         .
+               case Unless:					/*　unless文のコンパイル　*/
+                       token = nextToken();
+                       condition();					/*　条件式のコンパイル　*/
+                       backP = genCodeV(jpc, 0);			/*　jpc命令　*/
+                       backP2 = genCodeV(jmp, 0);			/*　jmp命令　*/
+                       token = checkGet(token, Then);		/*　"then"のはず　*/
+                       backPatch(backP);				/*　上のjpc命令にバックパッチ　*/
+                       statement();					/*　文のコンパイル　*/
+                       backPatch(backP2);				/*　上のjmp命令にバックパッチ　*/
+                       return;
+</pre>
+<p>変更のポイント</p>
+<ul>
+<li> jpc命令とjmp命令ののジャンプ先はバックパッチで設定する。<ul>
+<li> jpc命令のジャンプ先はとりあえず0番地にしておく。jpc命令の番地は、backP変数に記録する。</li>
+<li> jmp命令のジャンプ先はとりあえず0番地にしておく。jmp命令の番地は、backP2変数に記録する。</li>
+<li> ジャンプ先の番地が決定したら, backPatch関数を使って, jpc命令とjmp命令のジャンプ先を設定する。</li>
+</ul>
+</li></ul>
+<p>関数isStBeginKeyは、引数のトークンがstatementの先頭記号であるかを判定する関数である。今回statementにunless文を導入したので、関数isStBeginKeyも修正する。(2010/07/17 追記)</p>
+<pre>int isStBeginKey(Token t)
+{
+  switch (t.kind){
+   case Id:
+   case If: case Begin: case Ret:
+   case Unless:  /* 追加行 */
+   case While: case Write: case WriteLn:
+       return 1;
+   default:
+       return 0;
+  }
+}
+</pre>
+<h4><a name="p8">コンパイル方法</a></h4><p>上記の変更を加えてからmakeコマンドを実行し、コンパイラをコンパイルする。</p>
+<pre>% make
+</pre>
+<h3><a name="p9">コンパイラの動作確認</a></h3><h4><a name="p10">コンパイル結果の確認</a></h4><p>テストプログラムのコンパイル結果を、次のコマンドで確認する。</p>
+<pre>% ./pl0d -l unless.pl0
+</pre>
+<p>コンパイル結果にコメントを追加したものを示す。意図通りにコード生成されている。</p>
+<pre>L000: jmp,L001 ; L001へジャンプする。
+L001: ict,3         ; 変数をスタック上に確保する。
+L002: lit,0          ; n := 0;
+      sto,0,2
+                     ; unless n = 0 then write 0
+      lod,0,2       ; 条件 n = 0 の計算
+      lit,0
+      opr,eq
+      jpc,L009      ; 条件 n = 0 が偽ならL009へジャンプ
+      jmp,L011     ; L011へジャンプ
+L009: lit,0         ; write 0
+      opr,wrt
+                      ; unless n = 1 then write 1
+L011: lod,0,2    ; 条件 n = 1 の計算
+      lit,1
+      opr,eq
+      jpc,L016     ; 条件 n = 1 が偽ならL016へジャンプ
+      jmp,L018   ; L018へジャンプ
+L016: lit,1        ; write 1
+      opr,wrt
+L018: opr,wrl   ; writeln
+      ret,0,0       ; 0番地へジャンプして終了
+</pre>
+<h4><a name="p11">テストプログラムの実行</a></h4><p>テストプログラムを次のコマンドで実行する。</p>
+<pre>% ./pl0d unless.pl0
+</pre>
+<p>実行結果として「1」が表示される。</p>
+<pre>; start compilation
+; start execution
+1
+</pre>
+<h4><a name="p12">デバッグのヒント</a></h4><ul>
+<li> テストプログラムにコンパイルエラーが発生する場合、以下をチェックする。<ul>
+<li>生成されたHTMLファイル</li>
+<li>テストプログラムそのもの</li>
+<li>構文解析手順をチェック</li>
+</ul>
+</li><li> 意図通りにコードが生成されなければ、以下をチェックする。<ul>
+<li>構文解析手順</li>
+<li>コード生成手順</li>
+</ul>
+</li><li> 生成されたコードの動作を確かめたい場合は、PL/0'仮想マシン用アセンブリ<a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?page=%B8%C0%B8%EC%BD%E8%CD%FD%B7%CF" class="wikipage">言語処理系</a>を使う。<ul>
+<li>詳細は<a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?page=%B8%C0%B8%EC%BD%E8%CD%FD%B7%CF%2F%A3%D0%A3%CC%A1%BF%A3%B0%A1%C7%B2%BE%C1%DB%A5%DE%A5%B7%A5%F3%CD%D1%A5%A2%A5%BB%A5%F3%A5%D6%A5%EA%B8%C0%B8%EC%BD%E8%CD%FD%B7%CF%A4%CE%BD%E0%C8%F7" class="wikipage">ＰＬ／０’仮想マシン用アセンブリ言語処理系の準備</a>を参照 </li>
+</ul>
+</li></ul>
+<h3><a name="p13">追加・変更したファイル</a></h3><ul>
+<li>
+<a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=ATTACH&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler&amp;file=unless%2Epl0">unless.pl0</a>(0)</li>
+<li>
+<a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=ATTACH&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler&amp;file=getSource%2Eh">getSource.h</a>(0)</li>
+<li>
+<a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=ATTACH&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler&amp;file=getSource%2Ec">getSource.c</a>(0)</li>
+<li>
+<a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?action=ATTACH&amp;page=Programming+Language+Processor%2FExtension+of+the+PL%2F0%27+compiler&amp;file=compile%2Ec">compile.c</a>(0) </li>
+</ul>
+<hr>
+<p><a href="http://www.sic.shibaura-it.ac.jp/%7Etetsuya/fswiki/wiki.cgi?page=Programming+Language+Processor" class="wikipage">Return to Programming Language Processor</a></p>
+
+      </div>
+    </div>
+    
+      
+    
+  </div>
+
+  <!--========================================================================-->
+<!-- フッタ -->
+<!--========================================================================-->
+<div class="footer">
+  
+  <!-- 管理者の情報 -->
+  
+  
+  <!-- FSWikiのバージョン情報 -->
+  Powered by <a href="http://fswiki.poi.jp/">FreeStyleWiki3.6.2</a>
+    with Perl5.010000
+  
+  
+</div>
+
+  
+
+</body></html>

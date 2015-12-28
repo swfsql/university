@@ -1,0 +1,477 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    
+    
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="wiki.cgi?action=RSS">
+
+    
+    
+      <link rel="stylesheet" type="text/css" href="./theme/default/default.css">
+    
+    
+    
+      <style type="text/css">
+      <!--
+      /* エラーメッセージ */
+.error {
+  color       : #FF0000;
+  font-weight : bold;
+}
+
+/* 存在しないWikiページ */
+span.nopage {
+  background-color : #FFFF88;
+}
+
+/* Wikiページへのアンカ */
+a.wikipage:link {
+  text-decoration : underline;
+}
+
+a.wikipage:visited {
+  text-decoration : underline;
+}
+
+a.wikipage:hover {
+  background-color: #DDDDDD;
+  text-decoration : underline;
+}
+
+/* parteditプラグイン */
+div.partedit {
+  text-align : right;
+  font-size  : 80%;
+}
+
+/* calendarプラグイン */
+td.today {
+  background-color : #FF8888;
+}
+
+td.have {
+  font-weight : bold;
+}
+
+.calendar td {
+  text-align : right;
+}
+      -->
+      </style>
+    
+    
+    <title>Programming Language Processor/a PL/0' virtual machine - Tetsuya SUZUKI's Wiki</title>
+  </head>
+  <body>
+  
+  
+  
+  <!--========================================================================-->
+<!-- ヘッダ（メニューを表示） -->
+<!--========================================================================-->
+<div class="adminmenu">
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?page=FrontPage">トップ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=DIFF&amp;page=Programming+Language+Processor%2Fa+PL%2F0%27+virtual+machine" rel="nofollow">差分</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=LIST">一覧</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=SOURCE&amp;page=Programming+Language+Processor%2Fa+PL%2F0%27+virtual+machine" rel="nofollow">ソース</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=SEARCH" rel="nofollow">検索</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?page=Help">ヘルプ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=PDF&amp;page=Programming+Language+Processor%2Fa+PL%2F0%27+virtual+machine" rel="nofollow">PDF</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=RSS" rel="nofollow">RSS</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=LOGIN">ログイン</a>
+    </span>
+  
+</div>
+
+  
+  <h1><a href="wiki.cgi?action=SEARCH&amp;word=Programming+Language+Processor%2Fa+PL%2F0%27+virtual+machine">Programming Language Processor/a PL/0' virtual machine</a></h1>
+  
+  
+    
+  
+  
+  <div class="day">
+    <div class="body">
+      <div class="section">
+        <p>You will need to understand instructions of the PL/0' virtual machine for assignments. This page and a source code 'codeine.c' of the PL/0' compiler will be helpful to understand them.</p>
+<p>Before you do the assignments, read two sections &quot;Components&quot; and &quot;Input/Output&quot; carefully, and read a section &quot;Instructions&quot; roughly for future reference.</p>
+<h2><a name="p0">Components</a></h2><dl>
+<dt>Main memory</dt>
+<dd> Only PL/0' instructions can be stored into the main memory.  A location pointed by an address can have one instruction. The virtual machine can not rewrite the main memory.</dd>
+</dl>
+<dl>
+<dt>pc</dt>
+<dd> A program counter. It holds an address of an instruction to be executed. The initial value is 0. If the value of pc becomes 0 again, the virtual machine will halt.</dd>
+</dl>
+<dl>
+<dt>stack</dt>
+<dd> As the PL/0' virtual machine is a stack machine, it uses a stack for calculations. It also uses the stack for variables. The initial values of stack[0] and stack[1] are 0.</dd>
+</dl>
+<dl>
+<dt>top</dt>
+<dd> A stack pointer. It points a location of the stack where a next value will be pushed into. The initial value of top is 0.</dd>
+</dl>
+<dl>
+<dt>display</dt>
+<dd> An array to preserve locations of the stack where stack pointers were saved. The values are also used as base addresses of relative addresses which specifies locations of variables on the stack. The initial value of display[0] is 0.</dd>
+</dl>
+<p>stack[display[level] + 0] is a preserved value of display[level], and stack[display[level] + 1] is a return address from a function.</p>
+<h2><a name="p1">Input/Output</a></h2><ol>
+<li>The PL/0' virtual machine does not take any input.</li>
+<li>The PL/0' virtual machine can output numbers and a new line code.</li>
+</ol>
+<h2><a name="p2">Instructions</a></h2><p>In the following, LEVEL, ADDR and VALUE of mnemonics should be replaced with specific values.</p>
+<h3><a name="p3">lod</a></h3><dl>
+<dt>Overview</dt>
+<dd>Push a value of a variable to the stack.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>lod,LEVEL,ADDR</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>LEVEL is a nesting level in a source PL/0' program. ADDR is a relative address.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>stack[top++] = stack[display[LEVEL] + ADDR];</dd>
+</dl>
+<h3><a name="p4">sto</a></h3><dl>
+<dt>Overview</dt>
+<dd>Store a value on the stack top to a variable on the stack.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>sto,LEVEL,ADDR</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>LEVEL is a nesting level in a source PL/0' program. ADDR is a relative address.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>stack[display[LEVEL]+ADDR] = stack[--top];</dd>
+</dl>
+<h3><a name="p5">cal</a></h3><dl>
+<dt>Overview</dt>
+<dd>Call a function</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>cal,LEVEL,ADDR</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>LEVEL is a nesting level in a source PL/0' program. ADDR is an absolute address of a function.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>lev = LEVEL + 1;stack[top] = display[lev];stack[top+1] = pc; display[lev] = top; pc = ADDR;</dd>
+</dl>
+<h3><a name="p6">ret</a></h3><dl>
+<dt>Overview</dt>
+<dd>Return from a function</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>ret,LEVEL,ADDR</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>LEVEL is a nesting level in a source PL/0' program. ADDR is the number of arguments.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>retval = stack[--top];top = display[LEVEL];display[LEVEL] = stack[top];pc = stack[top+1];top -= ADDR;stack[top++] = retval;</dd>
+</dl>
+<h3><a name="p7">lit</a></h3><dl>
+<dt>Overview</dt>
+<dd>Push a constant to the stack.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>lit,VALUE</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>VALUE is a constant.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>stack[top++] = value;</dd>
+</dl>
+<h3><a name="p8">ict</a></h3><dl>
+<dt>Overview</dt>
+<dd>Increment the stack pointer.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>ict,VALUE</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>VALUE is a constant.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>top += value;</dd>
+</dl>
+<h3><a name="p9">jmp</a></h3><dl>
+<dt>Overview</dt>
+<dd>Jump to an address</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>jmp,ADDR</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>ADDR is an absolute address.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>pc = ADDR;</dd>
+</dl>
+<h3><a name="p10">jpc</a></h3><dl>
+<dt>Overview</dt>
+<dd>Conditional jump</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>jpc,ADDR</dd>
+</dl>
+<dl>
+<dt>Description</dt>
+<dd>ADDR is an absolute address.</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd>if (stack[--top] == 0) { pc = ADDR; }</dd>
+</dl>
+<h3><a name="p11">opr,neg</a></h3><dl>
+<dt>Overview</dt>
+<dd>Change a sign (+/-) of the stack top.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,neg</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> stack[top-1] = -stack[top-1];</dd>
+</dl>
+<h3><a name="p12">opr,add</a></h3><dl>
+<dt>Overview</dt>
+<dd>Addition</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,add</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] += stack[top];</dd>
+</dl>
+<h3><a name="p13">opr,sub</a></h3><dl>
+<dt>Overview</dt>
+<dd>Subtraction</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,sub</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] -= stack[top];</dd>
+</dl>
+<h3><a name="p14">opr,mul</a></h3><dl>
+<dt>Overview</dt>
+<dd>Multiplication</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,mul</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] *= stack[top]</dd>
+</dl>
+<h3><a name="p15">opr,div</a></h3><dl>
+<dt>Overview</dt>
+<dd>Division</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,div</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] /= stack[top];</dd>
+</dl>
+<h3><a name="p16">opr,odd</a></h3><dl>
+<dt>Overview</dt>
+<dd>If a popped value is odd, push 1. Ohterwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,odd</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> stack[top-1] = stack[top - 1] &amp; 1;</dd>
+</dl>
+<h3><a name="p17">opr,eq</a></h3><dl>
+<dt>Overview</dt>
+<dd>If two popped values are equal, push 1. Otherwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,eq</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] = (stack[top - 1] == stack[top]);</dd>
+</dl>
+<h3><a name="p18">opr,ls</a></h3><dl>
+<dt>Overview</dt>
+<dd>If the second popped value is less than the first popped value, push 1. Otherwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,ls</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] = (stack[top - 1] &lt; stack[top]);</dd>
+</dl>
+<h3><a name="p19">opr,gr</a></h3><dl>
+<dt>Overview</dt>
+<dd>If the second popped value is greater than the first pooped value, push 1. Otherwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,gr</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] = (stack[top - 1] &gt; stack[top]);</dd>
+</dl>
+<h3><a name="p20">opr,neq</a></h3><dl>
+<dt>Overview</dt>
+<dd>If two popped values are not equal, push 1. Otherwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,neq</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] = (stack[top - 1] != stack[top]);</dd>
+</dl>
+<h3><a name="p21">opr,lseq</a></h3><dl>
+<dt>Overview</dt>
+<dd>If the second popped value is less than or equal to the first pooped value, push 1. Otherwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,lseq</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] = (stack[top - 1] &lt;= stack[top]);</dd>
+</dl>
+<h3><a name="p22">opr,greq</a></h3><dl>
+<dt>Overview</dt>
+<dd>If the second popped value is greater than or equal to the first pooped value, push 1. Otherwise, push 0.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,greq</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> --top; stack[top-1] = (stack[top - 1] &gt;= stack[top]);</dd>
+</dl>
+<h3><a name="p23">opr,wrt</a></h3><dl>
+<dt>Overview</dt>
+<dd>Output a popped value.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,wrt</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> printf(&quot;%d &quot;, stack[--top]);</dd>
+</dl>
+<h3><a name="p24">opr,wrl</a></h3><dl>
+<dt>Overview</dt>
+<dd>Output a new line code.</dd>
+</dl>
+<dl>
+<dt>Mnemonic</dt>
+<dd>opr,wrl</dd>
+</dl>
+<dl>
+<dt>Details</dt>
+<dd> printf(&quot;\n&quot;);</dd>
+</dl>
+<hr>
+<p><a href="wiki.cgi?page=Programming+Language+Processor" class="wikipage">Return to Programming Language Processor</a></p>
+
+      </div>
+    </div>
+    
+      
+    
+  </div>
+
+  <!--========================================================================-->
+<!-- フッタ -->
+<!--========================================================================-->
+<div class="footer">
+  
+  <!-- 管理者の情報 -->
+  
+  
+  <!-- FSWikiのバージョン情報 -->
+  Powered by <a href="http://fswiki.poi.jp/">FreeStyleWiki3.6.2</a>
+    with Perl5.010000
+  
+  
+</div>
+
+  
+</body></html>

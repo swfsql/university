@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<TITLE>compiled source program</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+
+
+(Keyword, 'function')  (funcId, 'fact') (Symbol, '(') (parId, 'n') (Symbol, ')') 
+(Keyword, 'var')  (varId, 'r') (Symbol, ';') 
+(Keyword, 'begin') 
+  (varId, 'r')  (Symbol, ':=')  (parId, 'n') (Symbol, ';') 
+
+  (Keyword, 'while')  (parId, 'n')  (Symbol, '>')  (number, '1')  (Keyword, 'do') 
+  (Keyword, 'begin') 
+    (parId, 'n')  (Symbol, ':=')  (parId, 'n')  (Symbol, '-')  (number, '1') (Symbol, ';') 
+    (varId, 'r')  (Symbol, ':=')  (varId, 'r')  (Symbol, '*')  (parId, 'n') (Symbol, ';') 
+  (Keyword, 'end') (Symbol, ';') 
+
+  (Keyword, 'return')  (varId, 'r') (Symbol, ';') 
+(Keyword, 'end') (Symbol, ';') 
+
+(Keyword, 'var')  (varId, 'x') (Symbol, ';') 
+(Keyword, 'begin') 
+  (varId, 'x')  (Symbol, ':=')  (number, '1') (Symbol, ';') 
+
+  (Keyword, 'while')  (varId, 'x') (Symbol, '<') (number, '10')  (Keyword, 'do') 
+    (Keyword, 'begin') 
+      (Keyword, 'write')  (varId, 'x') (Symbol, ';') 
+      (Keyword, 'write')  (funcId, 'fact') (Symbol, '(') (varId, 'x') (Symbol, ')') (Symbol, ';') 
+      (Keyword, 'writeln') (Symbol, ';') 
+      (varId, 'x')  (Symbol, ':=')  (varId, 'x') (Symbol, '+') (number, '1') (Symbol, ';') 
+    (Keyword, 'end') (Symbol, ';') 
+(Keyword, 'end') (Symbol, '.') 
+</PRE>
+</BODY>
+</HTML>

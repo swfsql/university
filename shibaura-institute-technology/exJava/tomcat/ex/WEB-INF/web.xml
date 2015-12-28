@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0" metadata-complete="true">
+
+    <description>
+      Adv Java Ex 
+    </description>
+    <display-name>Adv Java Ex</display-name>
+
+    <servlet>
+        <servlet-name>HelloWorldServlet</servlet-name>
+        <servlet-class>HelloWorldServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>RegistServlet</servlet-name>
+        <servlet-class>RegistServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ConfirmServlet</servlet-name>
+        <servlet-class>ConfirmServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CompleteServlet</servlet-name>
+        <servlet-class>CompleteServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>JLoginServlet</servlet-name>
+        <jsp-file>JLoginServlet</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>JRegistServlet</servlet-name>
+        <jsp-file>JRegistServlet</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>JConfirmServlet</servlet-name>
+        <jsp-file>JConfirmServlet</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>JCompleteServlet</servlet-name>
+        <jsp-file>JCompleteServlet</jsp-file>
+    </servlet>
+
+    <!-- <servlet>
+        <servlet-name>Other</servlet-name>
+        <servlet-class>Other</servlet-class>
+    </servlet> -->
+
+    <servlet-mapping>
+        <servlet-name>HelloWorldServlet</servlet-name>
+        <url-pattern>/01</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RegistServlet</servlet-name>
+        <url-pattern>/02</url-pattern>
+        <url-pattern>/02-01</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmServlet</servlet-name>
+        <url-pattern>/02-02</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CompleteServlet</servlet-name>
+        <url-pattern>/02-03</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>JLoginServlet</servlet-name>
+        <url-pattern>/03</url-pattern>
+        <url-pattern>/03-01</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JRegistServlet</servlet-name>
+        <url-pattern>/03-02</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JConfirmServlet</servlet-name>
+        <url-pattern>/03-03</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JCompleteServlet</servlet-name>
+        <url-pattern>/03-04</url-pattern>
+    </servlet-mapping>
+
+    <!-- <servlet-mapping>
+        <servlet-name>Other</servlet-name>
+        <url-pattern>/OtherURL</url-pattern>
+    </servlet-mapping> -->
+
+  <session-config>
+    <session-timeout>5</session-timeout> <!-- 5 min -->
+  </session-config>
+
+</web-app>

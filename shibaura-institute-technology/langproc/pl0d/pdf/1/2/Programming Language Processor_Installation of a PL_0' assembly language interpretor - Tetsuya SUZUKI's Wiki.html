@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    
+    
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="wiki.cgi?action=RSS">
+
+    
+    
+      <link rel="stylesheet" type="text/css" href="./theme/default/default.css">
+    
+    
+    
+      <style type="text/css">
+      <!--
+      /* エラーメッセージ */
+.error {
+  color       : #FF0000;
+  font-weight : bold;
+}
+
+/* 存在しないWikiページ */
+span.nopage {
+  background-color : #FFFF88;
+}
+
+/* Wikiページへのアンカ */
+a.wikipage:link {
+  text-decoration : underline;
+}
+
+a.wikipage:visited {
+  text-decoration : underline;
+}
+
+a.wikipage:hover {
+  background-color: #DDDDDD;
+  text-decoration : underline;
+}
+
+/* parteditプラグイン */
+div.partedit {
+  text-align : right;
+  font-size  : 80%;
+}
+
+/* calendarプラグイン */
+td.today {
+  background-color : #FF8888;
+}
+
+td.have {
+  font-weight : bold;
+}
+
+.calendar td {
+  text-align : right;
+}
+      -->
+      </style>
+    
+    
+    <title>Programming Language Processor/Installation of a PL/0' assembly language interpretor - Tetsuya SUZUKI's Wiki</title>
+  </head>
+  <body>
+  
+  
+  
+  <!--========================================================================-->
+<!-- ヘッダ（メニューを表示） -->
+<!--========================================================================-->
+<div class="adminmenu">
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?page=FrontPage">トップ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=DIFF&amp;page=Programming+Language+Processor%2FInstallation+of+a+PL%2F0%27+assembly+language+interpretor" rel="nofollow">差分</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=LIST">一覧</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=SOURCE&amp;page=Programming+Language+Processor%2FInstallation+of+a+PL%2F0%27+assembly+language+interpretor" rel="nofollow">ソース</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=SEARCH" rel="nofollow">検索</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?page=Help">ヘルプ</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=PDF&amp;page=Programming+Language+Processor%2FInstallation+of+a+PL%2F0%27+assembly+language+interpretor" rel="nofollow">PDF</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=RSS" rel="nofollow">RSS</a>
+    </span>
+  
+    <span class="adminmenu">
+      <a href="wiki.cgi?action=LOGIN">ログイン</a>
+    </span>
+  
+</div>
+
+  
+  <h1><a href="wiki.cgi?action=SEARCH&amp;word=Programming+Language+Processor%2FInstallation+of+a+PL%2F0%27+assembly+language+interpretor">Programming Language Processor/Installation of a PL/0' assembly language interpretor</a></h1>
+  
+  
+    
+  
+  
+  <div class="day">
+    <div class="body">
+      <div class="section">
+        <p>A PL/0' assembly language interpreter executes a given PL/0' assembly program displaying states of a virtual machine and instructions to be executed. It will be helpful to understand behavior of a PL/0' virtual machine.</p>
+<h2><a name="p0"> How to install a PL/0' assembly language interpreter</a></h2><p>Download 
+<a href="wiki.cgi?action=ATTACH&amp;page=Programming+Language+Processor%2FInstallation+of+a+PL%2F0%27+assembly+language+interpretor&amp;file=pl0das%2Epl">pl0das.pl</a>(25) into your directory and execute the following command to add executable permission to the file.</p>
+<pre>% chmod +x pl0das.pl
+</pre>
+<h2><a name="p1"> How to execute an assembly program</a></h2><p>The following program '
+<a href="wiki.cgi?action=ATTACH&amp;page=Programming+Language+Processor%2FInstallation+of+a+PL%2F0%27+assembly+language+interpretor&amp;file=add%2Es">add.s</a>(20)' is a PL/0' assembly program which calculates '2+3' and outputs the result.</p>
+<pre>start:
+	lit,2     ; push 2.
+	lit,3     ; push 3.
+	opr,add   ; pop two constants 2 and 3, and push the value of '2+3'.
+	opr,wrt   ; pop a value and output the value.
+	opr,wrl   ; output a new line code.
+	jmp,start ; jump to the address 0 to terminate this program.
+</pre>
+<ul>
+<li> A part of a line from a semicolon ';' to the end of line is a comment.</li>
+<li> Jump adresses are described as decimal constants or labels<ul>
+<li> A part of a line before a colon ':' is a label.</li>
+<li> A label consists of alphabets and digits. The first character must be an alphabet.</li>
+</ul>
+</ul>
+<p>The following command executes the assembly program 'add.s'.</p>
+<pre>% ./pl0das.pl add.s
+</pre>
+<p>The command displays a state of a PL/0' virtual machine and an instruction to be executed repeatedly as follows. For example, a constant '2' is pushed by an instruction 'lit, 2'.</p>
+<pre>-------------------
+State
+pc     : 0
+top    : 0
+stack  : 0&lt;-top,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+display: 0,0,0,0,0
+output :
+
+-------------------
+Instruction
+	lit,2     
+-------------------
+State
+pc     : 1
+top    : 1
+stack  : 2,0&lt;-top,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+display: 0,0,0,0,0
+output :
+
+</pre>
+<ul>
+<li>'pc' is a program counter (an instruction counter).</li>
+<li>'top' is a stack pointer which points a place in the stack where a next value will be recorded.</li>
+<li>'stack' is a stack. '&lt;-top' indicates a place pointed by top.</li>
+<li>'display' is an array to record places where stack pointers were saved.</li>
+<li>'output' is an output from a virtual machine.</li>
+</ul>
+<h2><a name="p2">How to execute a compiled assembly program</a></h2><p>We can execute an assembly program compiled by the PL/0' compiler as follows.</p>
+<pre>% ./pl0d -l fact.pl0 &gt; fact.s
+% ./pl0das.pl fact.s
+</pre>
+<hr>
+<p><a href="wiki.cgi?page=Programming+Language+Processor" class="wikipage">Return to Programming Language Processor</a></p>
+
+      </div>
+    </div>
+    
+      
+    
+  </div>
+
+  <!--========================================================================-->
+<!-- フッタ -->
+<!--========================================================================-->
+<div class="footer">
+  
+  <!-- 管理者の情報 -->
+  
+  
+  <!-- FSWikiのバージョン情報 -->
+  Powered by <a href="http://fswiki.poi.jp/">FreeStyleWiki3.6.2</a>
+    with Perl5.010000
+  
+  
+</div>
+
+  
+</body></html>

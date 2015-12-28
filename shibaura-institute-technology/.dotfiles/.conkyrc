@@ -1,0 +1,12 @@
+out_to_console yes
+out_to_x no
+own_window no
+background no
+update_interval 1
+total_run_times 0
+use_spacer none 
+short_units yes 
+pad_percents 2
+ 
+TEXT
+^p(;2)^fn(droid-sans:size=8)^fg(\#d33682)${time %I:%M }^fg(\#859900) ${battery_short} ${battery_time}^fg(\#839496) ${time %a %d %b} ^fg(\#268bd2)   $cpu $memperc ${freq_g (1)} ^fg(\#dc322f)  ${hwmon temp 1} ^fg(\#657b83)  ${diskio_read}   ${diskio_write} ^fg(\#d33682)${if_match "$gw_iface" == "wlp1s0"}  ${upspeedf wlp1s0}   ${downspeedf wlp1s0}$else${if_match "$gw_iface" == "enp2s0f5"}  ${upspeedf enp2s0f5}   ${downspeedf enp2s0f5}$endif$else${if_match "$gw_iface" == "multiple"}  ${upspeedf wlp1s0}   ${downspeedf wlp1s0}   ${upspeedf enp2s0f5}   ${downspeedf enp2s0f5}$endif$endif ^fg(\#839496)^pa(490)$if_mpd_playing$mpd_smart$endif 
